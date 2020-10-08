@@ -1,0 +1,136 @@
+﻿@namespace Caspian.UI
+@typeparam TEntity
+<CascadingValue Value="EditContext">
+    <CascadingValue Value="ResetableControls" Name="ResetableControls">
+
+        <form @ref="form" @onsubmit="OnFormSubmit" 
+              @onreset="() =>
+                        {
+                            foreach (var control in ResetableControls)
+                                control.Reset();
+                            if (Onreset.HasDelegate)
+                                Onreset.InvokeAsync(EditContext.Model);
+                        }">
+            @ChildContent
+        </form>
+    </CascadingValue>
+</CascadingValue>
+@code 
+{
+    string ErrorMessage;
+    bool submitTo;
+    ElementReference form;
+    IList<IResetable> ResetableControls;
+
+    [Inject]
+    public FormAppState FormAppState { get; set; }
+
+    [Inject]
+    protected IJSRuntime jsRuntime { get; set; }
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    [Parameter]
+    public TEntity Model { get; set; }
+
+    [Parameter]
+    public EditContext EditContext { get; set; }
+
+    [Parameter]
+    public EventCallback Onreset { get; set; }
+
+    [Parameter]
+    public EventCallback<EditContext> OnInvalidSubmit { get; set; }
+
+    [Parameter]
+    public EventCallback<EditContext> OnSubmit { get; set; }
+
+    [Parameter]
+    public EventCallback<EditContext> OnValidSubmit { get; set; }
+
+    protected override void OnInitialized()
+    {
+        ResetableControls = new List<IResetable>();
+        if (Model == null && EditContext == null)
+            throw new CaspianException("خطا: one Parameter of Model and EditContext must initialized", 1);
+        if (Model != null && EditContext != null)
+            throw new CaspianException("خطا: Only one Parameter of Model and EditContext must initialized", 1);
+        if (Model == null)
+            Model = (TEntity)EditContext.Model;
+        if (EditContext == null)
+        {
+            EditContext = new EditContext(Model);
+        }
+        if (FormAppState == null)
+            FormAppState = new FormAppState();
+        FormAppState.AllControlsIsValid = true;
+        base.OnInitialized();
+    }
+
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (ErrorMessage.HasValue())
+        {
+            jsRuntime.InvokeVoidAsync("$.telerik.showMessage", ErrorMessage);
+            ErrorMessage = null;
+        }
+        if (submitTo)
+        {
+            submitTo = false;
+            jsRuntime.InvokeVoidAsync("$.telerik.submitForm", form);
+        }
+        return base.OnAfterRenderAsync(firstRender);
+    }
+
+    public void Submit()
+    {
+        submitTo = true;
+    }
+
+    async Task OnFormSubmit()
+    {
+        FormAppState.AllControlsIsValid = true;
+        ErrorMessage = null;
+        EditContext.SetModel(Model);
+        if (OnSubmit.HasDelegate)
+        {
+            await OnSubmit.InvokeAsync(EditContext);
+            EditContext.SetModel(Model);
+        }
+
+        var result = EditContext.Validate();
+        if (result && FormAppState.AllControlsIsValid)
+        {
+            if (OnValidSubmit.HasDelegate)
+
+                await OnValidSubmit.InvokeAsync(EditContext);
+        }
+        else
+        {
+            if (FormAppState.AllControlsIsValid)
+            {
+
+                var result1 = EditContext.GetValidationMessages();
+                ErrorMessage = result1.FirstOrDefault();
+            }
+            if (OnInvalidSubmit.HasDelegate)
+                await OnInvalidSubmit.InvokeAsync(EditContext);
+        }
+    }
+
+    protected override Task OnParametersSetAsync()
+    {
+        return base.OnParametersSetAsync();
+    }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        base.OnAfterRender(firstRender);
+    }
+}

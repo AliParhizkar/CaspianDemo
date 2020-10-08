@@ -1,0 +1,30 @@
+﻿@namespace Caspian.UI
+@typeparam TMaster
+@typeparam TDetail
+@inherits SimplePage<TDetail>
+
+
+@code
+{
+    [CascadingParameter(Name = "MasterDetailPageState")]
+    public MasterDetailPageState PageState { get; set; }
+
+    [Parameter]
+    public TMaster Master { get; set; }
+
+    protected override void OnInitialized()
+    {
+
+        base.OnInitialized();
+    }
+
+    protected override void OnParametersSet()
+    {
+        var properties = typeof(TDetail).GetProperties();
+        var masterInfo = properties.FirstOrDefault(t => t.PropertyType == typeof(TMaster));
+        var masterIdName = masterInfo.GetCustomAttribute<ForeignKeyAttribute>().Name;
+        var masterIdInfo = properties.Single(t => t.Name == masterIdName);
+        PageState.MasterIdInfo = masterIdInfo;
+        base.OnParametersSet();
+    }
+}

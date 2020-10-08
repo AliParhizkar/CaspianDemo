@@ -1,0 +1,62 @@
+﻿@page "/InlineCustomEdit"
+@namespace BlazorApp2.Pages
+@using Caspian.UI
+@using Microsoft.AspNetCore.Components
+@inherits SimplePage<Customer>
+@inject CustomerService service;
+<Grid Title="مشتری" @ref="Grid" Search="SearchData" TEntity="Customer" WindowStyle="max-width:600px">
+    <Columns Context="customer">
+        <GridColumn TEntity="Customer" Field="t => t.Age.Seprate3Digit()" />
+        <GridColumn TEntity="Customer" Field="t => t.FName" />
+        <GridColumn TEntity="Customer" Field="t => t.LName" />
+        <GridColumn TEntity="Customer" Field="t => t.Gender.FaText()" />
+        <GridColumn TEntity="Customer" Field="t => t.MobileNumber.CallSeprator(' ')" Style="direction:ltr" />
+        <GridColumn TEntity="Customer" Field="t => t.Area.Title" />
+        <GridColumn TEntity="Customer" Field="t => t.City.Title" />
+        <GridColumn TEntity="Customer">
+            <CaspianForm @ref="formRef" Model="customer.Data"
+                         OnSubmit="(EditContext editContext) =>
+                                   {
+                                        var model = service.Single(customer.Data.Id);
+                                        model.Age = customer.Data.Age;
+                                        editContext.SetModel(model);
+                                   }"
+                         OnValidSubmit="(EditContext editContext) =>
+                                        {
+                                            Grid.SelectNextRow();
+                                            inputs[Grid.SelectedRowIndex.Value].Focus();
+                                        }">
+                <CaspianValidationValidator ValidatorType="typeof(CustomerService)" OnlyValidateOnSubmit />
+                <NumericTextBox @ref="inputRef" @bind-Value="customer.Data.Age" BindingType="BindingType.OnInput"
+                                @onkeyup="@((e) =>
+                                            {
+                                                if (e.Code == "Enter")
+                                                {
+                                                    forms[Grid.SelectedRowIndex.Value].Submit();
+                                                }
+                                            })" />
+            </CaspianForm>
+        </GridColumn>
+        <GridCommandColumns TEntity="Customer" />
+    </Columns>
+</Grid>
+
+
+@code
+{
+    IList<CaspianForm<Customer>> forms = new List<CaspianForm<Customer>>();
+    IList<NumericTextBox<int?>> inputs = new List<NumericTextBox<int?>>();
+
+    CaspianForm<Customer> formRef
+    {
+        set { forms.Add(value); }
+    }
+
+    NumericTextBox<int?> inputRef
+    {
+        set { inputs.Add(value); }
+    }
+
+}
+
+

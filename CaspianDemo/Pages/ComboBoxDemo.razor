@@ -1,0 +1,26 @@
+﻿@page "/ComboBoxDemo"
+@namespace CaspianDemo.Pages
+    <TabPanel style="height:500px">
+        <Tabs>
+            <TabPanelItem Title="Cascade">
+                <span>ProvinceId: @ProvinceId</span>
+                <ComboBox @bind-Value="ProvinceId" TEntity="Province" TValue="int?" DisplayTextExpression="t => t.Title + '(' + t.Cities.Count() + ')'"
+                          OrderByExpression="t => t.Title" Cascade="Continer" />
+                <ComboBox @ref="Continer.Cascade" @bind-Value="CityId" TEntity="City" TValue="int?" DisplayTextExpression="t => t.Title" OrderByExpression="t => t.Title" />
+            </TabPanelItem>
+            <TabPanelItem Title="Run On Server ">
+                <ComboBox @bind-Value="AreaId" TValue="int?" TEntity="Area" PageSize="30" Server DisplayTextExpression="t => t.City.Province.Title + ' ' + t.City.Title + ' ' + t.Title"
+                          OnDataBinding="@((query, str) =>
+                         {
+                             return query.Where(t => t.Title.Contains(str) || t.City.Title.Contains(str));
+                         })" />
+            </TabPanelItem>
+        </Tabs>
+    </TabPanel>
+@code
+{
+    int? ProvinceId;
+    int? CityId;
+    int? AreaId;
+    CascadContiner Continer = new CascadContiner();
+}

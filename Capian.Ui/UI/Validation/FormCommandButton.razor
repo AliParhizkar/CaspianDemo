@@ -1,0 +1,25 @@
+﻿@namespace Caspian.UI
+<div>
+    @{ var str = ForTest ?? "...";}
+    <button type="submit">@SumitButtonTitle</button>
+    <button type="reset">@ResetButtonTitle</button>
+</div>
+
+@code
+{
+    protected override void OnInitialized()
+    {
+        SumitButtonTitle = "ثبت";
+        ResetButtonTitle = "بازنشانی";
+        base.OnInitialized();
+    }
+
+    [CascadingParameter(Name = "ForTest")]
+    public string ForTest { get; set; }
+
+    [Parameter]
+    public string SumitButtonTitle { get; set; }
+
+    [Parameter]
+    public string ResetButtonTitle { get; set; }
+}

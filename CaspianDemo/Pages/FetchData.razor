@@ -1,0 +1,89 @@
+﻿@page "/FetchData"
+@inherits SimplePage<Customer>
+@inject CityService cityService;
+<table style="width:95%;margin:5px auto">
+    <tr>
+        <td>نام:</td>
+        <td>
+            <StringTextBox @bind-Value="SearchData.FName" Search />
+        </td>
+        <td>نام خانوادگی:</td>
+        <td>
+            <StringTextBox @bind-Value="SearchData.LName" Search />
+        </td>
+        <td>جنسیت</td>
+        <td style="width:200px">
+            <DropdownList @bind-Value="SearchData.Gender" Search />
+        </td>
+    </tr>
+    <tr>
+        <td>از سن:</td>
+        <td>
+            <NumericTextBox @bind-Value="FromAge" Search />
+        </td>
+        <td>
+            از سن:
+        </td>
+        <td>
+            <NumericTextBox @bind-Value="ToAge" Search />
+        </td>
+    </tr>
+</table>
+<Grid Title="مشتری" @ref="Grid" Search="SearchData" TEntity="Customer" WindowStyle="width:600px">
+    <Columns>
+        <GridColumn TEntity="Customer" Field="t => t.Age.Seprate3Digit()" @bind-From="FromAge" @bind-To="ToAge"/>
+        <GridColumn TEntity="Customer" Field="t => t.FName" />
+        <GridColumn TEntity="Customer" Field="t => t.LName" />
+        <GridColumn TEntity="Customer" Field="t => t.Gender.FaText()" />
+        <GridColumn TEntity="Customer" Field="t => t.MobileNumber.CallSeprator(' ')" Style="direction:ltr" />
+        @*<GridColumn Data="context" TEntity="Customer" Field="t => t.Area.Title" />
+            <GridColumn Data="context" TEntity="Customer" Field="t => t.City.Title" />*@
+
+        <GridColumn TEntity="Customer">
+            @{ var rowIndex = Grid.GetRowIndexById(t => t.Id == context.Data.Id).Value;}
+            <CaspianForm @ref="forms[rowIndex]" Model="context.Data"
+                         OnSubmit="(EditContext editContext) =>
+                                   {
+                                       var old = Grid.Service.Single(context.Data.Id);
+                                       old.Age = context.Data.Age;
+                                       editContext.SetModel(old);
+                                   }"
+                         OnValidSubmit="(EditContext editContext) =>
+                                        {
+                                            var con = new Context();
+                                            var old = con.Customers.Single(t => t.Id == context.Data.Id);
+                                            old.Age = context.Data.Age;
+                                            con.SaveChanges();
+                                            Grid.SelectNextRow();
+                                            selectedRowId = Grid.SelectedRowId;
+                                        }">
+                <CaspianValidationValidator ValidatorType="typeof(CustomerService)" OnlyValidateOnSubmit />
+                <NumericTextBox @bind-Value="context.Data.Age" BindingType="BindingType.OnInput"
+                                Focused="selectedRowId == context.Data.Id"
+                                @onfocus="() =>
+                                          {
+                                              selectedRowId = null;
+                                          }"
+                                @onkeyup="@((e) =>
+                                {
+                                    if (e.Key == "Enter")
+                                    {
+                                        forms[rowIndex].Submit();
+                                    }
+                                })" />
+            </CaspianForm>
+        </GridColumn>
+        <GridCommandColumns Data="context.Data" TEntity="Customer" />
+    </Columns>
+</Grid>
+
+
+@code
+{
+    CaspianForm<Customer>[] forms = new CaspianForm<Customer>[20];
+    int? selectedRowId = null;
+    object FromAge;
+    object ToAge;
+}
+
+

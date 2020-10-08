@@ -1,0 +1,16 @@
+﻿@page "/stopPropagation"
+@namespace CaspianDemo.Pages
+<button 
+        @onclick="() =>
+                  {
+                      WindowStatus = WindowStatus.Open;
+                  }">Open</button>
+<Window Title="اصلی" Style="width:400px;height:300px" @bind-Status="WindowStatus">
+    <Content>
+
+    </Content>
+</Window>
+@code
+{
+    WindowStatus WindowStatus = WindowStatus.Close;
+}

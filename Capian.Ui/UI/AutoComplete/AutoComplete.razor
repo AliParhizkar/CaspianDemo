@@ -1,0 +1,213 @@
+﻿@namespace Caspian.UI
+@typeparam TValue
+@implements IAutoCompleteValueInitializer
+@*@implements ILookupDisplayExpression*@
+
+
+< />
+
+
+@{
+    var attrs = new Dictionary<string, object>();
+    if (Id.HasValue())
+    {
+        attrs.Add("id", Id.Replace('.', '_'));
+        attrs.Add("name", Id.Replace('.', '_'));
+    }
+    if (SearchState.DisplayExpression != null)
+    {
+        if (Value != null)
+        {
+            var numValue = Convert.ToInt32(Value);
+            if (numValue > 0)
+            {
+                if (!Value.Equals(Oldvalue))
+                {
+                    var service = SearchState.Service;
+                    var method = service.GetType().GetMethod("GetAll");
+                    var source = method.Invoke(service, new object[] { null }) as IQueryable;
+                    var type = source.Expression.Type.GetGenericArguments()[0];
+                    var param = Expression.Parameter(type, "t");
+                    var pKey = type.GetPrimaryKey();
+                    Expression expr = Expression.Property(param, pKey);
+                    expr = Expression.Equal(expr, Expression.Constant(Convert.ChangeType(Value, pKey.PropertyType)));
+                    expr = Expression.Lambda(expr, param);
+                    Text = Convert.ToString(source.Where(expr).Select(SearchState.DisplayExpression).FirstOrDefault());
+                    Oldvalue = Value;
+
+                    WindowStatus = WindowStatus.Close;
+                }
+            }
+        }
+        else if (SearchStr != Text)
+        {
+            WindowStatus = WindowStatus.Open;
+            //SearchState?.Grid?.SelectFirstPage();
+            //SearchState?.Grid?.SelectFirstRow();
+        }
+        SearchStr = Text;
+    }
+
+}
+<div class="t-widget t-numerictextbox">
+    <input @ref="Input" @bind-value="Text" @bind-value:event="oninput" style="direction:rtl"
+           @onkeyup="@((KeyboardEventArgs e) =>
+                        {
+                            switch(e.Code)
+                            {
+                                case "ArrowUp":
+                                    SearchState?.Grid?.SelectPrevRow();
+                                    break;
+                                case "ArrowDown":
+                                    SearchState?.Grid?.SelectNextRow();
+                                    break;
+                                case "Enter":
+                                    if (SearchState?.Grid?.SelectedRowId != null)
+                                        SetValue(SearchState.Grid.SelectedRowId.Value);
+                                   break;
+                                case "Escape":
+                                    WindowStatus = WindowStatus.Close;
+                                    break;
+                                case "Backspace":
+                                    if (!Value.Equals(default(TValue)))
+                                    {
+                                        Text = "";
+                                        Value = default(TValue);
+                                        Oldvalue = Value;
+                                        ValueChanged.InvokeAsync(default(TValue));
+                                    }
+                                    SearchStr = Text;
+                                    WindowStatus = WindowStatus.Open;
+                                    SearchState?.Grid?.SelectFirstPage();
+                                    SearchState?.Grid?.SelectFirstRow();
+                                    break;
+                                default:
+                                    SearchState?.Grid?.SelectFirstPage();
+                                    SearchState?.Grid?.SelectFirstRow();
+                                    break;
+                           }
+                       })" class="t-input" />
+    @*<a href="javascript:void(0)">
+        <span class="t-advancesearchicon"></span>
+    </a>*@
+</div>
+<div style="width:650px;" @ref="SearchForm" class="t-HelpWindow">
+    <div class="t-header">
+        <span class="t-window-title">جستجوی مشتری</span>
+        <span class="t-window-action t-link">
+            <i class="fa fa-close"></i>
+        </span>
+    </div>
+    <div class="t-content">
+        <CascadingValue Name="LookupStringSearchValue" Value="SearchStr">
+            <CascadingValue Name="AutoComplateState" Value="SearchState">
+                @ChildContent
+            </CascadingValue>
+        </CascadingValue>
+    </div>
+</div>
+@code
+{
+    string Text;
+    SearchState SearchState;
+
+    [Parameter, JsonIgnore]
+    public RenderFragment ChildContent { get; set; }
+
+    [Parameter, JsonProperty("bindingType")]
+    public BindingType BindingType { get; set; } = BindingType.OnInput;
+
+    [Inject, JsonIgnore]
+    protected IJSRuntime jsRuntime { get; set; }
+
+    [JsonIgnore]
+    private ElementReference SearchForm;
+
+    [JsonIgnore]
+    private ElementReference Input;
+
+    [Parameter, JsonIgnore]
+    public TValue Value { get; set; }
+
+    private TValue Oldvalue { get; set; }
+
+    [Parameter, JsonIgnore]
+    public EventCallback<TValue> ValueChanged { get; set; }
+
+    [JsonIgnore]
+    private string SearchStr { get; set; }
+
+    [JsonIgnore]
+    public string Id { get; set; }
+
+    [Parameter, JsonProperty("openOnFocus")]
+    public bool OpenOnFocus { get; set; }
+
+    [Parameter, JsonProperty("closeOnBlur")]
+    public bool CloseOnBlur { get; set; }
+
+    [Parameter, JsonProperty("minCharForSearch")]
+    public short? MinCharForSearch { get; set; }
+
+    [JsonProperty("type")]
+    public string TextBoxType { get; private set; } = "string";
+
+    [JsonProperty("status")]
+    public WindowStatus WindowStatus { get; set; }
+
+    protected override void OnInitialized()
+    {
+        SearchState = new SearchState();
+        WindowStatus = WindowStatus.Close;
+        base.OnInitialized();
+    }
+
+    protected override void OnParametersSet()
+    {
+        SearchState.Value = Value;
+        SearchState.AutoComplete = this;
+
+        base.OnParametersSet();
+    }
+
+    protected string ConvertToJson()
+    {
+        var setting = new JsonSerializerSettings()
+        {
+            NullValueHandling = NullValueHandling.Ignore,
+            DefaultValueHandling = DefaultValueHandling.Ignore
+        };
+        return JsonConvert.SerializeObject(this, setting);
+    }
+
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        var json = this.ConvertToJson();
+        jsRuntime.InvokeVoidAsync("$.telerik.bindLookup", Input, SearchForm, json);
+        if (firstRender)
+        {
+            var data = new JsLookupValueSetter(this);
+            jsRuntime.InvokeVoidAsync("$.telerik.bindLookupValue", DotNetObjectReference.Create(data), Input);
+        }
+        return base.OnAfterRenderAsync(firstRender);
+    }
+
+    public void SetValue(long id)
+    {
+        if (ValueChanged.HasDelegate)
+        {
+            var type = typeof(TValue);
+            if (type.IsNullableType())
+                type = Nullable.GetUnderlyingType(type);
+            var tempValue = Convert.ChangeType(id, type);
+            Value = (TValue)tempValue;
+            WindowStatus = WindowStatus.Close;
+            ValueChanged.InvokeAsync(Value);
+        }
+    }
+
+    public void SetSearchStringValue(string searchStr)
+    {
+        //StateHasChanged();
+    }
+}

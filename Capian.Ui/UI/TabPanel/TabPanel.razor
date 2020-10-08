@@ -1,0 +1,101 @@
+﻿@namespace Caspian.UI
+
+    <CascadingValue Value="State" Name="TabPanelStateService">
+        @if (State.TabPanelState == TabPanelState.NotInitialized)
+        {
+            @Tabs
+            State.TabPanelState = TabPanelState.Initialized;
+        }
+        else
+        {
+        <div style="@Style" class="t-widget t-tabstrip t-header">
+            <ul class="t-reset t-tabstrip-items">
+                @{ var index = 1;}
+                @foreach (var item in State.Data)
+                {
+                    var className = "t-item ";
+                    if (index == TabIndex)
+                        className += "t-state-active";
+                    else
+                        className += "t-state-default";
+                    <li class="@className">
+                        @if (index == TabIndex)
+                        {
+                            <span class="t-link">@item.Title</span>
+                        }
+                        else
+                        {
+                            int tabIndex = index;
+                            <span class="t-link"
+                                  @onclick="() =>
+                                              {
+                                                  TabIndex = tabIndex;
+                                                  State.Index = 1;
+                                                  State.SelectedIndex = tabIndex;
+                                                  this.TabIndexChanged.InvokeAsync(tabIndex);
+                                              }">@item.Title</span>
+                                        }
+                        @if (item.Closeable)
+                        {
+                            <span class="t-close"></span>
+                        }
+                    </li>
+                    index++;
+                }
+            </ul>
+            <div class="t-padd"></div>
+            @Tabs
+        </div>
+        }
+    </CascadingValue>
+
+@code 
+{
+    TabPanelStateService State;
+
+    [Parameter]
+    public int TabIndex { get; set; }
+
+    [Parameter]
+    public string Style { get; set; }
+
+    [Parameter]
+    public bool LoadOnDemand { get; set; }
+
+    [Parameter]
+    public EventCallback<int> TabIndexChanged { get; set; }
+
+    [Parameter]
+    public RenderFragment Tabs { get; set; }
+
+    [Parameter]
+    public bool AddButton { get; set; }
+
+    protected override void OnInitialized()
+    {
+        if (TabIndex == 0)
+            TabIndex = 1;
+        if (State == null)
+            State = new TabPanelStateService();
+        base.OnInitialized();
+    }
+
+    protected override void OnParametersSet()
+    {
+        State.Index = 1;
+        base.OnParametersSet();
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        State.SelectedIndex = TabIndex;
+        State.LoadOnDemand = LoadOnDemand;
+        if (State.TabPanelState == TabPanelState.Initialized)
+        {
+            State.Index = 1;
+            State.TabPanelState = TabPanelState.Created;
+            StateHasChanged();
+        }
+        base.OnAfterRender(firstRender);
+    }
+}

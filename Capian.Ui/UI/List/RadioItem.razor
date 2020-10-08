@@ -1,0 +1,68 @@
+﻿@namespace Caspian.UI
+@typeparam TValue
+@{
+    <span class="@className">
+        <span @attributes="attrs" class="t-icon"></span>
+        @if (!HideTitle)
+        {
+            <span class="t-title" @onclick="OnMouseClick">@Title</span>
+        }
+    </span>
+}
+@code
+{
+    string className = "t-radio";
+    Dictionary<string, object> attrs;
+
+    private void OnMouseClick()
+    {
+        RadioLis.ValueChanged.InvokeAsync(Value).Wait();
+    }
+
+    protected override Task OnParametersSetAsync()
+    {
+        className = "t-radio";
+        if (RadioLis.Value.Equals(Value))
+            className += " t-selected";
+        else if (Disabled)
+            className += " t-disabled";
+        else
+            className += " t-default";
+        attrs = new Dictionary<string, object>();
+        @if (!Disabled)
+        {
+            attrs.Add("onclick", EventCallback.Factory.Create<MouseEventArgs>(this, async (MouseEventArgs e) =>
+                {
+                    await RadioLis.ValueChanged.InvokeAsync(Value);
+                    if (RadioLis.OnChangeValue.HasDelegate)
+                        await RadioLis.OnChangeValue.InvokeAsync(null);
+                }));
+        }
+        return base.OnParametersSetAsync();
+    }
+
+    [Parameter]
+    public RadioList<TValue> RadioLis { get; set; }
+
+    [Parameter]
+    public TValue Value { get; set; }
+
+    [Parameter]
+    public string Title { get; set; }
+
+    [Parameter]
+    public bool HideTitle { get; set; }
+
+    [Parameter]
+    public bool Disabled { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        if (!Title.HasValue())
+        {
+            if (typeof(TValue).IsEnum && Value != null)
+                Title = (Value as Enum).FaText();
+        }
+        base.OnParametersSet();
+    }
+}

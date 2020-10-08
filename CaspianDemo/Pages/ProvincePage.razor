@@ -1,0 +1,90 @@
+﻿@page "/BaseInfo"
+@using Caspian.Common.Attributes
+@namespace CaspianDemo.Pages
+@inherits SimplePage<BaseDefination>
+    <div>
+        <div style="width:calc(100% - 200px)" class="col-ld-10 col-md-10">
+            <div style="width:85%;margin:0 auto;">
+                <fieldset class="t-widget">
+                    <div class="t-formtitle" style="background-color:#315f5f;height:50px;padding:12px;border-radius:15px;margin:2px 10px 15px 10px"><span style="color:white;font:bold;font-size:14px;">@(dics[selectedItemValue])</span></div>
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-ld-1 col-md-1">
+
+                            </div>
+                            <div class="col-ld-1 col-md-1">
+                                <label>عنوان</label>
+                            </div>
+                            <div class="col-ld-9 col-md-9">
+                                <StringTextBox @bind-Value="SearchData.Title" />
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+            <Grid @ref="Grid" @bind-Data="GridData" TEntity="BaseDefination" Search="SearchData" Title="استان" WindowStyle="width:650px"
+                  OnOpen="() => { GridData.BaseDefinationType = selectedItemValue; }">
+                <Columns>
+                    <GridColumn TEntity="BaseDefination" Field="@(t => t.Title)" />
+                </Columns>
+                <EditFormTemplate>
+                    <table style="width:90%;margin:0 auto">
+                        <tr>
+                            <td>
+                                <label>عنوان</label>
+                            </td>
+                            <td>
+                                <StringTextBox @bind-Value="GridData.Title" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <FormCommandButton />
+                            </td>
+                        </tr>
+                    </table>
+                </EditFormTemplate>
+            </Grid>
+        </div>
+        <div style="width:200px;overflow:auto" class="col-ld-2 col-md-2 panelbar">
+            <ul>
+                @{
+                    foreach (var item in dics)
+                    {
+                        var className = "t-item";
+                        if (item.Key == selectedItemValue)
+                            className += " t-selected";
+                        <li class="@className" 
+                            @onclick="() => {
+                                          SetBaseDefination(item.Key);
+                                      }">@item.Value</li>
+                    }
+                }
+            </ul>
+        </div>
+    </div>
+
+    @code
+{
+        Dictionary<BaseDefinationType, string> dics;
+        BaseDefinationType selectedItemValue;
+
+        void SetBaseDefination(BaseDefinationType value)
+        {
+            selectedItemValue = value;
+            SearchData.BaseDefinationType = value;
+        }
+
+        protected override void OnInitialized()
+        {
+            dics = new Dictionary<BaseDefinationType, string>();
+            foreach (var field in typeof(BaseDefinationType).GetFields().Where(t => !t.IsSpecialName))
+            {
+                var attr = field.GetCustomAttribute<EnumFieldAttribute>();
+                var value = Convert.ToInt32(field.GetValue(null));
+                dics.Add((BaseDefinationType)value, attr == null ? field.Name : attr.DisplayName);
+            }
+            SetBaseDefination(BaseDefinationType.FileType);
+            base.OnInitialized();
+        }
+    }

@@ -1,0 +1,41 @@
+﻿@namespace Caspian.UI
+
+@if (State.TabPanelState == TabPanelState.Created)
+{
+    var className = "t-content ";
+    if (State.SelectedIndex == State.Index)
+        className += "t-state-active";
+    <div class="@className">
+        @ChildContent
+    </div>
+    State.Index++;
+}
+
+@code 
+{ 
+
+    [CascadingParameter(Name = "TabPanelStateService")]
+    public TabPanelStateService State { get; set; }
+
+    [Parameter]
+    public string Title { get; set; }
+
+    [Parameter]
+    public bool Disable { get; set; }
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    protected override void OnInitialized()
+    {
+        if (State.TabPanelState == TabPanelState.Initialized)
+        {
+            State.Data.Add(new TabPanelStateData()
+            {
+                Title = Title,
+                Disabled = Disable
+            });
+        }
+        base.OnInitialized();
+    }
+}

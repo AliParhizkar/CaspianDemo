@@ -1,0 +1,40 @@
+﻿@namespace Caspian.UI
+@typeparam TEntity
+
+@code
+{
+    string message;
+    protected ConfirmMessage ConfirmMessage;
+
+    [Inject]
+    protected IJSRuntime jsRuntime { get; set; }
+
+    public Grid<TEntity> Grid { get; set; }
+
+    public TEntity GridData { get; set; } = Activator.CreateInstance<TEntity>();
+
+    public TEntity SearchData { get; set; } = Activator.CreateInstance<TEntity>();
+
+    public MyContext DbContext { get; set; }
+
+    public void ShowMessage(string msg)
+    {
+        message = msg;
+    }
+
+    public async Task<bool> Confirm(string message)
+    {
+        return await ConfirmMessage.Confirm(message);
+    }
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (message.HasValue())
+        {
+            await jsRuntime.InvokeVoidAsync("$.telerik.showMessage", message);
+            message = null;
+        }
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+}

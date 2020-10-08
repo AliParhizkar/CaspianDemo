@@ -1,0 +1,111 @@
+﻿@namespace Caspian.UI
+@inherits BaseInput<string>
+
+    <div class="@className" style="@Style">
+
+        @if (MultiLine)
+        {
+            <textarea @ref="input" @attributes="Attributes">@Value</textarea>
+        }
+        else
+        {
+            <input @ref="input" @attributes="Attributes" autocomplete="off" />
+        }
+    </div>
+@code
+{
+    string className;
+    protected override Task OnParametersSetAsync()
+    {
+        className = "t-widget";
+        if (MultiLine)
+            className += " t-multitextbox";
+        else
+            className += " t-stringtextbox";
+        if (Disabled)
+            className += " t-state-disabled";
+        else if (ErrorMessage != null)
+            className += " t-state-error";
+        if (MaxLength.HasValue)
+            Attributes.Add("maxlength", MaxLength);
+        if (OnClick.HasDelegate)
+            Attributes.Add("onclick", OnClick);
+        if (OnBlur.HasDelegate)
+            Attributes.Add("onblur", OnBlur);
+        if (MultiLine)
+        {
+            if (Cols.HasValue)
+                Attributes.Add("cols", Cols);
+            if (Rows.HasValue)
+                Attributes.Add("rows", Rows);
+        }
+        else
+        {
+            if (Value.HasValue())
+                Attributes["value"] = Value;
+            else
+                Attributes.Remove("value");
+        }
+
+        if (Disabled)
+            Attributes["disabled"] = "disabled";
+        else
+            Attributes.Remove("disabled");
+        Attributes["class"] = "t-input";
+        if (Id.HasValue())
+        {
+            var id = Id.Replace('.', '_');
+            Attributes["id"] = id;
+            Attributes["name"] = id;
+        }
+        if (InputAttributes != null)
+        {
+            foreach(var item in InputAttributes)
+                Attributes[item.Key] = item.Value;
+        }
+        return base.OnParametersSetAsync();
+    }
+
+    [Parameter, JsonIgnore]
+    public int? MaxLength { get; set; }
+
+    [Parameter, JsonProperty("multiLine")]
+    public bool MultiLine { get; set; }
+
+    [Parameter, JsonIgnore]
+    public int? Cols { get; set; }
+
+    [Parameter, JsonIgnore]
+    public int? Rows { get; set; }
+
+    public void Focuse()
+    {
+        Focused = true;
+        StateHasChanged();
+    }
+
+    [JsonProperty("type")]
+    public string Type { get; set; } = "string";
+
+    protected override void OnInitialized()
+    {
+        if (Id == null)
+            Id = "";
+        base.OnInitialized();
+    }
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        var json = this.ConvertToJson();
+        await jsRuntime.InvokeVoidAsync("$.telerik.bindControl", input, json, UiControlType.TextBox);
+        if (Data == null)
+            ErrorMessage = null;
+        if (firstRender)
+        {
+            var data = new JsValueSetter(this);
+            await jsRuntime.InvokeVoidAsync("$.telerik.bindValue", DotNetObjectReference.Create(data), input, UiControlType.TextBox);
+        }
+        Focused = false;
+        await base.OnAfterRenderAsync(firstRender);
+    }
+}

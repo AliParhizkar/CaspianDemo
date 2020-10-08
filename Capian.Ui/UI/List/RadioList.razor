@@ -1,0 +1,58 @@
+﻿@namespace Caspian.UI
+@typeparam TValue
+<div class="t-radios">
+    @if (RadioItems == null)
+    {
+        foreach(var item in dic)
+        {
+            <RadioItem RadioLis="this" Value="item.Key" Title="@item.Value" />
+        }
+    }
+    else
+    {
+        @RadioItems.Invoke(this)
+    }
+</div>
+@code
+{
+    Dictionary<TValue, string> dic;
+    private bool IsLoad;
+    protected override void OnInitialized()
+    {
+        if (RadioItems == null)
+        {
+            var type = typeof(TValue);
+            if (type.IsEnum)
+            {
+                Enum enu = (Enum)Activator.CreateInstance(type);
+                dic = enu.GetEnumFields<TValue>();
+            }
+        }
+        base.OnInitialized();
+    }
+
+    [Parameter]
+    public EventCallback OnChangeValue { get; set; }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (!IsLoad)
+        {
+            IsLoad = true;
+            //StateHasChanged();
+        }
+        base.OnAfterRender(firstRender);
+    }
+
+    [Parameter]
+    public TValue Value { get; set; }
+
+    [Parameter]
+    public EventCallback<TValue> ValueChanged { get; set; }
+
+    [Parameter]
+    public Expression<Func<TValue>> ValueExpression { get; set; }
+
+    [Parameter]
+    public RenderFragment<RadioList<TValue>> RadioItems { get; set; }
+}

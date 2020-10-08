@@ -1,0 +1,41 @@
+﻿@namespace Caspian.UI
+<span @attributes="attrs" class="c-picturebox" @ref="span">
+
+</span>
+@code
+{
+    ElementReference span;
+    Dictionary<string, object> attrs = new Dictionary<string, object>();
+
+    [Inject]
+    IJSRuntime jsRuntime { get; set; }
+
+    [Parameter]
+    public string Style { get; set; }
+
+    [Parameter]
+    public byte[] Value { get; set; }
+
+    [Parameter]
+    public string StringValue { get; set; }
+
+    [Parameter]
+    public System.IO.Stream StreamValue { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        if (Style.HasValue())
+            attrs["style"] = Style;
+        else
+            attrs.Remove("style");
+        base.OnParametersSet();
+    }
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (StringValue == null && Value != null)
+            StringValue = Convert.ToBase64String(Value);
+        await jsRuntime.InvokeVoidAsync("$.telerik.bindImage", span, StringValue);
+        await base.OnAfterRenderAsync(firstRender);
+    }
+}

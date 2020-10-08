@@ -1,0 +1,56 @@
+﻿@namespace Caspian.UI
+@typeparam TEntity
+@if (Grid != null && showForm)
+{
+    <CascadingValue Name="InFormTemplate" Value="this">
+        <CaspianForm Model="Grid.Data" OnValidSubmit="SaveData">
+            <CaspianValidationValidator ValidatorType="Service.GetType()" />
+            @ChildContent(Grid.Data)
+        </CaspianForm>
+    </CascadingValue>
+}
+
+
+@code
+{
+    bool showForm;
+
+    [Parameter]
+    public RenderFragment<TEntity> ChildContent { get; set; }
+
+    [CascadingParameter(Name = "MasterDetailPageState")]
+    public MasterDetailPageState PageState { get; set; }
+
+    public async Task Clear()
+    {
+        var data = Activator.CreateInstance<TEntity>();
+        await Grid.DataChanged.InvokeAsync(data);
+        showForm = false;
+        //form.EditContext.SetModel(data);
+    }
+
+    [Parameter]
+    public Grid<TEntity> Grid { get; set; }
+
+    [JsonIgnore, Inject]
+    public ISimpleService<TEntity> Service { get; set; }
+
+    public async void SaveData()
+    {
+        Grid.SaveData(null);
+        await Clear();
+    }
+
+    protected override void OnParametersSet()
+    {
+        if (PageState?.MasterIdInfo != null && Grid != null)
+            PageState.MasterIdInfo.SetValue(Grid.Data, PageState.MasterId);
+        base.OnParametersSet();
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        showForm = true;
+        base.OnAfterRender(firstRender);
+    }
+}

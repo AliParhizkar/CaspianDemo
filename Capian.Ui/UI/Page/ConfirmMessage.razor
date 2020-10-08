@@ -1,0 +1,70 @@
+﻿@namespace Caspian.UI
+<Window @bind-Status="Status" Style="@Style">
+    <Content>
+        <div>
+            <span>@Message</span>
+        </div>
+        <div style="text-align:center">
+            <button @onclick="() => { UpdateConfirmResult(true); }">@YesButtonTitle</button> 
+            <button @onclick="() => { UpdateConfirmResult(false); }">@NoButtonTitle</button>
+        </div>
+    </Content>
+</Window>
+
+@code 
+{
+    WindowStatus Status = WindowStatus.Close;
+    bool? ConfirmResult = null;
+
+    void UpdateConfirmResult(bool result)
+    {
+        ConfirmResult = result;
+    }
+
+    protected override void OnInitialized()
+    {
+        YesButtonTitle = "بله";
+        NoButtonTitle = "خیر";
+        base.OnInitialized();
+    }
+
+    [Inject]
+    IJSRuntime jsRuntime { get; set; }
+
+    [Parameter]
+    public string Message { get; set; }
+
+    [Parameter]
+    public string YesButtonTitle { get; set; }
+
+    [Parameter]
+    public string NoButtonTitle { get; set; }
+
+    [Parameter]
+    public string Style { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        if (!Style.HasValue())
+            Style = "width:500px;";
+        base.OnParametersSet();
+    }
+
+    public async Task<bool> Confirm(string message = null)
+    {
+        ConfirmResult = null;
+        if (message.HasValue())
+            Message = message;
+        Status = WindowStatus.Open;
+        StateHasChanged();
+        var task = Task.Run<bool>(async () =>
+        {
+            while (ConfirmResult == null)
+                await Task.Delay(100);
+            Status = WindowStatus.Close;
+            await InvokeAsync(StateHasChanged);
+            return ConfirmResult.Value;
+        });
+        return await task;
+    }
+}

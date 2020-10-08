@@ -1,0 +1,576 @@
+﻿@namespace Caspian.UI
+@typeparam TEntity
+@typeparam TValue
+@implements IInputValueInitializer
+@implements IListValueInitializer
+@implements IEnableLoadData
+@implements ICascading
+@if (Server)
+{
+    <div class="t-widget t-combobox">
+        <div class="@className">
+            <input @ref="input" @attributes="attrs" @bind-value="text" @bind-value:event="oninput"
+                   @onkeydown="OnNochangeKeyDown" @onkeyup="OnChangeKeyUp" type="text" class="t-input form-control" />
+            <span @onclick="() =>
+                            {
+                                if (Status == WindowStatus.Close)
+                                {
+                                    if (Value != null && !Value.Equals(default(TValue)))
+                                        text = null;
+                                    Status = WindowStatus.Open;
+                                }
+                                else
+                                    Status = WindowStatus.Close;
+
+                            }" class="t-select t-header">
+                <i class="t-icon t-arrow-down fa fa-caret-down"></i>
+            </span>
+        </div>
+        <div class="t-animation-container">
+            <div class="t-popup t-group">
+                <ul class="t-reset">
+                    @{ int index = 0;}
+                    @foreach (var item in Items)
+                    {
+                        string className = "t-item";
+                        if (SelectedIndex == index || index == 0 && SelectedIndex == -1)
+                            className += " t-state-selected";
+                        <li @onclick="async () =>
+                                      {
+                                          await SetValue(item.Value);
+                                          text = item.Text;
+                                          Status = WindowStatus.Close;
+                                          HasFocus = true;
+                                      }" class="@className">
+                            @if (ChildContent == null)
+                            {
+                                <span>@item.Text</span>
+                            }
+                            else
+                            {
+
+                            }
+                        </li>
+                        index++;
+                    }
+                </ul>
+            </div>
+
+        </div>
+    </div>
+}
+else
+{
+    <div class="t-widget t-combobox">
+        <div class="@className">
+            <input @attributes="attrs" type="text" class="t-input form-control" />
+            <span class="t-select t-header">
+                <i class="t-icon t-arrow-down fa fa-caret-down"></i>
+            </span>
+        </div>
+        <input @ref="input" @attributes="inputAttrs" type="text" style="display:none;" />
+    </div>
+}
+
+@code
+{
+    bool LoadData;
+    int pageNumber = 1;
+    bool multiSelect;
+    int total;
+    string className;
+    string text;
+    string oldText;
+    Expression cascadExpression;
+    Dictionary<string, object> attrs;
+    Dictionary<string, object> inputAttrs;
+    WindowStatus Status = WindowStatus.Close;
+    WindowStatus oldStatus = WindowStatus.Close;
+    string _FieldName;
+    ValidationMessageStore _messageStore;
+
+    [Parameter, JsonIgnore]
+    public object Data { get; set; }
+
+    [CascadingParameter, JsonIgnore]
+    public EditContext CurrentEditContext { get; set; }
+
+    [JsonProperty("errorMessage")]
+    public string ErrorMessage { get; set; }
+
+    [Inject, JsonIgnore]
+    public FormAppState FormAppState { get; set; }
+
+    async void OnNochangeKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Code == "ArrowDown" || e.Code == "ArrowUp")
+        {
+            if (e.Code == "ArrowDown")
+            {
+                if (SelectedIndex == -1)
+                    SelectedIndex = 0;
+                if (Items.Count - 1 > SelectedIndex)
+                    SelectedIndex++;
+                else
+                    SelectedIndex = 0;
+            }
+            else
+            {
+                if (SelectedIndex > 0)
+                    SelectedIndex--;
+            }
+        }
+        else if (e.Key == "Enter")
+        {
+            if (SelectedIndex == -1)
+                SelectedIndex = 0;
+            if (Items.Count > SelectedIndex)
+            {
+                await SetValue(Items[SelectedIndex].Value);
+                text = Items[SelectedIndex].Text;
+                Status = WindowStatus.Close;
+            }
+        }
+    }
+
+    async void OnChangeKeyUp(KeyboardEventArgs e)
+    {
+        if (e.Code == "Backspace")
+        {
+            if (Value != null && !Value.Equals(default(TValue)))
+            {
+                text = "";
+                await SetValue(default(TValue));
+                Status = WindowStatus.Open;
+                pageNumber = 1;
+            }
+        }
+        var array = new string[] { "ArrowDown", "ArrowUp", "Enter" };
+        if (text != oldText && !array.Contains(e.Code))
+        {
+            SelectedIndex = 0;
+            pageNumber = 1;
+            LoadData = true;
+            DataBinding();
+            oldText = text;
+        }
+    }
+
+    protected override void OnInitialized()
+    {
+        LoadData = true;
+        if (CurrentEditContext != null && ValueExpression != null)
+        {
+            _FieldName = (ValueExpression.Body as MemberExpression).Member.Name;
+            _messageStore = new ValidationMessageStore(CurrentEditContext);
+            CurrentEditContext.OnValidationRequested += CurrentEditContext_OnValidationRequested;
+            CurrentEditContext.OnFieldChanged += CurrentEditContext_OnFieldChanged;
+        }
+        base.OnInitialized();
+    }
+
+    void DataInitialize()
+    {
+        SelectedIndex = -1;
+        var index = 0;
+        DataBinding();
+        foreach (var item in Items)
+        {
+            if (Value != null && Value.ToString() == item.Value)
+                SelectedIndex = index;
+            index++;
+        }
+    }
+
+    protected override Task OnParametersSetAsync()
+    {
+        className = "t-dropdown-wrap t-state-default";
+        attrs = new Dictionary<string, object>();
+        DataBinding();
+        SelectedIndex = -1;
+        var index = 0;
+        foreach (var item in Items)
+        {
+            if (Value != null && Value.ToString() == item.Value)
+            {
+                SelectedIndex = index;
+                break;
+            }
+            index++;
+        }
+        if (Server)
+        {
+            if (SelectedIndex >= 0 && Items != null && SelectedIndex < Items.Count)
+                text = Items[SelectedIndex].Text;
+            if (Id.HasValue())
+            {
+                attrs.Add("id", Id.Replace('.', '_'));
+                attrs.Add("name", Id.Replace('.', '_'));
+            }
+        }
+        else
+        {
+            if (SelectedIndex >= 0 && Items != null && SelectedIndex < Items.Count)
+                attrs["value"] = Items[SelectedIndex].Text;
+            inputAttrs = new Dictionary<string, object>();
+            if (Id.HasValue())
+            {
+                inputAttrs.Add("id", Id.Replace('.', '_'));
+                inputAttrs.Add("name", Id.Replace('.', '_'));
+            }
+        }
+        return base.OnParametersSetAsync();
+    }
+
+    private void CurrentEditContext_OnFieldChanged(object sender, FieldChangedEventArgs e)
+    {
+        if (Data == null)
+        {
+            if (e.FieldIdentifier.FieldName == _FieldName)
+            {
+                var result = CurrentEditContext.GetValidationMessages(e.FieldIdentifier);
+                ErrorMessage = result.FirstOrDefault();
+            }
+        }
+        else
+        {
+            var detailsType = Data.GetType();
+            foreach (var info in CurrentEditContext.Model.GetType().GetProperties())
+            {
+                if (info.PropertyType.IsGenericType && info.PropertyType.GetGenericArguments()[0] == detailsType)
+                {
+                    dynamic detailsValue = info.GetValue(CurrentEditContext.Model);
+                    if (detailsValue != null)
+                    {
+                        var index = 0;
+                        foreach (var item in detailsValue)
+                        {
+                            if (item == Data)
+                            {
+                                var fieldName = info.Name + '[' + index + "]." + _FieldName;
+                                var fieldIdentifier = new FieldIdentifier(CurrentEditContext.Model, fieldName);
+                                var result = CurrentEditContext.GetValidationMessages(fieldIdentifier);
+                                ErrorMessage = result.FirstOrDefault();
+                                break;
+                            }
+                            index++;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private void CurrentEditContext_OnValidationRequested(object sender, ValidationRequestedEventArgs e)
+    {
+        _messageStore = new ValidationMessageStore(CurrentEditContext);
+        var field = CurrentEditContext.GetType().GetField("_fieldStates", BindingFlags.NonPublic | BindingFlags.Instance);
+        var states = (field.GetValue(CurrentEditContext) as System.Collections.IDictionary);
+        foreach (dynamic state in states)
+        {
+            var fieldName = state.Key.FieldName as string;
+            if (fieldName == _FieldName)
+            {
+                var fieldIdentifier = new FieldIdentifier(CurrentEditContext.Model, fieldName);
+                var result = CurrentEditContext.GetValidationMessages(fieldIdentifier);
+                ErrorMessage = result.FirstOrDefault();
+                if (ErrorMessage == null)
+                    break;
+            }
+            else if (fieldName.EndsWith("]." + _FieldName))
+            {
+                var mainField = fieldName.Substring(0, fieldName.Length - _FieldName.Length);
+                mainField = mainField.Split('[')[0];
+                var model = CurrentEditContext.Model;
+                var details = model.GetType().GetProperty(mainField).GetValue(model) as System.Collections.IEnumerable;
+                var index = 0;
+                foreach (var detail in details)
+                {
+                    if (detail == Data)
+                    {
+                        var finalField = mainField + '[' + index + "]." + _FieldName;
+                        var fieldIdentifier = new FieldIdentifier(CurrentEditContext.Model, finalField);
+                        var result = CurrentEditContext.GetValidationMessages(fieldIdentifier);
+                        ErrorMessage = result.FirstOrDefault();
+                    }
+                    index++;
+                }
+                break;
+            }
+        }
+        if (ErrorMessage == null)
+            FormAppState.AllControlsIsValid = false;
+        if (ErrorMessage != null && FormAppState.AllControlsIsValid)
+        {
+            FormAppState.AllControlsIsValid = false;
+            Focused = true;
+        }
+    }
+
+    [Parameter, JsonProperty("focused")]
+    public bool Focused { get; set; }
+
+    [JsonProperty("hasFocus")]
+    public bool HasFocus { get; private set; }
+
+    [Parameter, JsonIgnore]
+    public bool Server { get; set; }
+
+    [Parameter, JsonIgnore]
+    public bool Pageable { get; set; } = true;
+
+    [Parameter, JsonIgnore]
+    public int PageSize { get; set; } = 30;
+
+    [Parameter, JsonIgnore]
+    public RenderFragment<TEntity> ChildContent { get; set; }
+
+    [Parameter, JsonIgnore]
+    public Func<IQueryable<TEntity>, string, IQueryable<TEntity>> OnDataBinding { get; set; }
+
+    [Parameter, JsonIgnore]
+    public EnableLoadContiner EnableLoadContiner { get; set; }
+
+    [Parameter, JsonIgnore]
+    public CascadContiner Cascade { get; set; }
+
+    [Parameter, JsonIgnore]
+    public Expression<Func<TEntity, object>> OrderByExpression { get; set; }
+
+    [Parameter, JsonIgnore]
+    public EventCallback OnValueChange { get; set; }
+
+    [JsonProperty("data")]
+    public IList<SelectListItem> Items { get; private set; }
+
+    protected ElementReference input;
+
+    [Inject, JsonIgnore]
+    protected IJSRuntime jsRuntime { get; set; }
+
+    [JsonProperty("selectedIndex")]
+    internal int SelectedIndex { get; set; }
+
+    [Inject, JsonIgnore]
+    public ISimpleService<TEntity> Service { get; set; }
+
+    [Inject, JsonIgnore]
+    public MyContext Context { get; set; }
+
+    [Parameter, JsonIgnore]
+    public Expression<Func<TEntity, string>> DisplayTextExpression { get; set; }
+
+    [Parameter, JsonIgnore]
+    public Expression<Func<TEntity, bool>> ConditionExpression { get; set; }
+
+    [Parameter, JsonIgnore]
+    public RenderFragment Template { get; set; }
+
+    [Parameter, JsonProperty("value")]
+    public TValue Value { get; set; }
+
+    [Parameter, JsonIgnore]
+    public EventCallback<TValue> ValueChanged { get; set; }
+
+    [Parameter, JsonIgnore]
+    public Expression<Func<TValue>> ValueExpression { get; set; }
+
+    [Parameter, JsonIgnore]
+    public SelectListItem SelectItem { get; set; }
+
+    [Parameter, JsonIgnore]
+    public EventCallback<SelectListItem> SelectItemChanged { get; set; }
+
+    [Parameter, JsonIgnore]
+    public Expression<Func<SelectListItem>> SelectItemExpression { get; set; }
+
+    [Parameter, JsonIgnore]
+    public string Id { get; set; }
+
+    [Parameter, JsonProperty("disabled")]
+    public bool Disabled { get; set; }
+
+    [Parameter, JsonProperty("autoFill")]
+    public bool AutoFill { get; set; } = true;
+
+    [Parameter, JsonProperty("filter")]
+    public FilterMode FilterMode { get; set; } = FilterMode.Contains;
+
+    [Parameter, JsonProperty("highlightFirst")]
+    public bool HighlightFirstMatch { get; set; } = true;
+
+    async Task DataBinding()
+    {
+        if (LoadData)
+        {
+            LoadData = false;
+            var query = Service.GetAll(default(TEntity));
+            if (ConditionExpression != null)
+                query = query.Where(ConditionExpression);
+            if (Server && multiSelect)
+                total = query.Count();
+            if (OrderByExpression != null)
+                query = query.OrderBy(OrderByExpression);
+            if (Server)
+            {
+                if (OnDataBinding == null)
+                    throw new Exception("");
+
+                if (text.HasValue())
+                    query = OnDataBinding.Invoke(query, text);
+                query = query.Take(PageSize * pageNumber);
+            }
+            var list = new ExpressionSurvey().Survey(DisplayTextExpression);
+            var type = typeof(TEntity);
+            var parameter = Expression.Parameter(type, "t");
+            list = list.Select(t => parameter.ReplaceParameter(t)).ToList();
+            var pkey = type.GetPrimaryKey();
+            var pKeyExpr = Expression.Property(parameter, pkey);
+            var pkeyAdded = false;
+            foreach (var expr in list)
+            {
+                if (expr.Member == pkey)
+                    pkeyAdded = true;
+            }
+            if (!pkeyAdded)
+                list.Add(pKeyExpr);
+            var lambda = parameter.CreateLambdaExpresion(list);
+            if (cascadExpression != null)
+                query = query.Where(cascadExpression).OfType<TEntity>();
+            var dataList = query.GetValues(list).ToList();
+            Items = new List<SelectListItem>();
+            var displayFunc = DisplayTextExpression.Compile();
+            var valueFunc = Expression.Lambda(pKeyExpr, parameter).Compile();
+            foreach (var item in dataList)
+            {
+                var text = Convert.ToString(displayFunc.DynamicInvoke(item));
+                var value = Convert.ToString(valueFunc.DynamicInvoke(item));
+                Items.Add(new SelectListItem(value, text));
+            }
+        }
+    }
+
+    public void CascadTo(Type masterType, object value)
+    {
+        Disabled = value == null;
+        if (value != null)
+        {
+            foreach (var info in typeof(TEntity).GetProperties())
+            {
+                if (info.PropertyType == masterType)
+                {
+                    var masterIdInfoName = info.GetCustomAttribute<ForeignKeyAttribute>().Name;
+                    var masterInfo = typeof(TEntity).GetProperty(masterIdInfoName);
+                    var param = Expression.Parameter(typeof(TEntity), "t");
+                    Expression expr = Expression.Property(param, masterInfo);
+                    expr = Expression.Equal(expr, Expression.Constant(value));
+                    cascadExpression = Expression.Lambda(expr, param);
+                    LoadData = true;
+                    break;
+                }
+            }
+        }
+
+    }
+
+    public void Focus()
+    {
+        HasFocus = true;
+    }
+
+    protected override Task OnInitializedAsync()
+    {
+        LoadData = true;
+        return base.OnInitializedAsync();
+    }
+
+    protected string ConvertToJson()
+    {
+        return JsonConvert.SerializeObject(this);
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        Cascade?.Cascade?.CascadTo(typeof(TEntity), Value);
+        base.OnAfterRender(firstRender);
+    }
+
+    public async Task IncPageNumber()
+    {
+        pageNumber++;
+        LoadData = true;
+        await DataBinding();
+        StateHasChanged();
+    }
+
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (Server)
+        {
+            if (HasFocus || oldStatus != Status)
+            {
+                jsRuntime.InvokeVoidAsync("$.telerik.serversideCombobox", input, HasFocus, Status);
+                oldStatus = Status;
+            }
+            if (Pageable && firstRender)
+            {
+                var data = new JsValueSetter(this, this);
+                jsRuntime.InvokeVoidAsync("$.telerik.bindPageable", DotNetObjectReference.Create(data), input);
+            }
+        }
+        else
+        {
+            DataInitialize();
+            var json = this.ConvertToJson();
+            jsRuntime.InvokeVoidAsync("$.telerik.bindControl", input, json, UiControlType.ComboBox);
+            if (firstRender)
+            {
+                var data = new JsValueSetter(this);
+                jsRuntime.InvokeVoidAsync("$.telerik.bindValue", DotNetObjectReference.Create(data), input, UiControlType.ComboBox);
+            }
+        }
+        HasFocus = false;
+        return base.OnAfterRenderAsync(firstRender);
+    }
+
+    public async Task SetValue(object value)
+    {
+        EnableLoadContiner?.Control?.EnableLoading();
+        if (value != null)
+        {
+            var type = typeof(TValue);
+            if (type.IsNullableType())
+                type = Nullable.GetUnderlyingType(type);
+            var convertedValue = (TValue)Convert.ChangeType(value, type);
+            Cascade?.Cascade?.CascadTo(typeof(TEntity), convertedValue);
+            Value = convertedValue;
+            await ValueChanged.InvokeAsync(convertedValue);
+        }
+        else
+        {
+            Cascade?.Cascade?.CascadTo(typeof(TEntity), null);
+            await ValueChanged.InvokeAsync(default(TValue));
+        }
+        if (CurrentEditContext != null)
+        {
+            var model = Data ?? CurrentEditContext.Model;
+            FormAppState.AllControlsIsValid = true;
+            var info = model.GetType().GetProperty(_FieldName);
+            if (info == null)
+                FormAppState.AllControlsIsValid = false;
+            else if (info != null)
+            {
+                var field = new FieldIdentifier(CurrentEditContext.Model, _FieldName);
+                info.SetValue(model, Value);
+                CurrentEditContext.NotifyFieldChanged(field);
+            }
+        }
+        if (OnValueChange.HasDelegate)
+            await OnValueChange.InvokeAsync(null);
+    }
+
+    public void EnableLoading()
+    {
+        LoadData = true;
+    }
+}

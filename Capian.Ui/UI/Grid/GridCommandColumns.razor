@@ -1,0 +1,111 @@
+﻿@namespace Caspian.UI
+@typeparam TEntity
+
+@if (GridState.InitializedState == InitializedState.FirstFetchData)
+{
+    <td @attributes="attrs">
+        @if (!HideEdit)
+        {
+            <span @onclick="OpenForm" class="@editButtonClassName">
+                <i class="t-icon t-edit fa fa-pencil-alt"></i>
+            </span>
+        }
+        @if (!HideDelete)
+        {
+            <span @onclick="Delete" class="@deleteButtonClassName">
+                <span class="t-icon t-delete fa fa-trash-alt"></span>
+            </span>
+        }
+    </td>
+}
+
+@code 
+{
+    string editButtonClassName;
+    string deleteButtonClassName;
+    Dictionary<string, object> attrs;
+
+    [Parameter]
+    public bool DisableEdit { get; set; }
+
+    [Parameter]
+    public RowData<TEntity> RowData { get; set; }
+
+    [Parameter]
+    public bool DisableDelete { get; set; }
+
+    [Parameter]
+    public bool HideEdit { get; set; }
+
+    [Parameter]
+    public bool HideDelete { get; set; }
+
+    [Parameter]
+    public string HeaderTitle { get; set; }
+
+    [Parameter]
+    public int? HeaderWidth { get; set; }
+
+    [Parameter]
+    public string Style { get; set; }
+
+    [CascadingParameter(Name = "GridStateData")]
+    public ColumnAppState<TEntity> GridState { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        if (!HeaderTitle.HasValue())
+        {
+            if (!HideEdit)
+            {
+                HeaderTitle = "ویرایش";
+                if (!HideDelete)
+                    HeaderTitle += "-";
+            }
+            if (!HideDelete)
+                HeaderTitle += "حذف";
+        }
+        if (!HeaderWidth.HasValue)
+        {
+            if (HideEdit || HideDelete)
+                HeaderWidth = 40;
+            else
+                HeaderWidth = 80;
+        }
+        if (!Style.HasValue())
+        {
+            if (HideEdit || HideDelete)
+                Style = "width:40px";
+            else
+                Style = "width:80px";
+        }
+        if (GridState.InitializedState == InitializedState.GridColumnsNotInitialized)
+        {
+            GridState.ColumnsData.Add(new GridHeaderData()
+            {
+                Title = HeaderTitle,
+                Width = HeaderWidth
+            });
+        }
+        attrs = new Dictionary<string, object>();
+        if (Style.HasValue())
+            attrs.Add("style", Style);
+        editButtonClassName = "t-grid-edit";
+        if (DisableEdit)
+            editButtonClassName += " t-state-disabled";
+        deleteButtonClassName = "t-grid-delete";
+        if (DisableDelete)
+            deleteButtonClassName += " t-state-disabled";
+        base.OnParametersSet();
+    }
+
+    void OpenForm()
+    {
+        (GridState.Grid as IGridButtonCommand<TEntity>).OpenForm(RowData.Data);
+    }
+
+    void Delete()
+    {
+        (GridState.Grid as IGridButtonCommand<TEntity>).Delete(RowData.Data);
+    }
+}

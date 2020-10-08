@@ -1,0 +1,27 @@
+﻿@namespace Caspian.UI
+<CascadingValue Value="PageState" Name="MasterDetailPageState">
+    @ChildContent
+</CascadingValue>
+@code 
+{
+    private MasterDetailPageState PageState;
+
+    protected override void OnInitialized()
+    {
+        PageState = new MasterDetailPageState();
+        base.OnInitialized();
+    }
+
+    protected override void OnParametersSet()
+    {
+        PageState = new MasterDetailPageState();
+        PageState.MasterId = MasterId;
+        base.OnParametersSet();
+    }
+
+    [Parameter]
+    public int MasterId { get; set; }
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+}

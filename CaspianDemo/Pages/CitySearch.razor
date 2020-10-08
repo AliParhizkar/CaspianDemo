@@ -1,0 +1,18 @@
+﻿@namespace CaspianDemo.Pages
+@inherits LookupPage<City>
+<Grid @ref="Grid" Search="SearchData">
+    <Columns>
+        <GridColumn TEntity="City" Field="t => t.Province.Title" Title="استان" />
+        <GridColumn TEntity="City" Field="t => t.Title" Title="شهر" />
+    </Columns>
+</Grid>
+
+@code
+{
+    protected override Task OnInitializedAsync()
+    {
+        SetSearchExpression(t => t.Title.Contains(LookupStringSearchValue));
+        return base.OnInitializedAsync();
+        
+    }
+}

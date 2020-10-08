@@ -1,0 +1,32 @@
+﻿@inherits LookupPage<Area>
+@namespace CaspianDemo.Pages
+<table style="width:90%;margin:0 auto">
+    <tr>
+        <td>
+            <StringTextBox @bind-Value="SearchData.Title" Search placeholder="منطقه" />
+        </td>
+        <td>
+            <StringTextBox @bind-Value="SearchData.City.Title" Search placeholder="شهر" />
+        </td>
+    </tr>
+</table>
+<Grid @ref="Grid" Search="SearchData" TableHeight="200">
+    <Columns>
+        <GridColumn TEntity="Area" Field="t => t.City.Province.Title" Title="استان" />
+        <GridColumn TEntity="Area" Field="t => t.City.Title" Title="شهر" />
+        <GridColumn TEntity="Area" Field="t => t.Title" Title="منطقه" />
+    </Columns>
+</Grid>
+@code
+{
+    string cityTitle;
+    protected override Task OnInitializedAsync()
+    {
+        SearchData = new Area()
+        {
+            City = new City()
+        };
+        SetSearchExpression(t => t.Title.Contains(LookupStringSearchValue) || t.City.Title.Contains(LookupStringSearchValue));
+        return base.OnInitializedAsync();
+    }
+}

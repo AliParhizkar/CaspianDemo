@@ -1,0 +1,72 @@
+﻿<div class="top-row pl-4 navbar navbar-dark">
+    <a class="navbar-brand" href="">BlazorApp1</a>
+    <button class="navbar-toggler" @onclick="ToggleNavMenu">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+</div>
+
+<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
+    <ul class="nav flex-column">
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                <span class="oi oi-home" aria-hidden="true"></span> Home
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="Window">
+                <span class="oi oi-plus" aria-hidden="true"></span> Window
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="MultiWindow">
+                <span class="oi oi-plus" aria-hidden="true"></span> MultiWindow
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="FetchData">
+                <span class="oi oi-list-rich" aria-hidden="true"></span> Fetch data
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="ComboBoxDemo">
+                <span class="oi oi-list-rich" aria-hidden="true"></span>ComboBox Demo
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="TestDemo1">
+                <span class="oi oi-list-rich" aria-hidden="true"></span> Test Demo1
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="Province">
+                <span class="oi oi-list-rich" aria-hidden="true"></span> Province
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="GridDemo">
+                <span class="oi oi-list-rich" aria-hidden="true"></span> Grid Demo
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="City">
+                <span class="oi oi-list-rich" aria-hidden="true"></span> City
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="Customer" Match="NavLinkMatch.All">
+                <span class="oi oi-home" aria-hidden="true"></span> Customer
+            </NavLink>
+        </li>
+    </ul>
+</div>
+
+@code {
+    bool collapseNavMenu1 = true;
+
+    private string NavMenuCssClass => collapseNavMenu1 ? "collapse" : null;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu1 = !collapseNavMenu1;
+    }
+}

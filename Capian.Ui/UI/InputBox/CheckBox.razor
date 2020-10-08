@@ -1,0 +1,78 @@
+﻿@namespace Caspian.UI
+@typeparam TValue
+@inherits BaseInput<TValue>
+
+    <span class="t-checkbox" @attributes="attrs" @onclick="ChangeValue">
+        @if (Title.HasValue())
+        {
+            <span class="t-title">@Title</span>
+        }
+    <span class="t-icon">
+        <i @attributes="@iconAtttrs" aria-hidden="true"></i>
+    </span>
+        
+    </span>
+@code
+{
+    ElementReference checkBox;
+    TValue oldValue;
+    IDictionary<string, object> iconAtttrs = new Dictionary<string, object>();
+    Dictionary<string, object> attrs;
+
+    [Parameter]
+    public string Title { get; set; }
+
+
+
+    protected override void OnParametersSet()
+    {
+        attrs = new Dictionary<string, object>();
+        if (Id.HasValue())
+        {
+            attrs.Add("id", Id.Replace('.', '_'));
+            attrs.Add("name", Id.Replace('.', '_'));
+        }
+        var className = "t-widget t-checkbox ";
+        if (Disabled)
+            className += "t-disabled";
+        else
+        {
+            if (Value == null)
+            {
+                className += "t-bufferd";
+                iconAtttrs["class"] = "fa fa-square";
+            }
+            else
+            {
+                var value = Convert.ToBoolean(Value);
+                if (value)
+                {
+                    iconAtttrs["class"] = "fa fa-check";
+                    className += "t-selected";
+                }
+                else
+                {
+                    iconAtttrs.Remove("class");
+                    className += "t-unselected";
+                }
+            }
+        }
+        attrs.Add("class", className);
+        base.OnParametersSet();
+    }
+
+    async void  ChangeValue()
+    {
+        if (Disabled)
+            return;
+        bool tempValue = true;
+        var type = typeof(TValue);
+        if (type.IsNullableType())
+            type = type.GetUnderlyingType();
+        if (Value != null)
+            tempValue = !Convert.ToBoolean(Value);
+        await ValueChanged.InvokeAsync((TValue)Convert.ChangeType(tempValue, type));
+        if (OnValueChange.HasDelegate)
+            await OnValueChange.InvokeAsync(Value);
+    }
+}

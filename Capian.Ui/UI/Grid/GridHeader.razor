@@ -1,0 +1,64 @@
+﻿@namespace Caspian.UI
+<div class="t-grid-header">
+    <div class="t-grid-header-wrap">
+        <table cellpadding="0" cellspacing="0">
+            <thead>
+                <tr>
+                    @foreach (var col in ColumnsData)
+                    {
+                        <th @onclick="(MouseEventArgs e) =>
+                                      {
+                                          OrderByChanged(!e.CtrlKey, col);
+                                      }" style="width:@(col.Width + "px")" class="t-header">
+                            <span>@(col.Title)</span>
+                            @if (col.OrderBy.HasValue)
+                            {
+                                <i @attributes="attrs"></i>
+                            }
+                        </th>
+                    }
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+@code
+{
+    Dictionary<string, object> attrs = new Dictionary<string, object>();
+
+    async void OrderByChanged(bool clearAllOrdering, GridHeaderData data)
+    {
+        var ordering = data.OrderBy;
+        if (clearAllOrdering)
+            foreach(var col in ColumnsData)
+                col.OrderBy = null;
+        switch (ordering)
+        {
+            case OrderBy.Inc:
+                data.OrderBy = OrderBy.Dec;
+                attrs["class"] = "fa fa-sort-amount-down";
+                break;
+            case OrderBy.Dec:
+                data.OrderBy = null;
+                break;
+            case null:
+                data.OrderBy = OrderBy.Inc;
+                attrs["class"] = "fa fa-sort-amount-up-alt";
+                break;
+        }
+        if (OnOrderingChanged.HasDelegate)
+            await OnOrderingChanged.InvokeAsync(null);
+    }
+
+    [Parameter]
+    public IList<GridHeaderData> ColumnsData { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+    }
+
+    [Parameter]
+    public EventCallback OnOrderingChanged { get; set; }
+}

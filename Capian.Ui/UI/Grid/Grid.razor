@@ -1,0 +1,652 @@
+﻿@namespace Caspian.UI
+@typeparam TEntity
+@implements IEnableLoadData
+@implements IGridRowSelect
+@implements IGridButtonCommand<TEntity>
+
+<ConfirmMessage @ref="ConfirmMessage" Message="آیا با حذف موافقید؟" />
+@if (GridState.InitializedState == InitializedState.GridColumnsNotInitialized)
+{
+    <CascadingValue Value="GridState" Name="GridStateData">
+        @Columns(default(RowData<TEntity>))
+    </CascadingValue>
+}
+else
+{
+    <CascadingValue Value="GridState" Name="GridStateData">
+        <div @ref="Ref" class="t-widget t-grid">
+            @if (SearchState == null)
+            {
+                @if (ToolsBar == null)
+                {
+                    <GridToolsBar TEntity="TEntity" />
+                }
+                else
+                    @ToolsBar
+            }
+            <GridHeader ColumnsData="GridState.ColumnsData" />
+            <div class="t-grid-content" style="height:@(TableHeight)px">
+                <table class="@(SelectType == SelectType.None ? "" : "t-selectable")" cellpadding="0" cellspacing="0">
+                    <tbody>
+                        @{
+                            int index = 0;
+                        }
+                        @foreach (var item in Items)
+                        {
+                            var id = Convert.ToInt32(pkey.GetValue(item));
+                            var attrs = new Dictionary<string, object>();
+                            var rowIndex = index;
+                            if (id != addOrEditId)
+                            {
+                                if (SelectType == SelectType.Single)
+                                {
+                                    if (rowIndex == SelectedRowIndex)
+                                        attrs.Add("class", "t-state-selected");
+                                }
+                                else if (SelectType == SelectType.Multi && SelectedIds != null)
+                                    if (SelectedIds.Contains(id))
+                                        attrs.Add("class", "t-state-selected");
+                                if (SelectType != SelectType.None)
+                                {
+                                    attrs.Add("onclick", EventCallback.Factory.Create<MouseEventArgs>(this, (e) =>
+                                    {
+                                        if (SearchState != null)
+                                        {
+                                            SearchState.AutoComplete.SetValue(id);
+                                        }
+                                        SelectRow(rowIndex);
+                                    }));
+                                }
+                            }
+                            index++;
+                            <tr @attributes="attrs">
+                                @if (id == addOrEditId && EditFormType == EditFormType.Inline)
+                                {
+                                    
+                                    <td colspan="3">
+                                        <CaspianForm Model="item" OnValidSubmit="SaveData">
+                                            <CaspianValidationValidator ValidatorType="Service.GetType()" />
+                                            @EditFormTemplate(item)
+                                        </CaspianForm>
+                                    </td>
+                                }
+                                else
+                                {
+                                    <CascadingValue Value="item" Name="GridRowData">
+                                        @(Columns(new RowData<TEntity>()
+                                    {
+                                        Data = item,
+                                        RowIndex = rowIndex
+                                    }))
+                                    </CascadingValue>
+                                }
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <GridPager PageSize="PageSize" PageNumber="PageNumber" TotalRecord="Total"
+                       OnPageNumberChanged="ChangePageNumber" />
+        </div>
+        @if (EditFormType == EditFormType.Popup && EditFormTemplate != null)
+        {
+            <Window @bind-Status="Status" Title="@WindowTitle" Style="@(WindowStyle)">
+                <Content>
+                    <CaspianForm Model="Data" OnValidSubmit="SaveData" Onreset="() => { Status = WindowStatus.Close; }">
+                        <CaspianValidationValidator ValidatorType="Service.GetType()" />
+                        @EditFormTemplate(Data)
+                    </CaspianForm>
+                </Content>
+            </Window>
+        }
+    </CascadingValue>
+}
+
+
+@code
+{
+    ConfirmMessage ConfirmMessage;
+    string message;
+    PropertyInfo pkey;
+    bool SholdRendered = true;
+    int? addOrEditId = 2028;
+    WindowStatus Status = WindowStatus.Close;
+    string WindowTitle;
+    IQueryable<TEntity> Query;
+    ColumnAppState<TEntity> GridState { get; set; }
+    int? oldMasterId;
+    bool isMasterDetailUpdate;
+
+    string jsonOldSearch;
+
+    [Inject]
+    IServiceProvider ServiceProvider { get; set; }
+
+    public int? SelectedRowIndex { get; private set; }
+
+    public int? SelectedRowId
+    {
+        get
+        {
+            if (SelectedRowIndex.HasValue && SelectedRowIndex >= 0 && SelectedRowIndex < Items.Count)
+            {
+                var value = typeof(TEntity).GetPrimaryKey().GetValue(Items[SelectedRowIndex.Value]);
+                return Convert.ToInt32(value);
+            }
+            return null;
+        }
+    }
+
+    [JsonProperty("ids")]
+    protected long[] Ids { get; set; }
+
+    [Inject, JsonIgnore]
+    protected IJSRuntime jsRuntime { get; set; }
+
+    [CascadingParameter(Name = "MasterDetailPageState")]
+    public MasterDetailPageState PageState { get; set; }
+
+    [CascadingParameter(Name = "AutoComplateState")]
+    public SearchState SearchState { get; set; }
+
+    [JsonIgnore]
+    public Window Control { get; set; }
+
+    [Parameter, JsonIgnore]
+    public Func<IQueryable<TEntity>, IQueryable<TEntity>> OnDataBinding { get; set; }
+
+    [Parameter, JsonIgnore]
+    public int? TableHeight { get; set; } = 400;
+
+    [Parameter, JsonIgnore]
+    public EventCallback OnOpen { get; set; }
+
+    [Parameter, JsonIgnore]
+    public string WindowStyle { get; set; }
+
+    [JsonIgnore]
+    public IList<TEntity> Items { get; set; } = new List<TEntity>();
+
+    [JsonIgnore, Parameter]
+    public TEntity SelectedObject { get; set; }
+
+    [JsonIgnore, Parameter]
+    public EventCallback<TEntity> SelectedObjectChanged { get; set; }
+
+    [JsonIgnore, Parameter]
+    public IList<long> SelectedIds { get; set; }
+
+    [JsonIgnore, Parameter]
+    public EventCallback<IList<int>> SelectedIdsChanged { get; set; }
+
+    ElementReference Ref { get; set; }
+
+    [JsonIgnore]
+    public int Total { get; set; }
+
+    [Parameter, JsonIgnore]
+    public int PageNumber { get; set; } = 1;
+
+    [JsonIgnore]
+    public int PageSize { get; set; } = 5;
+
+    [Parameter, JsonIgnore]
+    public string Title { get; set; }
+
+    [Parameter, JsonIgnore]
+    public TEntity Search { get; set; }
+
+    [JsonIgnore, Inject]
+    public ISimpleService<TEntity> Service { get; set; }
+
+    //[Inject, JsonIgnore]
+    //public MyContext Context { get; set; }
+
+    [Parameter, JsonIgnore]
+    public TEntity Data { get; set; }
+
+    [Parameter, JsonIgnore]
+    public EventCallback<TEntity> DataChanged { get; set; }
+
+    [Parameter, JsonIgnore]
+    public SelectType SelectType { get; set; } = SelectType.Single;
+
+    [Parameter, JsonIgnore]
+    public RenderFragment<RowData<TEntity>> Columns { get; set; }
+
+    [Parameter, JsonIgnore]
+    public RenderFragment<TEntity> EditFormTemplate { get; set; }
+
+    [Parameter, JsonIgnore]
+    public RenderFragment ToolsBar { get; set; }
+
+    [JsonIgnore]
+    protected EventCallback<int> RowClick { get; set; }
+
+    [JsonIgnore, Parameter]
+    public EditFormType EditFormType { get; set; }
+
+    [JsonIgnore, Parameter]
+    public RenderFragment SearchTemplate { get; set; }
+
+    void UpdateOrder()
+    {
+        SholdRendered = true;
+        OnParametersSetAsync();
+        StateHasChanged();
+    }
+
+    public void SaveData(EditContext editContext)
+    {
+        var id = Convert.ToInt32(typeof(TEntity).GetPrimaryKey().GetValue(Data));
+        if (id == 0)
+            Service.Add(Data);
+        else
+            Service.Update(Data);
+        Service.SaveChanges();
+        id = Convert.ToInt32(typeof(TEntity).GetPrimaryKey().GetValue(Data));
+        var rowNumber = Query.AsQueryable().GetRowNumber(id);
+        if (rowNumber.HasValue)
+        {
+            var pageNumber = (rowNumber.Value - 1) / PageSize + 1;
+            ChangePageNumber(pageNumber);
+            SelectedRowIndex = (rowNumber.Value - 1) % PageSize;
+            EnableLoading();
+        }
+        Close();
+    }
+
+    public void SaveData(TEntity data)
+    {
+        var id = Convert.ToInt32(typeof(TEntity).GetPrimaryKey().GetValue(data));
+        if (id == 0)
+            Service.Add(data);
+        else
+            Service.Update(data);
+        Service.SaveChanges();
+        Close();
+    }
+
+    public void EnableLoading()
+    {
+        SholdRendered = true;
+    }
+
+    public void ResetGrid()
+    {
+        SelectedRowIndex = 0;
+        SholdRendered = true;
+        this.ChangePageNumber(1);
+    }
+
+    public int? GetRowIndexById(Func<TEntity, bool> expr)
+    {
+        var item = Items.SingleOrDefault(expr);
+        if (item == null)
+            return null;
+        return Items.IndexOf(item);
+    }
+
+    public void SelectRow(int rowIndex)
+    {
+        SelectedRowIndex = rowIndex;
+        if (Items.Count >= rowIndex + 1)
+        {
+            switch (SelectType)
+            {
+                case SelectType.Single:
+                    SelectRowBy(SelectedRowId);
+                    break;
+            }
+        }
+    }
+
+    private void SelectRowBy(long? id)
+    {
+        switch (SelectType)
+        {
+            case SelectType.Single:
+                foreach (var item in Items)
+                {
+                    if (Convert.ToInt32(pkey.GetValue(item)) == id)
+                    {
+                        SelectedObject = item;
+                        break;
+                    }
+                }
+                SelectedObjectChanged.InvokeAsync(SelectedObject);
+                break;
+            case SelectType.Multi:
+                if (SelectedIdsChanged.HasDelegate)
+                {
+                    if (SelectedIds == null)
+                        SelectedIds = new List<long>();
+                    if (SelectedIds.Contains(SelectedRowId.Value))
+                        SelectedIds.Remove(SelectedRowId.Value);
+                    else
+                        SelectedIds.Add(SelectedRowId.Value);
+                }
+                break;
+        }
+    }
+
+    public void SelectFirstPage()
+    {
+        if (this.PageNumber != 1)
+            ChangePageNumber(1);
+    }
+
+    //public long? SelectedId
+    //{
+    //    get
+    //    {
+    //        if (SelectedRowId.HasValue && SelectedRowId > 0 && SelectedRowId <= Items.Count)
+    //        {
+    //            var value = typeof(TEntity).GetPrimaryKey().GetValue(Items[SelectedRowId.Value - 1]);
+    //            return Convert.ToInt64(value);
+    //        }
+    //        return null;
+    //    }
+    //}
+
+    private void ChangePageNumber(int pageNumber)
+    {
+        this.PageNumber = pageNumber;
+        SholdRendered = true;
+        OnParametersSetAsync();
+        StateHasChanged();
+    }
+
+    public async void Delete(TEntity entity)
+    {
+        if (await ConfirmMessage.Confirm())
+        {
+            var id = Convert.ToInt32(typeof(TEntity).GetPrimaryKey().GetValue(entity));
+            var old = Service.SingleOrDefault(id);
+            if (old != null)
+            {
+                var validator = (IValidator)Service;
+                var result = await validator.ValidateAsync(new ValidationContext(entity, new PropertyChain(),
+                new RulesetValidatorSelector("remove")));
+                if (result.IsValid)
+                {
+                    Service.Remove(old);
+                    Service.SaveChanges();
+                }
+                else
+                    message = result.Errors.First().ErrorMessage;
+                var pageNumber = PageNumber;
+                var total = (PageNumber - 1) * PageSize + SelectedRowIndex.Value + 1;
+                if (total == Total)
+                {
+                    if (SelectedRowIndex > 0)
+                        SelectedRowIndex--;
+                    else
+                    {
+                        pageNumber--;
+                        SelectedRowIndex = PageSize - 1;
+                    }
+                }
+                ChangePageNumber(pageNumber);
+            }
+        }
+    }
+
+    public async Task OpenForm(TEntity entity)
+    {
+        Status = WindowStatus.Open;
+        if (entity == null)
+        {
+            Data = Activator.CreateInstance<TEntity>();
+            if (PageState?.MasterIdInfo != null)
+                PageState?.MasterIdInfo.SetValue(Data, PageState.MasterId);
+            if (DataChanged.HasDelegate)
+                await DataChanged.InvokeAsync(Data);
+            WindowTitle = "ثبت " + Title;
+        }
+        else
+        {
+            var pKey = typeof(TEntity).GetPrimaryKey();
+            var value = Convert.ToInt32(pKey.GetValue(entity));
+            Data = Service.Single(value);
+            if (DataChanged.HasDelegate)
+                await DataChanged.InvokeAsync(Data);
+            WindowTitle = "ویرایش " + Title;
+        }
+        if (OnOpen.HasDelegate)
+            await OnOpen.InvokeAsync(null);
+    }
+
+    public void SelectFirstRow()
+    {
+        if (SelectType == SelectType.Single)
+            SelectRow(0);
+    }
+
+    public void SelectNextRow()
+    {
+        if (SelectType == SelectType.Single && SelectedRowIndex.HasValue)
+        {
+            if (SelectedRowIndex.Value + 1 < PageSize)
+                SelectRow(SelectedRowIndex.Value + 1);
+            else
+            {
+                if (PageNumber < PageCount)
+                {
+                    ChangePageNumber(PageNumber + 1);
+                    SelectRow(0);
+                }
+            }
+        }
+    }
+
+    public void SelectPrevRow()
+    {
+        if (SelectType == SelectType.Single && SelectedRowIndex.HasValue)
+        {
+            if (SelectedRowIndex.Value > 0)
+                SelectRow(SelectedRowIndex.Value - 1);
+            else
+            {
+                if (PageNumber < 1)
+                {
+                    ChangePageNumber(PageNumber - 1);
+                    SelectRow(PageSize - 1);
+                }
+            }
+        }
+    }
+
+    public int PageCount
+    {
+        get
+        {
+            return (Total - 1) / PageSize + 1;
+        }
+    }
+
+    public TEntity SelectRowById(int id)
+    {
+        //var rowId = Query.GetRowNumber(id);
+        var rowId = id;
+        PageNumber = (rowId - 1) / PageSize + 1;
+        var rowIndex = (rowId - 1) % PageNumber + 1;
+        SelectRow(rowIndex);
+        return Items[rowIndex - 1];
+    }
+
+    public void Close()
+    {
+        Status = WindowStatus.Close;
+    }
+
+    protected string ConvertToJson()
+    {
+        var setting = new JsonSerializerSettings()
+        {
+            NullValueHandling = NullValueHandling.Ignore,
+            DefaultValueHandling = DefaultValueHandling.Ignore
+        };
+        return JsonConvert.SerializeObject(this, setting);
+    }
+
+    protected override void OnInitialized()
+    {
+        if (PageState == null || GridState == null)
+        {
+            GridState = new ColumnAppState<TEntity>();
+            pkey = typeof(TEntity).GetPrimaryKey();
+            GridState.Grid = this;
+            GridState.List = new List<Expression>();
+            GridState.ColumnsData = new List<GridHeaderData>();
+        }
+        GridState.InitializedState = InitializedState.GridColumnsNotInitialized;
+        base.OnInitialized();
+    }
+
+    private object GetFromToValue(LambdaExpression lambda)
+    {
+        var expr = (lambda.Body as MemberExpression);
+        var member = expr.Member;
+        var value = (expr.Expression as ConstantExpression).Value;
+        switch (member.MemberType)
+        {
+            case MemberTypes.Field:
+                return (member as FieldInfo).GetValue(value);
+            case MemberTypes.Property:
+                return (member as PropertyInfo).GetValue(value);
+            default:
+                throw new NotImplementedException("");
+        };
+    }
+
+    protected override Task OnParametersSetAsync()
+    {
+        var masterIdChanged = oldMasterId != PageState?.MasterId;
+        var jsonSearch = JsonConvert.SerializeObject(Search, new JsonSerializerSettings()
+        {
+            DefaultValueHandling = DefaultValueHandling.Ignore,
+            NullValueHandling = NullValueHandling.Ignore
+        });
+        if (jsonOldSearch == null || jsonOldSearch != jsonSearch)
+        {
+            SholdRendered = true;
+            jsonOldSearch = jsonSearch;
+        }
+        if (GridState.List.Count > 0 && (SholdRendered || masterIdChanged))
+        {
+            SholdRendered = false;
+            var exprList = new List<MemberExpression>();
+            foreach (var item in GridState.List)
+                exprList.AddRange(new ExpressionSurvey().Survey(item));
+            var parameterExpr = Expression.Parameter(typeof(TEntity), "t");
+            var pKey = typeof(TEntity).GetPrimaryKey();
+            var expr = Expression.Property(parameterExpr, pKey);
+            exprList.Add(expr);
+            Query = Service.GetAll(Search);
+            oldMasterId = PageState?.MasterId;
+            if (PageState != null)
+            {
+                var t = Expression.Parameter(typeof(TEntity), "t");
+                Expression masterExpr = Expression.Property(t, PageState.MasterIdInfo);
+                if (PageState.MasterIdInfo.PropertyType.IsNullableType())
+                    masterExpr = Expression.Property(masterExpr, "Value");
+                masterExpr = Expression.Equal(masterExpr, Expression.Constant(PageState.MasterId));
+                var lambda = Expression.Lambda(masterExpr, t);
+                Query = Query.Where(lambda).OfType<TEntity>();
+            }
+            var parameter = Expression.Parameter(typeof(TEntity), "t");
+            Expression expression = null;
+            foreach (var col in GridState.ColumnsData.Where(t => t.FromExpression != null || t.ToExpression != null))
+            {
+                Expression memberExpr = parameter.ReplaceParameter(col.Expression);
+                if (memberExpr.Type.IsNullableType())
+                    memberExpr = Expression.Property(memberExpr, "Value");
+                if (col.FromExpression != null)
+                {
+                    var fromValue = GetFromToValue(col.FromExpression);
+                    if (fromValue != null)
+                    {
+                        var covertedValue = Convert.ChangeType(fromValue, memberExpr.Type.GetUnderlyingType());
+                        var compareExpr = Expression.GreaterThanOrEqual(memberExpr, Expression.Constant(covertedValue));
+                        if (expression == null)
+                            expression = compareExpr;
+                        else
+                            expression = Expression.And(expression, compareExpr);
+                    }
+                }
+                if (col.ToExpression != null)
+                {
+                    var toValue = GetFromToValue(col.ToExpression);
+                    if (toValue != null)
+                    {
+                        var covertedValue = Convert.ChangeType(toValue, memberExpr.Type.GetUnderlyingType());
+                        var compareExpr = Expression.LessThanOrEqual(memberExpr, Expression.Constant(covertedValue));
+                        if (expression == null)
+                            expression = compareExpr;
+                        else
+                            expression = Expression.And(expression, compareExpr);
+                    }
+                }
+            }
+            if (expression != null)
+            {
+                var lambda = Expression.Lambda(expression, parameter);
+                Query = Query.Where(lambda).OfType<TEntity>();
+            }
+            if (OnDataBinding != null)
+                Query = OnDataBinding.Invoke(Query);
+            Total = Query.Count();
+            var query = Query;
+            var index = 0;
+            foreach (var col in GridState.ColumnsData)
+            {
+                if (col.OrderBy.HasValue)
+                {
+                    var exp = GridState.List[index];
+                }
+
+                //if (col.OrderBy ==  OrderBy.Inc)
+                //    query = query.OrderBy(GridState.List[index]);
+                //else
+                //    if (col.OrderBy == OrderBy.Dec)
+                //        query = query.OrderBy(GridState.List[index]);
+                index++;
+            }
+            if (PageNumber > 1)
+            {
+                var skip = (PageNumber - 1) * PageSize;
+                query = query.Skip(skip);
+            }
+            Items = query.Take(PageSize).GetValues<TEntity>(exprList);
+            GridState.InitializedState = InitializedState.FirstFetchData;
+            this.StateHasChanged();
+        }
+        return base.OnParametersSetAsync();
+    }
+
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (GridState.InitializedState == InitializedState.GridColumnsNotInitialized)
+        {
+            GridState.InitializedState = InitializedState.GridFieldsIinitialized;
+            this.OnParametersSetAsync();
+        }
+        if (Items != null)
+        {
+            Ids = new long[Items.Count];
+            int index = 0;
+            foreach (var item in Items)
+            {
+                Ids[index] = Convert.ToInt64(pkey.GetValue(item));
+                index++;
+            }
+        }
+        if (message != null)
+        {
+            jsRuntime.InvokeVoidAsync("$.telerik.showMessage", message);
+            message = null;
+        }
+        return base.OnAfterRenderAsync(firstRender);
+    }
+}

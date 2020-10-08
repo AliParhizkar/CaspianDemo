@@ -1,0 +1,28 @@
+﻿@page "/Province"
+@namespace CaspianDemo.Pages
+@inherits SimplePage<Province>
+<Grid @bind-Data="GridData" Title="استان" @ref="Grid" Search="SearchData" TEntity="Province" WindowStyle="width:600px">
+    <Columns>
+        <GridColumn TEntity="Province" Field="t => t.Title" />
+        <GridCommandColumns TEntity="Province" RowData="context" />
+    </Columns>
+    <EditFormTemplate>
+        <table style="width:90%;margin:0 auto">
+            <tr>
+                <td><label>استان</label></td>
+                <td>
+                    <StringTextBox @bind-Value="GridData.Title" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <FormCommandButton />
+                </td>
+            </tr>
+        </table>
+    </EditFormTemplate>
+</Grid>
+
+@code {
+
+}

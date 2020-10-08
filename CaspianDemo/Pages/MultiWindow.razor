@@ -1,0 +1,81 @@
+﻿@page "/MultiWindow"
+@namespace CaspianDemo.Pages
+<Window Title="اصلی" Style="width:400px;height:300px" @bind-Status="MainWindowStatus">
+    <Content>
+        <WindowCommandButtons/>
+        <button @onclick="() => { SubWindowStatus = WindowStatus.Open; }">Open</button>
+        <Window ParentChaild="false" Title="فرعی" Style="width:600px; height:800px" @bind-Status="SubWindowStatus">
+            <Content>
+                <WindowCommandButtons/>
+                <button @onclick="() => { MainWindowStatus1 = WindowStatus.Open; }">Open</button>
+                <Window Title="اصلی" Style="width:400px;height:300px" @bind-Status="MainWindowStatus1">
+                    <Content>
+                        <WindowCommandButtons/>
+                        <button @onclick="() => { SubWindowStatus1 = WindowStatus.Open; }">Open</button>
+                        <Window ParentChaild="false" Title="فرعی" Style="width:600px; height:800px" @bind-Status="SubWindowStatus1">
+                            <Content>
+                                <WindowCommandButtons />
+                                <button @onclick="() => { MainWindowStatus2 = WindowStatus.Open; }">Open</button>
+                                <Window Title="اصلی" Style="width:400px;height:300px" @bind-Status="MainWindowStatus2">
+                                    <Content>
+                                        <WindowCommandButtons />
+                                        <button @onclick="() => { SubWindowStatus2 = WindowStatus.Open; }">Open</button>
+                                        <Window ParentChaild="false" Title="فرعی" Style="width:600px; height:800px" @bind-Status="SubWindowStatus2">
+                                            <Content>
+                                                <WindowCommandButtons/>
+                                                <button @onclick="() => { MainWindowStatus3 = WindowStatus.Open; }">Open</button>
+                                                <Window Title="اصلی" Style="width:400px;height:300px" @bind-Status="MainWindowStatus3">
+                                                    <Content>
+                                                        <WindowCommandButtons/>
+                                                        <button @onclick="() => { SubWindowStatus3   = WindowStatus.Open; }">Open</button>
+                                                        <Window ParentChaild="false" Title="فرعی" Style="width:600px; height:800px" @bind-Status="SubWindowStatus3" >
+                                                            <Content>
+                                                                <WindowCommandButtons />
+                                                                <button @onclick="() => 
+                                                                                  { 
+                                                                                          MainWindowStatus = WindowStatus.Close;
+    SubWindowStatus = WindowStatus.Close;
+
+    MainWindowStatus1 = WindowStatus.Close;
+    SubWindowStatus1 = WindowStatus.Close;
+
+    MainWindowStatus2 = WindowStatus.Close;
+    SubWindowStatus2 = WindowStatus.Close;
+
+    MainWindowStatus3 = WindowStatus.Close;
+    SubWindowStatus3 = WindowStatus.Close;
+                                                                                  }">Open</button>
+
+                                                            </Content>
+                                                        </Window>
+                                                    </Content>
+                                                </Window>
+                                            </Content>
+                                        </Window>
+                                    </Content>
+                                </Window>
+                            </Content>
+                        </Window>
+                    </Content>
+                </Window>
+            </Content>
+        </Window>
+    </Content>
+</Window>
+<span>برای نمایش ویندو بر روی دکمه Open کلیک نمائید</span>
+<button @onclick="() => { MainWindowStatus = WindowStatus.Open; }">Open</button>
+
+@code
+{
+    WindowStatus MainWindowStatus = WindowStatus.Close;
+    WindowStatus SubWindowStatus = WindowStatus.Close;
+
+    WindowStatus MainWindowStatus1 = WindowStatus.Close;
+    WindowStatus SubWindowStatus1 = WindowStatus.Close;
+
+    WindowStatus MainWindowStatus2 = WindowStatus.Close;
+    WindowStatus SubWindowStatus2 = WindowStatus.Close;
+
+    WindowStatus MainWindowStatus3 = WindowStatus.Close;
+    WindowStatus SubWindowStatus3 = WindowStatus.Close;
+}

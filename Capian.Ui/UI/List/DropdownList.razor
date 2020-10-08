@@ -1,0 +1,86 @@
+﻿@namespace Caspian.UI
+@typeparam TValue
+@inherits BaseInput<TValue>
+<div @attributes="attrs" class="t-widget t-dropdown">
+    <div class="@className">
+        <span class="t-input">@(text)</span>
+        <span class="t-t-select">
+            <i class="t-icon t-arrow-down fa fa-caret-down"></i>
+        </span>
+        <input @ref="input" @attributes="inputAttras" autocomplete="off" style="display:none" />
+    </div>
+</div>
+@code
+{
+    string text;
+    string className;
+    Dictionary<string, object> attrs;
+    Dictionary<string, object> inputAttras;
+
+    protected override void OnParametersSet()
+    {
+        text = "لطفا انتخاب نمائید";
+        if (Value != null)
+        {
+            var field = GetFields().SingleOrDefault(t => t.GetValue(null).Equals(Value));
+            if (field != null)
+            {
+                var attr = field.GetCustomAttribute<EnumFieldAttribute>();
+                text = (attr != null) ? attr.DisplayName : field.Name;
+            }
+        }
+        attrs = new Dictionary<string, object>();
+        if (Style.HasValue())
+            attrs.Add("style", Style);
+        className = "t-dropdown-wrap";
+        if (Disabled)
+            className += " t-state-disabled";
+        else if (ErrorMessage == null)
+            className += " t-state-default";
+        else
+            className += " t-state-error";
+        inputAttras = new Dictionary<string, object>();
+        if (Id.HasValue())
+        {
+            inputAttras.Add("id", Id.Remove('.', '_'));
+            inputAttras.Add("name", Id.Remove('.', '_'));
+        }
+        if (Value != null)
+            inputAttras.Add("value", Convert.ToInt32(Value).ToString());
+        base.OnParametersSet();
+    }
+
+    private IEnumerable<FieldInfo> GetFields()
+    {
+        var type = typeof(TValue);
+        if (type.IsNullableType())
+            type = Nullable.GetUnderlyingType(type);
+        return type.GetFields().Where(t => !t.IsSpecialName);
+    }
+
+    [JsonProperty("data")]
+    public List<SelectListItem> Items { get; set; }
+
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        Items = new List<SelectListItem>();
+        if (typeof(TValue).IsNullableType())
+            Items.Add(new SelectListItem(null, "لطفا انتخاب نمائید"));
+        var fields = GetFields();
+        foreach (var field in fields)
+        {
+            var attr = field.GetCustomAttribute<EnumFieldAttribute>();
+            var value = Convert.ToInt32(field.GetValue(null));
+            Items.Add(new SelectListItem(value.ToString(),
+                attr == null ? field.Name : attr.DisplayName));
+        }
+        var json = this.ConvertToJson();
+        jsRuntime.InvokeVoidAsync("$.telerik.bindControl", input, json, UiControlType.DropdownList);
+        if (firstRender)
+        {
+            var data = DotNetObjectReference.Create(new JsValueSetter(this));
+            jsRuntime.InvokeAsync<object>("$.telerik.bindValue", data, input, UiControlType.DropdownList);
+        }
+        return base.OnAfterRenderAsync(firstRender);
+    }
+}

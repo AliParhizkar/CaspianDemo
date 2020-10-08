@@ -1,0 +1,10 @@
+﻿@page "/AutoComplet"
+@namespace CaspianDemo.Pages
+@inherits SimplePage<Customer>
+<Caspian.UI.AutoComplete @bind-Value="areaId">
+    <AreaSearch DisplayExpression="t => t.City.Title + ' ' + t.Title" />
+</Caspian.UI.AutoComplete>
+@code
+{
+    int? areaId;
+}

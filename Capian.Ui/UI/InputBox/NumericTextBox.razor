@@ -1,0 +1,61 @@
+﻿@namespace Caspian.UI
+@typeparam TValue
+@inherits BaseInput<TValue>
+
+<div class="@className">
+    <input @ref="input" @attributes="Attributes" class="t-input" />
+</div>
+
+@code
+{
+    string className;
+    string oldJson;
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        className = "t-widget t-numerictextbox";
+        if (Disabled)
+            className += " t-state-disabled";
+        else
+            if (ErrorMessage != null)
+            className += " t-state-error";
+        if (Value != null)
+            Attributes["value"] = Value;
+        else
+            Attributes.Remove("value");
+        if (Disabled)
+            Attributes["disabled"] = "disabled";
+        else
+            Attributes.Remove("disabled");
+        if (Id.HasValue())
+        {
+            Attributes.Add("id", Id.Replace('.', '_'));
+            Attributes.Add("name", Id.Replace('.', '_'));
+        }
+    }
+
+    [Parameter, JsonProperty("digits")]
+    public int NumberDigit { get; set; } = 2;
+
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        var type = typeof(TValue);
+        if (type.IsNullableType())
+            type = Nullable.GetUnderlyingType(type);
+        if (type == typeof(int) || type == typeof(long) || type == typeof(short))
+            NumberDigit = 0;
+        var json = this.ConvertToJson();
+        Focused = false;
+        if (firstRender)
+        {
+            var data = DotNetObjectReference.Create(new JsValueSetter(this));
+            jsRuntime.InvokeAsync<object>("$.telerik.bindValue", data, input, UiControlType.TextBox);
+        }
+        if (!json.Equals(oldJson))
+        {
+            oldJson = json;
+            jsRuntime.InvokeVoidAsync("$.telerik.bindControl", input, json, UiControlType.TextBox);
+        }
+        return base.OnAfterRenderAsync(firstRender);
+    }
+}

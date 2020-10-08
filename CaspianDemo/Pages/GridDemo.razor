@@ -1,0 +1,101 @@
+﻿@page "/GridDemo"
+@namespace BlazorApp2.Pages
+@{ var isReal = GridData.PersonType == PersonType.Real;}
+@inherits SimplePage<Customer>
+<table style="width:90%;margin: 0 auto">
+    <tr>
+        <td><label>نوع شخص</label></td>
+        <td>
+            <DropdownList @bind-Value="SearchData.PersonType" Search />
+        </td>
+        <td><label>نام شرکت</label></td>
+        <td>
+            <StringTextBox @bind-Value="SearchData.CompanyName" placeholder="نام شرکت" Search />
+        </td>
+    </tr>
+    <tr>
+        <td><label>نام خانوادگی</label></td>
+        <td>
+            <StringTextBox @bind-Value="SearchData.LName" placeholder="نام خانوادگی" Search />
+        </td>
+        <td><label>نام</label></td>
+        <td>
+            <StringTextBox @bind-Value="SearchData.FName" placeholder="نام" Search />
+        </td>
+    </tr>
+    <tr>
+        <td><label>از سن</label></td>
+        <td>
+            <NumericTextBox @bind-Value="fromAge" Search placeholder="از سن" />
+        </td>
+        <td><label>تا سن</label></td>
+        <td>
+            <NumericTextBox @bind-Value="toAge" Search placeholder="تا سن" />
+        </td>
+    </tr>
+</table>
+<Grid @ref="Grid" Search="SearchData" TEntity="Customer" @bind-Data="GridData" Title="مشتری" WindowStyle="width:600px"
+      OnOpen="() =>
+              {
+                  if (GridData.Id == 0)
+                      GridData.PersonType = PersonType.Real;
+              }">
+    <Columns>
+        <GridColumn TEntity="Customer" Field="t => t.City.Province.Title" />
+        <GridColumn TEntity="Customer" Field="t => t.City.Title" />
+        <GridColumn TEntity="Customer" Field="@(t => t.PersonType == PersonType.Real ? t.FName + " " + t.LName : t.CompanyName)" />
+        <GridColumn TEntity="Customer" Field="t => t.Gender.FaText()" />
+        <GridColumn TEntity="Customer" Field="t => t.Age.Seprate3Digit()" @bind-From="fromAge" @bind-To="toAge" />
+        <GridCommandColumns TEntity="Customer" />
+    </Columns>
+    <EditFormTemplate>
+        <table style="width:90%;margin:0 auto">
+            <tr>
+                <td>نام</td>
+                <td colspan="3"><DropdownList @bind-Value="GridData.PersonType" /></td>
+            </tr>
+            <tr>
+                <td>نام</td>
+                <td><StringTextBox @bind-Value="GridData.FName" Disabled="!isReal" /></td>
+                <td>نام خانوادگی</td>
+                <td><StringTextBox @bind-Value="GridData.LName" Disabled="!isReal" /></td>
+            </tr>
+            <tr>
+                <td>جنسیت</td>
+                <td><DropdownList @bind-Value="GridData.Gender" Disabled="!isReal" /></td>
+                <td>سن</td>
+                <td><NumericTextBox @bind-Value="GridData.Age" Disabled="!isReal" /></td>
+            </tr>
+            <tr>
+                <td>عنوان شرکت</td>
+                <td><StringTextBox @bind-Value="GridData.CompanyName" Disabled="isReal" /></td>
+                <td>سال تاسیس</td>
+                <td><NumericTextBox @bind-Value="GridData.BuildYear" Disabled="isReal" /></td>
+            </tr>
+            <tr>
+                <td>همراه</td>
+                <td><StringTextBox @bind-Value="GridData.MobileNumber" style="direction:ltr" /></td>
+                <td>تلفن</td>
+                <td><StringTextBox @bind-Value="GridData.TellNumber" style="direction:ltr" /></td>
+            </tr>
+            <tr>
+                <td>شهر</td>
+                <td>
+                    <AutoComplete @bind-Value="GridData.CityId">
+                        <CitySearch DisplayExpression="t => t.Province.Title + ' ' + t.Title" />
+                    </AutoComplete>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="4">
+                    <WindowCommandButtons TModel="Customer" />
+                </td>
+            </tr>
+        </table>
+    </EditFormTemplate>
+</Grid>
+@code
+{
+    object fromAge;
+    object toAge;
+}

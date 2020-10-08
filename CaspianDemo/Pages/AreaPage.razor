@@ -1,0 +1,51 @@
+﻿@*@inherits MasterDetailPage<City1, Area>
+    <fieldset>
+        <legend>پارامترهای جستجو</legend>
+        <table style="width:100%">
+            <tr>
+                <td>عنوان</td>
+                <td>
+                    <StringTextBox @bind-Value="SearchData.Title" BindingType="BindingType.OnInput"
+                                   @onkeyup="() =>
+                            {
+                                Grid.EnableLoading();
+                            }" />
+                </td>
+            </tr>
+        </table>
+    </fieldset>
+    <Grid @ref="Grid" @bind-Data="GridData" TEntity="Area" Search="SearchData" Title="استان" WindowStyle="max-width:400px" >
+        <Columns>
+            <GridColumn Data="context" TEntity="Area" Field="@(t => t.Title)" />
+            <GridCommandColumns Data="context" TEntity="Area" />
+        </Columns>
+        <EditFormTemplate>
+            <table style="width:100%">
+                <tr>
+                    <td>
+                        <label>عنوان</label>
+                    </td>
+                    <td>
+                        <StringTextBox @bind-Value="GridData.Title" />
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <WindowCommandButtons Data="context" />
+                    </td>
+                </tr>
+            </table>
+        </EditFormTemplate>
+    </Grid>
+
+@code
+{
+    [Parameter]
+    public int CityId { get; set; }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+       
+        base.OnAfterRender(firstRender);
+    }
+}*@

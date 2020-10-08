@@ -1,0 +1,89 @@
+﻿@page "/Customer"
+@namespace CaspianDemo.Pages
+@inherits SimplePage<Customer>
+<table style="width:90%;margin:0 auto">
+    <tr>
+        <td>
+            <label>نام خانوادگی</label>
+        </td>
+        <td>
+            <StringTextBox @bind-Value="@(SearchData.LName)" Search />
+        </td>
+    </tr>
+</table>
+<Grid @ref="Grid" @bind-Data="GridData" TEntity="Customer" Search="SearchData"
+      Title="استان" TableHeight="500" WindowStyle="max-width:400px"
+      OnDataBinding="(IQueryable<Customer> query) => { return query.OrderBy(t => t.LName); }">
+    <Columns>
+        <GridColumn TEntity="Customer" Field="@(t => t.Area.Title)" Title="منطقه" />
+        <GridColumn TEntity="Customer" Field="@(t => t.FName + ' ' + t.LName)" />
+        <GridColumn TEntity="Customer" Field="@(t => t.Gender.FaText())" />
+        <GridCommandColumns TEntity="Customer" />
+    </Columns>
+    <EditFormTemplate>
+        <table style="width:100%">
+            <tr>
+                <td>نام</td>
+                <td>
+                    <StringTextBox @bind-Value="GridData.FName" />
+                </td>
+            </tr>
+            <tr>
+                <td>نام خانوادگی</td>
+                <td>
+                    <StringTextBox @bind-Value="GridData.LName" />
+                </td>
+            </tr>
+            <tr>
+                <td>سن</td>
+                <td>
+                    <NumericTextBox @bind-Value="GridData.Age" />
+                </td>
+            </tr>
+            <tr>
+                <td>جنسیت</td>
+                <td>
+                    <DropdownList @bind-Value="GridData.Gender" />
+                </td>
+            </tr>
+            <tr>
+                <td>همراه</td>
+                <td>
+                    <StringTextBox @bind-Value="GridData.MobileNumber" MaxLength="11" />
+                </td>
+            </tr>
+            <tr>
+                <td>استان</td>
+                <td>
+                    <ComboBox @bind-Value="ProvinceId" TValue="int?" TEntity="Province"
+                              DisplayTextExpression="t => t.Title" Cascade="cityContiner" />
+                </td>
+            </tr>
+            <tr>
+                <td>شهر</td>
+                <td>
+                    <ComboBox @ref="cityContiner.Cascade" @bind-Value="GridData.CityId" TValue="int" TEntity="City"
+                              DisplayTextExpression="t => t.Title" Cascade="areaContiner" />
+                </td>
+            </tr>
+            <tr>
+                <td>منطقه</td>
+                <td>
+                    <ComboBox @ref="areaContiner.Cascade" @bind-Value="GridData.CityId" TValue="int" TEntity="Area"
+                              DisplayTextExpression="t => t.Title" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <WindowCommandButtons Data="context" TModel="Customer" />
+                </td>
+            </tr>
+        </table>
+    </EditFormTemplate>
+</Grid>
+@code
+{
+    int? ProvinceId;
+    CascadContiner cityContiner = new CascadContiner();
+    CascadContiner areaContiner = new CascadContiner();
+}

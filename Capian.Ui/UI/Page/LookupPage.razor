@@ -1,0 +1,67 @@
+﻿@namespace Caspian.UI
+@typeparam TEntity
+
+@code 
+{
+    public TEntity SearchData { get; set; } = Activator.CreateInstance<TEntity>();
+    Expression SearchExpression;
+    private string oldSerachStringValue;
+
+    protected virtual void InitialSearchExpression(Expression<Func<TEntity, bool>> expr)
+    {
+        SearchExpression = expr;
+    }
+
+    public Grid<TEntity> Grid { get; set; }
+
+    [CascadingParameter(Name = "LookupStringSearchValue")]
+    public string LookupStringSearchValue { get; set; }
+
+    [CascadingParameter(Name = "AutoComplateState")]
+    public SearchState SearchState { get; set; }
+
+    [JsonIgnore, Inject]
+    public ISimpleService<TEntity> Service { get; set; }
+
+    [Parameter]
+    public Expression<Func<TEntity, string>> DisplayExpression { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        if (DisplayExpression != null)
+        {
+            SearchState.DisplayExpression = DisplayExpression;
+            SearchState.Service = Service;
+            SearchState.Grid = Grid;
+        }
+        if (Grid != null)
+        {
+            Grid.EnableLoading();
+            if (Grid.OnDataBinding == null)
+            {
+                Grid.OnDataBinding = (IQueryable<TEntity> query) =>
+                {
+                    if (oldSerachStringValue != LookupStringSearchValue)
+                    {
+
+                        oldSerachStringValue = LookupStringSearchValue;
+                    }
+                    if (LookupStringSearchValue.HasValue())
+                        return query.Where(SearchExpression).OfType<TEntity>();
+                    return query;
+                };
+            }
+        }
+        base.OnParametersSet();
+    }
+
+    protected void SetSearchExpression(Expression<Func<TEntity, bool>> expr)
+    {
+        SearchExpression = expr;
+    }
+
+    public void SetDisplayExpression(Expression<Func<TEntity, string>> expression)
+    {
+        DisplayExpression = expression;
+    }
+}
