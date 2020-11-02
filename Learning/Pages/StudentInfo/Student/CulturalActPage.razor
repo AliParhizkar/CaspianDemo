@@ -1,0 +1,201 @@
+﻿<table class="t-palet-larg">
+    <tr>
+        <td>
+            <CheckBox @bind-Value="CulturalAct.Literary" />
+        </td>
+        <td><label>ادبی(شعر-داستان)</label></td>
+        <td>
+            <CheckBox @bind-Value="CulturalAct.Design" />
+        </td>
+        <td>
+            <label>طراحی(نقاشی-کاریکاتور)</label>
+        </td>
+        <td>
+            <CheckBox @bind-Value="CulturalAct.Music" />
+        </td>
+        <td>
+            <label>موسیقی</label>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <CheckBox @bind-Value="CulturalAct.Sports" />
+        </td>
+        <td>
+            <label>ورزش</label>
+        </td>
+        <td>
+            <CheckBox @bind-Value="CulturalAct.Photography" />
+        </td>
+        <td>
+            <label>عکاسی و فیلمبرداری</label>
+        </td>
+        <td>
+            <CheckBox @bind-Value="CulturalAct.Ghoran" />
+        </td>
+        <td>
+            <label>قرآن</label>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <CheckBox @bind-Value="CulturalAct.Sinama" />
+        </td>
+        <td>
+            <label>تئاتر-فیلم و سینما</label>
+        </td>
+        <td>
+            <CheckBox @bind-Value="CulturalAct.Plan" />
+        </td>
+        <td>
+            <label>اجرای برنامه</label>
+        </td>
+        <td>
+            <CheckBox @bind-Value="CulturalAct.Type" />
+        </td>
+        <td>
+            <label>تابپ</label>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <CheckBox @bind-Value="CulturalAct.IslamicEducation" />
+        </td>
+        <td>
+            <label>احکام و معارف اسلامی</label>
+        </td>
+        <td>
+            <CheckBox @bind-Value="CulturalAct.Translate" />
+        </td>
+        <td>
+            <label>ترجمه و مکالمه زبان خارجی</label>
+        </td>
+        <td>
+            <CheckBox @bind-Value="CulturalAct.ReliefEducation" />
+        </td>
+        <td>
+            <label>آموزش های امدادی</label>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <CheckBox @bind-Value="CulturalAct.Calligraphy" />
+        </td>
+        <td>
+            <label>خوشنویسی</label>
+        </td>
+        <td>
+            <CheckBox @bind-Value="CulturalAct.SecretaryJournal" />
+        </td>
+        <td>
+            <label>دبیری مجلات علمی-دانشجویی</label>
+        </td>
+        <td>
+            <CheckBox @bind-Value="CulturalAct.Article" />
+        </td>
+        <td>
+            <label>مقاله نویسی و دیگر امور پژوهشی</label>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <CheckBox @bind-Value="CulturalAct.Madahi" />
+        </td>
+        <td>
+            <label>مداحی</label>
+        </td>
+        <td>
+            <CheckBox @bind-Value="CulturalAct.MagazinePropagation" />
+        </td>
+        <td>
+            <label>انتشار نشریات دانشجویی</label>
+        </td>
+        <td>
+            <CheckBox @bind-Value="CulturalAct.Weblog" />
+        </td>
+        <td>
+            <label>روزنامه نگاری و وبلاگ نویسی</label>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <CheckBox @bind-Value="CulturalAct.OtherComputerSkill" />
+        </td>
+        <td colspan="5">
+            <label>دیگر مهارت های رایانه ای</label>
+        </td>
+    </tr>
+
+</table>
+<table class="t-palet-larg">
+    <tr>
+        <td>
+            <label>پیشنهاد اردو</label>
+        </td>
+        <td colspan="3">
+            <DropdownList @bind-Value="CulturalAct.SuggestUrdo" />
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <label>ساعت همکاری در دانشگاه</label>
+        </td>
+        <td>
+            <NumericTextBox @bind-Value="CulturalAct.UniversityHour" />
+        </td>
+        <td>
+            <label>ساعت همکاری در خوابگاه</label>
+        </td>
+        <td>
+            <NumericTextBox @bind-Value="CulturalAct.DormHour" />
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <label>همکاری در دفتر امور فرهنگی</label>
+        </td>
+        <td colspan="3">
+            <DropdownList @bind-Value="CulturalAct.UnversityCooperationType" />
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <label>سایر پیشنهاد اردو</label>
+        </td>
+        <td colspan="3">
+            <StringTextBox @bind-Value="CulturalAct.OtherSuggestUrdo" MultiLine Rows="3" />            
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <label>سایر علایق همکاری</label>
+        </td>
+        <td colspan="5">
+            <StringTextBox @bind-Value="CulturalAct.OtherCooperationInterests" MultiLine Rows="3" />
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <label>دیگر انواع مهارت</label>
+        </td>
+        <td colspan="3">
+            <StringTextBox @bind-Value="CulturalAct.OthersSkill" MultiLine Rows="3" />
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <label>سایر موارد</label>
+        </td>
+        <td colspan="3">
+            <StringTextBox @bind-Value="CulturalAct.OthersCases" MultiLine Rows="3" />
+        </td>
+    </tr>
+</table>
+
+
+
+@code
+{
+    [Parameter]
+    public CulturalAct CulturalAct { get; set; }
+}

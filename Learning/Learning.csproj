@@ -183,7 +183,7 @@
 
   <ItemGroup>
     <Reference Include="FluentValidation">
-      <HintPath>..\..\..\.nuget\packages\fluentvalidation\8.6.2\lib\netstandard2.0\FluentValidation.dll</HintPath>
+      <HintPath>..\..\..\..\..\.nuget\packages\fluentvalidation\8.6.1\lib\netstandard2.0\FluentValidation.dll</HintPath>
     </Reference>
   </ItemGroup>
 

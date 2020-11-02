@@ -18,115 +18,115 @@ namespace Model.PersonInfo.StudentInfo
         /// ادبی(شعر، داستان)
         /// </summary>
         [DisplayName("ادبی(شعر داستان)")]
-        public bool? Literary { get; set; }
+        public bool Literary { get; set; }
 
         /// <summary>
         /// طراحی(نقاشی کاریکاتور)
         /// </summary>
         [DisplayName("طراحی(نقاشی کاریکاتور)")]
-        public bool? Design { get; set; }
+        public bool Design { get; set; }
 
         /// <summary>
         /// موسیقی
         /// </summary>
         [DisplayName("موسیقی")]
-        public bool? Music { get; set; }
+        public bool Music { get; set; }
 
         /// <summary>
         /// ورزشی
         /// </summary>
         [DisplayName("ورزشی")]
-        public bool? Sports { get; set; }
+        public bool Sports { get; set; }
 
         /// <summary>
         /// عکاسی و فیلمبرداری
         /// </summary>
         [DisplayName("عکاسی و فیلمبرداری")]
-        public bool? Photography { get; set; }
+        public bool Photography { get; set; }
 
         /// <summary>
         /// حفظ، قرائت و تفسیر قرآن
         /// </summary>
         [DisplayName("حفظ، قرائت و تفسیر قرآن")]
-        public bool? Ghoran { get; set; }
+        public bool Ghoran { get; set; }
 
         /// <summary>
         /// تئاتر، فیلم و سینما
         /// </summary>
         [DisplayName("تئاتر، فیلم و سینما")]
-        public bool? Sinama { get; set; }
+        public bool Sinama { get; set; }
 
         /// <summary>
         /// اجرای برنامه
         /// </summary>
         [DisplayName("اجرای برنامه")]
-        public bool? Plan { get; set; }
+        public bool Plan { get; set; }
 
         /// <summary>
         /// تایپ
         /// </summary>
         [DisplayName("تایپ")]
-        public bool? Type { get; set; }
+        public bool Type { get; set; }
 
         /// <summary>
         /// احکام و معارف اسلامی
         /// </summary>
         [DisplayName("احکام و معارف اسلامی")]
-        public bool? IslamicEducation { get; set; }
+        public bool IslamicEducation { get; set; }
 
         /// <summary>
         /// ترجمه و مکالمه زبان خارجی
         /// </summary>
         [DisplayName("ترجمه و مکالمه زبان خارجی")]
-        public bool? Translate { get; set; }
+        public bool Translate { get; set; }
 
         /// <summary>
         /// آموزش های امدادی
         /// </summary>
         [DisplayName("آموزش های امدادی")]
-        public bool? ReliefEducation { get; set; }
+        public bool ReliefEducation { get; set; }
 
         /// <summary>
         /// خوشنویسی
         /// </summary>
         [DisplayName("خوشنویسی")]
-        public bool? Calligraphy { get; set; }
+        public bool Calligraphy { get; set; }
 
         /// <summary>
         /// دبیری مجلات علمی دانشجویی
         /// </summary>
         [DisplayName("دبیری مجلات علمی دانشجویی")]
-        public bool? SecretaryJournal { get; set; }
+        public bool SecretaryJournal { get; set; }
 
         /// <summary>
         /// مقاله نویسی و دیگر امور پژوهشی
         /// </summary>
         [DisplayName("مقاله نویسی و دیگر امور پژوهشی")]
-        public bool? Article { get; set; }
+        public bool Article { get; set; }
 
         /// <summary>
         /// مداحی و تواشیح
         /// </summary>
         [DisplayName("مداحی و تواشیح")]
-        public bool? Madahi { get; set; }
+        public bool Madahi { get; set; }
 
         /// <summary>
         /// انتشار نشریات دانشجویی
         /// </summary>
         [DisplayName("انتشار نشریات دانشجویی")]
-        public bool? MagazinePropagation { get; set; }
+        public bool MagazinePropagation { get; set; }
 
         /// <summary>
         /// روزنامه نگاری و وبلاگ نویسی
         /// </summary>
         [DisplayName("روزنامه نگاری و وبلاگ نویسی")]
-        public bool? Weblog { get; set; }
+        public bool Weblog { get; set; }
 
         /// <summary>
         /// دیگر مهارت های رایاته ای
         /// </summary>
         [DisplayName("دیگر مهارت های رایانه ای")]
-        public bool? OtherComputerSkill { get; set; }
+        public bool OtherComputerSkill { get; set; }
 
         /// <summary>
         /// پیشنهاد اردو
@@ -144,37 +144,37 @@ namespace Model.PersonInfo.StudentInfo
         /// علایق همکاری 1
         /// </summary>
         [DisplayName("علایق همکاری 1")]
-        public bool? CooperationInterests1 { get; set; }
+        public bool CooperationInterests1 { get; set; }
 
         /// <summary>
         /// علایق همکاری 2
         /// </summary>
         [DisplayName("علایق همکاری 2")]
-        public bool? CooperationInterests2 { get; set; }
+        public bool CooperationInterests2 { get; set; }
 
         /// <summary>
         /// علایق همکاری 3
         /// </summary>
         [DisplayName("علایق همکاری 3")]
-        public bool? CooperationInterests3 { get; set; }
+        public bool CooperationInterests3 { get; set; }
 
         /// <summary>
         /// علایق همکاری 4
         /// </summary>
         [DisplayName("علایق همکاری 4")]
-        public bool? CooperationInterests4 { get; set; }
+        public bool CooperationInterests4 { get; set; }
 
         /// <summary>
         /// علایق همکاری 5
         /// </summary>
         [DisplayName("علایق همکاری 5")]
-        public bool? CooperationInterests5 { get; set; }
+        public bool CooperationInterests5 { get; set; }
 
         /// <summary>
         /// علایق همکاری 6
         /// </summary>
         [DisplayName("علایق همکاری 6")]
-        public bool? CooperationInterests6 { get; set; }
+        public bool CooperationInterests6 { get; set; }
 
         /// <summary>
         /// سایر علایق همکاری

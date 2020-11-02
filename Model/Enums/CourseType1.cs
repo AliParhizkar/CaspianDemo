@@ -1,5 +1,4 @@
 ﻿using Caspian.Common.Attributes;
-using Caspian.Common.Extension;
 
 namespace Model.Enums
 {
@@ -109,10 +108,5 @@ namespace Model.Enums
         /// </summary>
         [EnumField("هفدهم")]
         _17 = 65536
-    }
-
-    public enum Gender
-    {
-
     }
 }

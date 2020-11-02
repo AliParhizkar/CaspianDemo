@@ -50,16 +50,16 @@
 
   <ItemGroup>
     <Reference Include="FluentValidation">
-      <HintPath>..\..\..\.nuget\packages\fluentvalidation\8.6.2\lib\netstandard2.0\FluentValidation.dll</HintPath>
+      <HintPath>..\..\..\..\..\.nuget\packages\fluentvalidation\8.6.1\lib\netstandard2.0\FluentValidation.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\dotnet\sdk\NuGetFallbackFolder\microsoft.aspnetcore.diagnostics.entityframeworkcore\2.2.0\lib\netstandard2.0\Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\dotnet\sdk\NuGetFallbackFolder\microsoft.aspnetcore.diagnostics.entityframeworkcore\2.2.0\lib\netstandard2.0\Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.EntityFrameworkCore">
-      <HintPath>..\..\..\..\.nuget\packages\microsoft.entityframeworkcore\3.1.2\lib\netstandard2.0\Microsoft.EntityFrameworkCore.dll</HintPath>
+      <HintPath>..\..\..\..\..\.nuget\packages\microsoft.entityframeworkcore\3.1.2\lib\netstandard2.0\Microsoft.EntityFrameworkCore.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\dotnet\sdk\NuGetFallbackFolder\newtonsoft.json\11.0.2\lib\netstandard2.0\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\..\Program Files (x86)\dotnet\sdk\NuGetFallbackFolder\newtonsoft.json\11.0.2\lib\netstandard2.0\Newtonsoft.Json.dll</HintPath>
     </Reference>
   </ItemGroup>
 

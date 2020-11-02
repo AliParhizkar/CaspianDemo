@@ -53,4 +53,19 @@ namespace Model.Enums
         [EnumField("ثبت نهایی")]
         FinalRegister
     }
+
+    public enum Gender
+    {
+        /// <summary>
+        /// مرد
+        /// </summary>
+        [EnumField("مرد")]
+        Male,
+
+        /// <summary>
+        /// زن
+        /// </summary>
+        [EnumField("زن")]
+        Female
+    }
 }
