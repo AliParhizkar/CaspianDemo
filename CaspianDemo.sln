@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Service", "Service\Service.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Capian.Ui", "Capian.Ui\Capian.Ui.csproj", "{2916720C-B56A-49F0-AA5E-B233086D2959}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaspianDemo", "CaspianDemo\CaspianDemo.csproj", "{315C5BB2-F431-41E7-B69B-89D2230FE06A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Learning", "Learning\Learning.csproj", "{B96A4CE7-7F11-4416-B961-7C6163C364B4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,10 +35,10 @@ Global
 		{2916720C-B56A-49F0-AA5E-B233086D2959}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2916720C-B56A-49F0-AA5E-B233086D2959}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2916720C-B56A-49F0-AA5E-B233086D2959}.Release|Any CPU.Build.0 = Release|Any CPU
-		{315C5BB2-F431-41E7-B69B-89D2230FE06A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{315C5BB2-F431-41E7-B69B-89D2230FE06A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{315C5BB2-F431-41E7-B69B-89D2230FE06A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{315C5BB2-F431-41E7-B69B-89D2230FE06A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B96A4CE7-7F11-4416-B961-7C6163C364B4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B96A4CE7-7F11-4416-B961-7C6163C364B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B96A4CE7-7F11-4416-B961-7C6163C364B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B96A4CE7-7F11-4416-B961-7C6163C364B4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

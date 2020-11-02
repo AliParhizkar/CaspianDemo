@@ -1,8 +1,8 @@
-﻿using System.ComponentModel;
+﻿using Caspian.Common;
+using System.ComponentModel;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Caspian.Common;
 
 namespace Model.Translate
 {
@@ -12,7 +12,7 @@ namespace Model.Translate
     [Table("TargetUnivesities", Schema = "trs")]
     public class TargetUnivesity
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Key]
         public int Id { get; set; }
 
         /// <summary>

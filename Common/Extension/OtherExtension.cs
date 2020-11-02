@@ -1,11 +1,24 @@
 ﻿using System;
-using System.Collections;
 using System.Linq.Expressions;
 
 namespace Caspian.Common.Extension
 {
     public static class OtherExtension
     {
+
+        public static TModel Copy<TModel>(this TModel model, bool cascade = false)
+        {
+            var data = Activator.CreateInstance<TModel>();
+            foreach(var info in typeof(TModel).GetProperties())
+            {
+                if (info.PropertyType.IsValueType || info.PropertyType == typeof(string))
+                {
+                    info.SetValue(data, info.GetValue(model));
+                }
+            }
+            return data;
+        }
+
         public static object GetMyValue(this object obj, MemberExpression expr, bool checkNull = true)
         {
             if (expr == null)

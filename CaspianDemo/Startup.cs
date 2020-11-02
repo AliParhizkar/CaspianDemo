@@ -11,6 +11,7 @@ using Model.BaseInfo;
 using FluentValidation.Internal;
 using FluentValidation;
 using System.Linq;
+using Caspian.Common.RowNumber;
 
 namespace CaspianDemo
 {
@@ -31,7 +32,18 @@ namespace CaspianDemo
             services.AddServerSideBlazor();
             services.AddSingleton<FormAppState>();
             services.AddSingleton<WindowAppState>();
+            services.AddSingleton<IServiceCollection>(services);
 
+            services.AddTransient<MyContext>(t => { return new Context(); });
+            services.AddTransient<ProvinceService>();
+            services.AddTransient<CityService>();
+            services.AddTransient<AreaService>();
+            services.AddTransient<CustomerService>();
+            services.AddTransient<BaseDefinationService>();
+            
+            services.AddTransient<ISimpleService<Province>>(t => { return new ProvinceService(); });
+            services.AddTransient<ISimpleService<Area>>(t => { return new AreaService(); });
+            services.AddTransient<ISimpleService<City>>(t => { return new CityService(); });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

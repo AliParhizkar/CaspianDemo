@@ -127,7 +127,7 @@
                 .toggleClass('t-meta-view', viewIndex == 1 || viewIndex == 2);
             $('.t-nav-fast:not(.t-state-disabled)', this.element)
                 .bind('click', $.proxy(this.navigateUp, this));
-            $('td:not(.t-state-disabled):has(.t-link)', this.element)
+            $('td.t-item:not(.t-state-disabled)', this.element)
 				.bind('mouseenter', $t.hover)
 			    .bind('mouseleave', $t.leave)
 			    .bind('click', $.proxy(this.navigateDown, this));
@@ -556,7 +556,7 @@
 
                     for (var day = 0; day < 7; day++) {
                         var date = new $t.persainCalender().getVisibility(tempDate.Year, tempDate.Month, weekRow * 7 + day + 1);
-                        var cellClass = "";
+                        var cellClass = "t-item ";
                         //                        if (date.Month == tempDate.Month && date.compareDate(pDate) == 0)
                         //                            cellClass = "t-state-focus";
                         if (date.Month != tempDate.Month)
@@ -568,9 +568,8 @@
                         html.cat(' title="' + days[day] + ' ' + date.Day + months[date.Month - 1] + ' ' + date.Year + '"')
                         html.cat('>');
                         if (date.compareDate(minDate) != -1 && date.compareDate(maxDate) != 1)
-                            html.cat('<a href=\"#\" class=\"t-link\">' + date.Day + '</a>').cat('</td>');
+                            html.cat(date.Day).cat('</td>');
                     }
-
                     html.cat('</tr>');
                 }
                 html.cat('</tbody>');
@@ -619,9 +618,7 @@
 			            && currentDayInCalendar.month() == selectedDate.month()
 			            && currentDayInCalendar.date() == selectedDate.date()) ? ' t-state-selected' : '';
 
-                        html.cat('<td')
-			                .catIf(' class="' + cellClass + '"', cellClass)
-			                .cat('>');
+                        html.cat('<td>');
 
                         if ($t.calendar.isInRange(currentDayInCalendar.toDate(), minDate.toDate(), maxDate.toDate())) {
                             html.cat('<a href="')
@@ -870,7 +867,7 @@
             viewedMonth = viewedMonth || new $t.datetime();
             minDate = minDate || new $t.datetime($.fn.tCalendar.defaults.minDate);
             maxDate = maxDate || new $t.datetime($.fn.tCalendar.defaults.maxDate);
-            return new $t.stringBuilder().cat('<div style="height:224px;" class="t-widget t-calendar">')
+            return new $t.stringBuilder().cat('<div style="height:237px;" class="t-widget t-calendar">')
 			                             .cat('<div class="t-header">')
 			                             .cat('<a href="#" class="t-link t-nav-prev">')
 			                             .cat('<span class="t-icon t-arrow-prev"></span></a><a href="#" class="t-link t-nav-fast">')

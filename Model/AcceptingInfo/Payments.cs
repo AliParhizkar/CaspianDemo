@@ -10,7 +10,7 @@ namespace Model.AcceptingInfo
     /// </summary>
     public class Payments
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Key]
         public int Id { get; set; }
 
         /// <summary>
@@ -23,7 +23,7 @@ namespace Model.AcceptingInfo
         /// کد موضوع پرداخت
         /// </summary>
         [DisplayName("موضوع پرداخت")]
-        public int PaymentIssueId { get; set; }
+        public int? PaymentIssueId { get; set; }
 
         /// <summary>
         /// موضوع پرداخت
@@ -35,13 +35,13 @@ namespace Model.AcceptingInfo
         /// کد آیتم پرداخت
         /// </summary>
         [DisplayName("آیتم پرداخت")]
-        public int ItemPaymentId { get; set; }
+        public int? PaymentItemId { get; set; }
 
         /// <summary>
         /// مشخصات آیتم پرداخت
         /// </summary>
-        [ForeignKey(nameof(ItemPaymentId))]
-        public virtual BaseDefination ItemPayment { get; set; }
+        [ForeignKey(nameof(PaymentItemId))]
+        public virtual BaseDefination PaymentItem { get; set; }
 
         /// <summary>
         /// مبلغ پرداخت

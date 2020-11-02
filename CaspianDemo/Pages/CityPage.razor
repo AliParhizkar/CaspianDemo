@@ -1,8 +1,63 @@
 ﻿@page "/City"
-@namespace CaspianDemo.Pages
-@inject CityService service
-<span>salam</span>
-
+<div style="border:1px solid red;width:450px;position:absolute;top:75px;height:500px; overflow-y:scroll;overflow-x:visible">
+    @foreach (var city in cities)
+    {
+        <div style="width:200px;border:1px solid blue;height:40px;">
+            <span>@city.Value</span>
+            <button @onmouseover="() => { selectedId = city.Key; }">تعیین وضعیت</button>
+            @if (selectedId == city.Key)
+            {
+                <div style="border:1px solid blue;width:100px;position:relative;right:202px;top:-41px">
+                    <div>
+                        <button>کارت</button>
+                    </div>
+                    <div>
+                        <button>نقد</button>
+                    </div>
+                    <div>
+                        <button>نقد و کارت</button>
+                    </div>
+                    <div>
+                        <button>مهمان</button>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
 @code {
-    City city = new City();
+
+    Dictionary<int, string> cities;
+    int? selectedId;
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        cities = new Dictionary<int, string>();
+        cities.Add(1, "تهران");
+        cities.Add(2, "قزوین");
+        cities.Add(3, "البرز");
+        cities.Add(4, "زنجان");
+        cities.Add(5, "سمنان");
+        cities.Add(6, "اصفهان");
+        cities.Add(7, "آذربایجان غربی");
+        cities.Add(8, "آذربایجان شرقی");
+        cities.Add(9, "اردبیل");
+        cities.Add(10, "همدان");
+        cities.Add(11, "کرمانشاه کردستان");
+        cities.Add(12, "ایلام");
+        cities.Add(13, "خرم آباد");
+        cities.Add(14, "خوزستان");
+        cities.Add(15, "چهارمحال بختیاری");
+        cities.Add(16, "کهکیلویه و بویراحمد");
+        cities.Add(17, "فارس");
+        cities.Add(18, "بوشهر");
+        cities.Add(19, "هرمزگان");
+        cities.Add(20, "سیستان بلوچستان");
+        cities.Add(21, "کرمان");
+        cities.Add(22, "یزد");
+        cities.Add(23, "گیلان");
+        cities.Add(24, "مازندران");
+        cities.Add(25, "مرکزی");
+        cities.Add(26, "قم");
+    }
 }

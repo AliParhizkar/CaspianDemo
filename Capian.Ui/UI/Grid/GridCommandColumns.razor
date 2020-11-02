@@ -28,7 +28,7 @@
     [Parameter]
     public bool DisableEdit { get; set; }
 
-    [Parameter]
+    [CascadingParameter(Name = "GridRowData")]
     public RowData<TEntity> RowData { get; set; }
 
     [Parameter]
@@ -101,6 +101,7 @@
 
     void OpenForm()
     {
+
         (GridState.Grid as IGridButtonCommand<TEntity>).OpenForm(RowData.Data);
     }
 

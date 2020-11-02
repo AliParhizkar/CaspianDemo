@@ -18,13 +18,13 @@ namespace Model.BaseInfo
         /// <summary>
         /// کد استان
         /// </summary>
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Key]
         public int Id { get; set; }
 
         /// <summary>
         /// عنوان استان
         /// </summary>
-        [DisplayName("عنوان"), Required, Unique("استانی با این عنوان در سیستم ثبت شده است")]
+        [DisplayName("عنوان")]
         public string Title { get; set; }
 
         /// <summary>

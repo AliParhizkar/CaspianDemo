@@ -11,7 +11,7 @@ namespace Model.PersonInfo.ProfessorInfo
     [Table("BankAccounts", Schema = "dbo")]
     public class BankAccount
     {
-        [Key, ForeignKey(nameof(Professor)), DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Key, ForeignKey(nameof(Professor))]
         public int ProfessorId { get; set; }
 
         /// <summary>

@@ -14,7 +14,7 @@ namespace Model.CourseGroupInfo
     [Table("CourseGroupClassTimes", Schema = "crg")]
     public class CourseGroupClassTime
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Key]
         public int Id { get; set; }
 
         /// <summary>

@@ -14,13 +14,13 @@ namespace Model.BaseInfo
     [Table("SubTrends", Schema = "dbo")]
     public class SubTrend
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Key]
         public int Id { get; set; }
 
         /// <summary>
         /// عنوان گزارش
         /// </summary>
-        [DisplayName("عنوان"), Required, Unique("زیرگرایشی با این عنوان در سیستم تعریف شده است")]
+        [DisplayName("عنوان")]
         public string Title { get; set; }
 
         /// <summary>

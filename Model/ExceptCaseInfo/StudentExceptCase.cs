@@ -1,5 +1,6 @@
 ﻿using System;
 using Model.Enums;
+using Caspian.Common;
 using Model.CourseInfo;
 using Model.SelectUnitInfo;
 using System.ComponentModel;
@@ -7,7 +8,6 @@ using System.Collections.Generic;
 using Model.PersonInfo.StudentInfo;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Caspian.Common;
 
 namespace Model.ExceptCaseInfo
 {

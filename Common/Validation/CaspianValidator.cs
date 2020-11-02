@@ -10,15 +10,14 @@ using Caspian.Common.Extension;
 using FluentValidation.Internal;
 using Microsoft.Extensions.DependencyInjection;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Components;
 
 namespace Caspian.Common
 {
-    public class CaspianValidator<TModel> : AbstractValidator<TModel>, ICaspianValidator<TModel>
+    public class CaspianValidator<TModel> : AbstractValidator<TModel>, ICaspianValidator
     {
-        public CaspianValidator(IServiceProvider provider)
+        public CaspianValidator()
         {
-            Provider = provider;
-            Context = provider.GetService<MyContext>();
             foreach (var info in typeof(TModel).GetProperties())
             {
                 var type = info.PropertyType;
@@ -42,9 +41,9 @@ namespace Caspian.Common
             });
         }
 
-        protected IServiceProvider Provider { get; private set; }
+        public IServiceProvider Provider { get; set; }
 
-        protected MyContext Context { get; private set; }
+        public MyContext Context { get; set; }
 
         private void CheckOnDelete(Expression<Func<TModel, object>> expression)
         {
@@ -63,6 +62,7 @@ namespace Caspian.Common
                         var type = info.PropertyType.GetGenericArguments()[0];
                         var serviceType = typeof(ISimpleService<>).MakeGenericType(type);
                         var service = Provider.GetService(serviceType);
+                        
                         IQueryable query = serviceType.GetMethod("GetAll").Invoke(service, new object[] { null }) as IQueryable;
                         var name = type.GetProperties().First(t => t.PropertyType == typeof(TModel)).GetCustomAttribute<ForeignKeyAttribute>().Name;
                         var fkIdInfo = type.GetProperties().Single(t => t.Name == name);
@@ -124,7 +124,9 @@ namespace Caspian.Common
                 if (mainExpr != null)
                 {
                     var lambda = Expression.Lambda(mainExpr, param);
-                    var result = Provider.GetService<ISimpleService<TModel>>().GetAll(default(TModel)).Any(lambda);
+                    var service = Provider.GetService<ISimpleService<TModel>>();
+                    service.Context = Context;
+                    var result = service.GetAll(default(TModel)).Any(lambda);
                     if (result)
                         context.AddFailure(message);
                 }
@@ -163,8 +165,6 @@ namespace Caspian.Common
             var rule = PropertyRule.Create(expr as Expression<Func<TModel, object>>);
             AddRule(rule);
             var ruleBuilder = new RuleBuilder<TModel, object>(rule, this);
-            var type = typeof(ISimpleService<>).MakeGenericType(info.PropertyType);
-            var service = Provider.GetService(type);
             ruleBuilder.Custom((value, context) =>
             {
                 if (value != null)
@@ -179,7 +179,11 @@ namespace Caspian.Common
                     else
                     {
                         message = (displayAttr?.DisplayName ?? infoId.Name) + "ی با کد " + value + " وجود ندارد.";
-
+                        var type = typeof(ISimpleService<>).MakeGenericType(info.PropertyType);
+                        var service = Provider.GetService(type) as IEntity;
+                        if (service == null)
+                            throw new Exception("خطا: Service of type " + type + " not implimented");
+                        service.Context = Context;
                         var entity = type.GetMethod("SingleOrDefault").Invoke(service, new Object[] { value });
                         if (entity == null)
                             context.AddFailure(message);
@@ -207,11 +211,6 @@ namespace Caspian.Common
                 }
             });
             return ruleBuilder;
-        }
-
-        public IRuleBuilder<TModel, TProperty> Add<TProperty>(Expression<Func<TModel, TProperty>> expression)
-        {
-            return this.RuleFor(expression);
         }
     }
 }

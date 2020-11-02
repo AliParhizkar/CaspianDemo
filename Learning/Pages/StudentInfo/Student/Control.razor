@@ -1,0 +1,118 @@
+﻿<table style="width:95%;margin:0 auto">
+    <tr>
+        <td style="width:100px"><label>کد دانشجو</label></td>
+        <td>
+            <StringTextBox @bind-Value="Student.Code" />
+        </td>
+        <td style="width:120px;padding-right:20px" rowspan="3"><label>تصویر</label></td>
+        <td rowspan="3">
+            <PictureBox Value="Student.Image" />
+        </td>
+    </tr>
+    <tr>
+        <td><label>نام</label></td>
+        <td>
+            <StringTextBox @bind-Value="Student.FName" />
+        </td>
+    </tr>
+    <tr>
+        <td><label>نام خانوادگی</label></td>
+        <td>
+            <StringTextBox @bind-Value="Student.LName" />
+        </td>
+    </tr>
+    <tr>
+        <td><label>جنسیت</label></td>
+        <td>
+            <DropdownList @bind-Value="Student.Gender" />
+        </td>
+        <td></td>
+        <td>
+            <span>برای آپلود فایل</span>
+        </td>
+    </tr>
+    <tr>
+        <td><label>سال ورود</label></td>
+        <td>
+            <NumericTextBox @bind-Value="Student.EntranceYear" />
+        </td>
+        <td style="padding-right: 20px"><label>سال مالی</label></td>
+        <td>
+            <NumericTextBox @bind-Value="Student.FinancialYear" />
+        </td>
+    </tr>
+    <tr>
+        <td><label>نیمسال ورودی</label></td>
+        <td>
+            <DropdownList @bind-Value="Student.TermType" />
+        </td>
+        <td style="padding-right: 20px"><label>تاریخ شروع</label></td>
+        <td>
+            <DatePicker @bind-Value="Student.StartDate" />
+        </td>
+    </tr>
+    <tr>
+        <td><label>جز بسته بندی</label></td>
+        <td>
+            <ComboBox @bind-Value="Student.GroupingId" TValue="int?" TEntity="BaseDefination"
+                      DisplayTextExpression="t => t.Title" OrderByExpression="t => t.Title"
+                      ConditionExpression="t => t.BaseDefinationType == BaseDefinationType.Grouping" />
+        </td>
+        <td style="padding-right: 20px"><label>کد قدیم</label></td>
+        <td>
+            <StringTextBox @bind-Value="Student.OldCode" Style="direction:ltr" />
+        </td>
+    </tr>
+    <tr>
+        <td><label>تماس اظطراری</label></td>
+        <td>
+            <StringTextBox @bind-Value="Student.EmergencyCall" Style="direction:ltr" />
+        </td>
+        <td style="padding-right: 20px"><label>نوع پرونده</label></td>
+        <td>
+            <ComboBox @bind-Value="Student.FileTypeId" TValue="int?" TEntity="BaseDefination"
+                      ConditionExpression="t => t.BaseDefinationType == BaseDefinationType.FileType"
+                      DisplayTextExpression="t => t.Title" OrderByExpression="t => t.Title" />
+        </td>
+    </tr>
+    <tr>
+        <td><label>نیمسال ورود</label></td>
+    </tr>
+    <tr>
+        <td><label>شماره پرونده</label></td>
+        <td>
+            <StringTextBox @bind-Value="Student.FileNumber" Style="direction:ltr" />
+        </td>
+        <td style="padding-right: 20px"><label>آدرس الکترونیکی</label></td>
+        <td>
+            <StringTextBox @bind-Value="Student.Email" Style="direction:ltr" />
+        </td>
+    </tr>
+    <tr>
+        <td><label>تلفن ثابت</label></td>
+        <td>
+            <StringTextBox @bind-Value="Student.Tel" Style="direction:ltr" />
+        </td>
+        <td style="padding-right: 20px"><label>همراه</label></td>
+        <td>
+            <StringTextBox @bind-Value="Student.Mobile" Style="direction:ltr" />
+        </td>
+    </tr>
+    <tr>
+        <td><label>ملاحضات</label></td>
+        <td colspan="3">
+            <StringTextBox @bind-Value="Student.Descript" MultiLine Rows="3" />
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2">
+            <FormCommandButton />
+        </td>
+    </tr>
+</table>
+
+@code {
+
+    [Parameter]
+    public Student Student { get; set; }
+}

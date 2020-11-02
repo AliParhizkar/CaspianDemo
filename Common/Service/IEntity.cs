@@ -2,4 +2,9 @@
 
 namespace Caspian.Common.Service
 {
+    public interface IEntity
+    {
+        MyContext Context { get; set; }
+    }
+
 }

@@ -11,7 +11,7 @@ namespace Model.PersonInfo
     [Table("EnglishInfos", Schema = "dbo")]
     public class EnglishInfo
     {
-        [Key, ForeignKey(nameof(Person)), DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Key, ForeignKey(nameof(Person))]
         public int PersonId { get; set; }
 
         /// <summary>

@@ -1,0 +1,76 @@
+﻿@page "/Student"
+@inherits SimplePage<Student>
+@inject StudentService service
+
+<table style="width:90%">
+    <tr>
+        <td>
+            <label>کد دانشجویی</label>
+        </td>
+        <td>
+            <StringTextBox @bind-Value="SearchData.Code" Search />
+        </td>
+        <td>
+            <label>نام</label>
+        </td>
+        <td>
+            <StringTextBox @bind-Value="SearchData.FName" Search />
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <label>نام خانوادگی</label>
+        </td>
+        <td>
+            <StringTextBox @bind-Value="SearchData.LName" Search />
+        </td>
+        <td>
+            <label>جنسیت</label>
+        </td>
+        <td>
+            <DropdownList @bind-Value="SearchData.Gender" />
+        </td>
+    </tr>
+</table>
+<div>
+    <table style="width:90%">
+        <tr>
+            <td>
+                <button>مشخصات شناسنامه ای</button>
+                <button>مشخصات خانوادگی</button>
+                <button>مشخصات پذیرش</button>
+                <button>سوابق ایثارگری</button>
+                <button>سازمان حمایت کننده</button>
+                <button>فعالیت های فرهنگی</button>
+                <button>شغلی</button>
+                <button>بسیج</button>
+                <button>اطلاعات لاتین</button>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<Grid @bind-Data="GridData" TEntity="Student" Search="SearchData" Service="service" TableHeight="400"
+      Title="مشخصات دانشجو" WindowStyle="width:850px">
+    <Columns>
+        <GridColumn TEntity="Student" Field="t => t.Code" />
+        <GridColumn TEntity="Student" Field="t => t.FName" />
+        <GridColumn TEntity="Student" Field="t => t.LName" />
+        <GridColumn TEntity="Student" Field="t => t.FileType.Title" Title="نوع پرونده" />
+        <GridColumn TEntity="Student" Field="t => t.FileNumber" />
+        <GridColumn TEntity="Student" Field="t => t.Tel" />
+        <GridColumn TEntity="Student" Field="t => t.Mobile" />
+        <GridColumn TEntity="Student" Field="t => t.EmergencyCall" />
+        <GridColumn TEntity="Student" Field="t => t.Email" />
+        <GridColumn TEntity="Student" Field="t => t.EntranceYear.ToString()" />
+        <GridColumn TEntity="Student" Field="t => t.TermType.FaText()" />
+        <GridColumn TEntity="Student" Field="t => t.StartDate.ToPersianDateString()" />
+    </Columns>
+    <EditFormTemplate>
+        <Control Student="GridData" />
+    </EditFormTemplate>
+</Grid>
+
+@code {
+
+}

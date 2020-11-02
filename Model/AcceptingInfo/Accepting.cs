@@ -1,11 +1,11 @@
 ﻿using System;
 using Model.Enums;
+using Caspian.Common;
 using System.ComponentModel;
 using System.Collections.Generic;
 using Model.PersonInfo.StudentInfo;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Caspian.Common;
 
 namespace Model.AcceptingInfo
 {
@@ -15,13 +15,13 @@ namespace Model.AcceptingInfo
     [Table("Acceptings")]
     public class Accepting
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Key]
         public int Id { get; set; }
 
         /// <summary>
         /// عنوان پذیرش
         /// </summary>
-        [DisplayName("عنوان پذیرش"), Required, Unique("پذیرشی با این عنوان در سیستم ثبت شده است")]
+        [DisplayName("عنوان پذیرش")]
         public string Title { get; set; }
 
         /// <summary>
@@ -46,7 +46,7 @@ namespace Model.AcceptingInfo
         /// پذیرش فعال باشد
         /// </summary>
         [DisplayName("پذیرش فعال باشد")]
-        public bool? IsActive { get; set; }
+        public bool IsActive { get; set; }
 
         /// <summary>
         /// تاریخ شروع ثبت نام

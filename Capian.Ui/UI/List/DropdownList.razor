@@ -67,7 +67,7 @@
         if (typeof(TValue).IsNullableType())
             Items.Add(new SelectListItem(null, "لطفا انتخاب نمائید"));
         var fields = GetFields();
-        foreach (var field in fields)
+        foreach (var field in fields.Where(t => !t.IsSpecialName))
         {
             var attr = field.GetCustomAttribute<EnumFieldAttribute>();
             var value = Convert.ToInt32(field.GetValue(null));
@@ -81,6 +81,7 @@
             var data = DotNetObjectReference.Create(new JsValueSetter(this));
             jsRuntime.InvokeAsync<object>("$.telerik.bindValue", data, input, UiControlType.DropdownList);
         }
+        Focused = false;
         return base.OnAfterRenderAsync(firstRender);
     }
 }

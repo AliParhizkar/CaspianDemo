@@ -15,7 +15,7 @@ namespace Model.CourseGroupInfo
     /// </summary>
     public class CourseGroup
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Key]
         public int Id { get; set; }
 
         /// <summary>

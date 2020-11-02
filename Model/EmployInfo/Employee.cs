@@ -1,12 +1,12 @@
 ﻿using System;
+using Model.Enums;
 using Model.Timing;
+using Caspian.Common;
+using Model.BaseInfo;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Model.BaseInfo;
-using Caspian.Common;
-using Model.Enums;
 
 namespace Model.EmployInfo
 {

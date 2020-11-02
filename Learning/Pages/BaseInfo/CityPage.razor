@@ -1,0 +1,53 @@
+﻿@page "/City"
+@inherits SimplePage<City>
+@inject CityService service
+<table style="width:90%">
+    <tr>
+        <td>
+            <label>استان</label>
+        </td>
+        <td>
+            <ComboBox @bind-Value="SearchData.ProvinceId" TEntity="Province" TValue="int?" DisplayTextExpression="t => t.Title" OrderByExpression="t => t.Title" />
+        </td>
+        <td>
+            <label>شهر</label>
+        </td>
+        <td>
+            <StringTextBox @bind-Value="SearchData.Title" Search />
+        </td>
+    </tr>
+</table>
+<Grid @bind-Data="GridData"  TEntity="City" Search="SearchData" Service="service" TableHeight="500" Title="شهر" WindowStyle="width:500px">
+    <Columns>
+        <GridColumn TEntity="City" Field="t => t.Province.Title" Title="استان" />
+        <GridColumn TEntity="City" Field="t => t.Title" />
+        <GridCommandColumns TEntity="City" />
+    </Columns>
+    <EditFormTemplate>
+        <table style="width:90%">
+            <tr>
+                <td>
+                    <label>استان</label>
+                </td>
+                <td>
+                    <ComboBox @bind-Value="GridData.ProvinceId" TEntity="Province" TValue="int?" DisplayTextExpression="t => t.Title" OrderByExpression="t => t.Title" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>عنوان</label>
+                </td>
+                <td>
+                    <StringTextBox @bind-Value="GridData.Title" />
+                </td>
+            </tr>
+            <tr>
+                <FormCommandButton />
+            </tr>
+        </table>
+    </EditFormTemplate>
+</Grid>
+
+@code {
+
+}

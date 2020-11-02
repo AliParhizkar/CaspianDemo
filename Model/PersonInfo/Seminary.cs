@@ -11,7 +11,7 @@ namespace Model.PersonInfo
     [Table("Seminaries", Schema = "dbo")]
     public class Seminary
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Key]
         public int Id { get; set; }
 
         /// <summary>

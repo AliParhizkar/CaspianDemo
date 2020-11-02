@@ -19,6 +19,7 @@
 {
     string ErrorMessage;
     bool submitTo;
+    bool checkValidation;
     ElementReference form;
     IList<IResetable> ResetableControls;
 
@@ -96,14 +97,13 @@
         if (OnSubmit.HasDelegate)
         {
             await OnSubmit.InvokeAsync(EditContext);
-            EditContext.SetModel(Model);
+            //EditContext.SetModel(Model);
         }
-
+        checkValidation = true;
         var result = EditContext.Validate();
         if (result && FormAppState.AllControlsIsValid)
         {
             if (OnValidSubmit.HasDelegate)
-
                 await OnValidSubmit.InvokeAsync(EditContext);
         }
         else
@@ -121,6 +121,14 @@
 
     protected override Task OnParametersSetAsync()
     {
+        //if (checkValidation)
+        //{
+        //    if (!Model.Equals(EditContext.Model))
+        //        EditContext = new EditContext(Model);
+        //    var result = EditContext.Validate();
+        //    var result1 = EditContext.GetValidationMessages();
+        //    checkValidation = false;
+        //}
         return base.OnParametersSetAsync();
     }
 

@@ -11,7 +11,7 @@ namespace Model.Translate
     [Table("TargetFaculities", Schema = "trs")]
     public class TargetFaculity
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Key]
         public int Id { get; set; }
 
         /// <summary>

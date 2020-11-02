@@ -2,16 +2,23 @@
 @typeparam TEntity
 @if (GridState.InitializedState == InitializedState.FirstFetchData)
 {
-    <td @attributes="attrs">
-        @if  (ChildContent == null)
+<td @attributes="attrs">
+    @if (ChildContent == null)
+    {
+        if (isCheckBox)
         {
-            @value
+            <CheckBox Value="value" Disabled />
         }
         else
         {
-            @ChildContent
+            @value
         }
-    </td>
+    }
+    else
+    {
+        @ChildContent
+    }
+</td>
 }
 
 @code
@@ -19,6 +26,7 @@
     string InitTitle;
     object value;
     Dictionary<string, object> attrs;
+    bool isCheckBox;
 
     [Parameter]
     public Expression<Func<TEntity, string>> Field { get; set; }
@@ -54,10 +62,11 @@
     public int? Width { get; set; }
 
     [CascadingParameter(Name = "GridRowData")]
-    public TEntity Data { get; set; }
+    public RowData<TEntity> RowData { get; set; }
 
     [CascadingParameter(Name = "GridStateData")]
     public ColumnAppState<TEntity> GridState { get; set; }
+
 
     protected override void OnInitialized()
     {
@@ -78,6 +87,9 @@
             if (expr.NodeType == ExpressionType.MemberAccess)
             {
                 var propertyExpr = expr as MemberExpression;
+                var type = propertyExpr.Type;
+                isCheckBox = type == typeof(bool) || type == typeof(bool?);
+
                 var attr = propertyExpr.Member.GetCustomAttribute<DisplayNameAttribute>();
                 if (attr == null)
                     InitTitle = propertyExpr.Member.Name;
@@ -90,7 +102,6 @@
 
     protected override void OnParametersSet()
     {
-
         if (Style.HasValue())
             attrs["style"] = Style;
         if (GridState.InitializedState == InitializedState.GridColumnsNotInitialized)
@@ -102,7 +113,8 @@
                 Title = Title ?? InitTitle,
                 Width = Width,
                 FromExpression = FromExpression,
-                ToExpression = ToExpression
+                ToExpression = ToExpression,
+                Orderbyable = Field?.Body as BinaryExpression == null
             };
             if (FromExpression != null || ToExpression != null)
             {
@@ -115,8 +127,8 @@
         }
         else
         {
-            if (ChildContent == null && Data != null)
-                value = Field.Compile().Invoke(Data);
+            if (ChildContent == null && RowData.Data != null)
+                value = Field.Compile().Invoke(RowData.Data);
         }
         base.OnParametersSet();
     }

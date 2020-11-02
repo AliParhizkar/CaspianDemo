@@ -13,7 +13,7 @@ namespace Model.PersonInfo.StudentInfo
     [Table("JobInfoes", Schema = "dbo")]
     public class JobInfo
     {
-        [Key, ForeignKey(nameof(Student)), DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Key, ForeignKey(nameof(Student))]
         public int StudentId { get; set; }
 
         /// <summary>

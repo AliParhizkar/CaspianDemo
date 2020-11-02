@@ -10,7 +10,7 @@ namespace Model.SelectUnitInfo
     [Table("CourseGrades", Schema = "sun")]
     public class CourseGrade
     {
-        [Key, ForeignKey(nameof(SelectUnitDetail)), DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Key, ForeignKey(nameof(SelectUnitDetail))]
         public int SelectUnitDetailId { get; set; }
 
         /// <summary>

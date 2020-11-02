@@ -1,0 +1,53 @@
+﻿@page "/SubTrend"
+@inherits SimplePage<SubTrend>
+@inject SubTrendService service
+<table style="width:90%">
+    <tr>
+        <td>
+            <label>گرایش</label>
+        </td>
+        <td>
+            <ComboBox @bind-Value="SearchData.TrendId" TEntity="SubTrend" TValue="int?" DisplayTextExpression="t => t.Title" OrderByExpression="t => t.Title" />
+        </td>
+        <td>
+            <label>زیرگرایش</label>
+        </td>
+        <td>
+            <StringTextBox @bind-Value="SearchData.Title" Search />
+        </td>
+    </tr>
+</table>
+<Grid @bind-Data="GridData" TEntity="SubTrend" Search="SearchData" Service="service" TableHeight="500" Title="زیرگرایش" WindowStyle="width:500px">
+    <Columns>
+        <GridColumn TEntity="SubTrend" Field="t => t.Trend.Title" Title="گرایش" />
+        <GridColumn TEntity="SubTrend" Field="t => t.Title" />
+        <GridCommandColumns TEntity="SubTrend" />
+    </Columns>
+    <EditFormTemplate>
+        <table style="width:90%">
+            <tr>
+                <td>
+                    <label>گرایش</label>
+                </td>
+                <td>
+                    <ComboBox @bind-Value="GridData.TrendId" TEntity="Trend" TValue="int?" DisplayTextExpression="t => t.Title" OrderByExpression="t => t.Title" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>عنوان</label>
+                </td>
+                <td>
+                    <StringTextBox @bind-Value="GridData.Title" />
+                </td>
+            </tr>
+            <tr>
+                <FormCommandButton />
+            </tr>
+        </table>
+    </EditFormTemplate>
+</Grid>
+
+@code {
+
+}

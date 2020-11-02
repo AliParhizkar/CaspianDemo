@@ -2,7 +2,7 @@
 
 namespace Caspian.Common.Service
 {
-    public interface ISimpleService<TEntity>
+    public interface ISimpleService<TEntity>: IEntity
     {
         IQueryable<TEntity> GetAll(TEntity entity);
 
@@ -15,6 +15,10 @@ namespace Caspian.Common.Service
         void Remove(TEntity entity);
 
         TEntity Single(int id);
+
+        TEntity SingleNochange(int id);
+
+
 
         TEntity SingleOrDefault(int id);
     }

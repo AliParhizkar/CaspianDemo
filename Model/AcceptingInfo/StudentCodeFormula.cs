@@ -11,19 +11,19 @@ namespace Model.AcceptingInfo
     /// </summary>
     public class StudentCodeFormula
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
         /// <summary>
         /// عنوان
         /// </summary>
-        [DisplayName("عنوان"), Required, Unique("فرمولی با این عنوان در سیستم ثبت شده است")]
+        [DisplayName("عنوان")]
         public string Title { get; set; }
 
         /// <summary>
         /// کد پذیرش
         /// </summary>
-        [DisplayName("پذیرش"), Required]
+        [DisplayName("پذیرش")]
         public int AcceptingId { get; set; }
 
         /// <summary>
@@ -35,7 +35,7 @@ namespace Model.AcceptingInfo
         /// <summary>
         /// کد فرمول
         /// </summary>
-        [DisplayName("کد فرمول"), Unique("فرمولی با این کد در سیستم ثبت شده است.")]
+        [DisplayName("کد فرمول")]
         public string Code { get; set; }
 
         /// <summary>
@@ -44,10 +44,10 @@ namespace Model.AcceptingInfo
         [CheckOnDelete("فرمول دارای توکن می باشد و امکان حذف آن وجود ندارد")]
         public virtual ICollection<FormulToken> Tokens { get; set; }
 
-        /// <summary>
-        /// لیست پذیرشهای این فرمول
-        /// </summary>
-        [CheckOnDelete("فرمول دارای پذیرش می باشد و امکان حذف آن وجود ندارد.")]
-        public virtual ICollection<Accepting> Acceptings { get; set; }
+        ///// <summary>
+        ///// لیست پذیرشهای این فرمول
+        ///// </summary>
+        //[CheckOnDelete("فرمول دارای پذیرش می باشد و امکان حذف آن وجود ندارد.")]
+        //public virtual ICollection<Accepting> Acceptings { get; set; }
     }
 }

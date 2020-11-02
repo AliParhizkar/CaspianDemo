@@ -26,7 +26,6 @@
     <None Include="UI\List\DropdownList.razor" />
     <None Include="UI\List\RadioItem.razor" />
     <None Include="UI\List\RadioList.razor" />
-    <None Include="UI\Page\BasePage.razor" />
     <None Include="UI\Page\ConfirmMessage.razor" />
     <None Include="UI\Page\LookupPage.razor" />
     <None Include="UI\Page\MasterDetailPage.razor" />

@@ -1,0 +1,95 @@
+﻿@page "/Accepting"
+@inherits SimplePage<Accepting>
+@inject AcceptingService service
+<table style="width:90%">
+    <tr>
+        <td>
+            <label>عنوان</label>
+        </td>
+        <td>
+            <StringTextBox @bind-Value="SearchData.Title" Search />
+        </td>
+    </tr>
+</table>
+<Grid @bind-Data="GridData" TEntity="Accepting" Search="SearchData" Service="service" TableHeight="500" Title="پذیرش"
+      WindowStyle="width:500px">
+    <Columns>
+        <GridColumn TEntity="Accepting" Field="t => t.Title" />
+        <GridColumn TEntity="Accepting" Field="t => t.EntranceYear.ToString()" />
+        <GridColumn TEntity="Accepting" Field="t => t.EntranceTerm.FaText()" />
+        <GridColumn TEntity="Accepting" Field="t => t.TuitionFactor.ToString()" />
+        <GridColumn TEntity="Accepting" Field="t => t.StartDate.ToPersianDateString()" />
+        <GridColumn TEntity="Accepting" Field="t => t.EndDate.ToPersianDateString()" />
+        <GridColumn TEntity="Accepting" Field="t => t.IsActive.ToString()" />
+        <GridCommandColumns TEntity="Accepting" />
+    </Columns>
+    <EditFormTemplate>
+        <table style="width:90%">
+            <tr>
+                <td>
+                    <label>عنوان</label>
+                </td>
+                <td>
+                    <StringTextBox @bind-Value="GridData.Title" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>سال ورود</label>
+                </td>
+                <td>
+                    <NumericTextBox @bind-Value="GridData.EntranceYear" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>نیمسال ورود</label>
+                </td>
+                <td>
+                    <DropdownList @bind-Value="GridData.EntranceTerm" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>ضریب شهریه</label>
+                </td>
+                <td>
+                    <NumericTextBox @bind-Value="GridData.TuitionFactor" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>تاریخ شروع</label>
+                </td>
+                <td>
+                    <DatePicker @bind-Value="GridData.StartDate" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>تاریخ پایان</label>
+                </td>
+                <td>
+                    <DatePicker @bind-Value="GridData.EndDate" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>وضعیت</label>
+                </td>
+                <td>
+                    <CheckBox @bind-Value="GridData.IsActive" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <FormCommandButton />
+                </td>
+            </tr>
+        </table>
+    </EditFormTemplate>
+</Grid>
+
+@code {
+
+}

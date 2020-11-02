@@ -11,13 +11,13 @@ namespace Model.AcceptingInfo
     [Table("FormulTokens")]
     public class FormulToken
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
         /// <summary>
         /// نوع فیلد تولید کد آموزشی
         /// </summary>
-        [DisplayName("نوع فیلد"), Required]
+        [DisplayName("نوع فیلد")]
         public CodeGeneratorFieldType? CodeGeneratorFieldType { get; set; }
 
         /// <summary>
@@ -73,12 +73,6 @@ namespace Model.AcceptingInfo
         /// </summary>
         [DisplayName("مقدار ترم دوم"), MaxLength(10)]
         public string SecondTerm { get; set; }
-
-        /// <summary>
-        /// ترم تابستانی-مقدار ثابت
-        /// </summary>
-        [DisplayName("مقدار ترم تابستان"), MaxLength(10)]
-        public string SummeryTerm { get; set; }
 
         /// <summary>
         /// کد فرمول تولید کد دانشجوئی

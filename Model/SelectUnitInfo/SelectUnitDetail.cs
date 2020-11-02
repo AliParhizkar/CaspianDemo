@@ -4,7 +4,6 @@ using Model.CourseGroupInfo;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Model.Translate;
 
 namespace Model.SelectUnitInfo
 {
@@ -14,7 +13,7 @@ namespace Model.SelectUnitInfo
     [Table("SelectUnitDetails", Schema = "sun")]
     public class SelectUnitDetail
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Key]
         public int Id { get; set; }
 
         /// <summary>

@@ -1,14 +1,18 @@
+using Service;
+using Caspian.UI;
+using Caspian.Common;
+using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Caspian.Common;
-using Service;
-using Caspian.UI;
+using System.Reflection;
 using Caspian.Common.Service;
+using System.Linq;
+using Model.AcceptingInfo;
+using Model.Enums;
 
-namespace CaspianDemo
+namespace Learning
 {
     public class Startup
     {
@@ -28,11 +32,13 @@ namespace CaspianDemo
             services.AddSingleton<MyContext>(new Context());
             services.AddSingleton<FormAppState>();
             services.AddSingleton<WindowAppState>();
-            services.AddScoped<CustomerService>();
-            services.AddScoped<ProvinceService>();
-            services.AddScoped<CityService>();
-            services.AddScoped<AreaService>();
-            services.AddScoped<GradeTitleService>();
+            foreach(var serviceType in Assembly.GetAssembly(typeof(CityService)).GetTypes())
+            {
+                services.AddTransient(serviceType);
+                var interfaceType = serviceType.GetInterfaces().SingleOrDefault(t => t.Name.StartsWith("ISimpleService"));
+                if (interfaceType != null)
+                    services.AddTransient(interfaceType, serviceType);
+            }
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

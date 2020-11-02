@@ -11,7 +11,7 @@
                                           OrderByChanged(!e.CtrlKey, col);
                                       }" style="width:@(col.Width + "px")" class="t-header">
                             <span>@(col.Title)</span>
-                            @if (col.OrderBy.HasValue)
+                            @if (col.OrderBy.HasValue && col.Orderbyable)
                             {
                                 <i @attributes="attrs"></i>
                             }
@@ -29,26 +29,29 @@
 
     async void OrderByChanged(bool clearAllOrdering, GridHeaderData data)
     {
-        var ordering = data.OrderBy;
-        if (clearAllOrdering)
-            foreach(var col in ColumnsData)
-                col.OrderBy = null;
-        switch (ordering)
+        if (data.Orderbyable)
         {
-            case OrderBy.Inc:
-                data.OrderBy = OrderBy.Dec;
-                attrs["class"] = "fa fa-sort-amount-down";
-                break;
-            case OrderBy.Dec:
-                data.OrderBy = null;
-                break;
-            case null:
-                data.OrderBy = OrderBy.Inc;
-                attrs["class"] = "fa fa-sort-amount-up-alt";
-                break;
+            var ordering = data.OrderBy;
+            if (clearAllOrdering)
+                foreach (var col in ColumnsData)
+                    col.OrderBy = null;
+            switch (ordering)
+            {
+                case OrderBy.Inc:
+                    data.OrderBy = OrderBy.Dec;
+                    attrs["class"] = "fa fa-sort-amount-down";
+                    break;
+                case OrderBy.Dec:
+                    data.OrderBy = null;
+                    break;
+                case null:
+                    data.OrderBy = OrderBy.Inc;
+                    attrs["class"] = "fa fa-sort-amount-up-alt";
+                    break;
+            }
+            if (OnOrderingChanged.HasDelegate)
+                await OnOrderingChanged.InvokeAsync(null);
         }
-        if (OnOrderingChanged.HasDelegate)
-            await OnOrderingChanged.InvokeAsync(null);
     }
 
     [Parameter]

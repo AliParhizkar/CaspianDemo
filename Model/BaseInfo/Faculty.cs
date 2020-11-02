@@ -17,19 +17,19 @@ namespace Model.BaseInfo
         /// <summary>
         /// کد دانشکده
         /// </summary>
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Key]
         public int Id { get; set; }
 
         /// <summary>
         /// عنوان دانشکده
         /// </summary>
-        [DisplayName("عنوان"), Required, Unique("دانشکده ای با این عنوان در سیستم ثبت شده است")]
+        [DisplayName("عنوان")]
         public string Title { get; set; }
 
         /// <summary>
         /// کد دانشکده
         /// </summary>
-        [DisplayName("کد دانشکده"), Unique("دانشکده ای با این کد در سیستم ثبت شده است")]
+        [DisplayName("کد دانشکده")]
         public string Code { get; set; }
 
         /// <summary>

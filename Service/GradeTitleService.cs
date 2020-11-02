@@ -12,14 +12,7 @@ namespace Service
 {
     public class GradeTitleService : SimpleService<GradeTitle>, ISimpleService<GradeTitle>
     {
-        public GradeTitleService(IServiceProvider provider)
-            :base(provider)
-        {
-
-        }
-
         private bool isFirst = true;
-
 
         public override Task<ValidationResult> ValidateAsync(ValidationContext<GradeTitle> context, CancellationToken cancellation = default)
         {

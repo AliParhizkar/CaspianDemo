@@ -12,7 +12,7 @@ namespace Model.PersonInfo
     [Table("Languages", Schema = "dbo")]
     public class Language
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Key]
         public int Id { get; set; }
 
         /// <summary>

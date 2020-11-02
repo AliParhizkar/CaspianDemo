@@ -1,0 +1,38 @@
+﻿@page "/Country"
+@inherits SimplePage<Country>
+@inject CountryService service
+<table style="width:90%">
+    <tr>
+        <td>
+            <label>کشور</label>
+        </td>
+        <td>
+            <StringTextBox @bind-Value="SearchData.Title" Search />
+        </td>
+    </tr>
+</table>
+<Grid @bind-Data="GridData" TEntity="Country" Search="SearchData" Service="service" TableHeight="500" Title="کشور" WindowStyle="width:500px">
+    <Columns>
+        <GridColumn TEntity="Country" Field="t => t.Title" />
+        <GridCommandColumns TEntity="Country" />
+    </Columns>
+    <EditFormTemplate>
+        <table style="width:90%">
+            <tr>
+                <td>
+                    <label>عنوان</label>
+                </td>
+                <td>
+                    <StringTextBox @bind-Value="GridData.Title" />
+                </td>
+            </tr>
+            <tr>
+                <FormCommandButton />
+            </tr>
+        </table>
+    </EditFormTemplate>
+</Grid>
+
+@code {
+
+}

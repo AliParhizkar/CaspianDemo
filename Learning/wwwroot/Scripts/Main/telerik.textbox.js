@@ -318,9 +318,6 @@
 
                 }, this));
             }
-            else
-                if (key != 9)
-                    e.preventDefault();
         },
         focus: function () {
             this._focus();

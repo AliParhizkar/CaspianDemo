@@ -13,20 +13,20 @@ namespace Model.AcceptingInfo
     [Table("AcceptingUniversities")]
     public class AcceptingUniversity
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Key]
         public int Id { get; set; }
-
-        /// <summary>
-        /// کد دانشگاه
-        /// </summary>
-        [DisplayName("کد"), Unique("دانشگاهی با این کد در سیستم ثبت شده است")]
-        public string Code { get; set; }
 
         /// <summary>
         /// عنوان
         /// </summary>
-        [DisplayName("عنوان"), Required, Unique("دانشگاهی با این عنوان در سیستم ثبت شده است")]
+        [DisplayName("عنوان")]
         public string Title { get; set; }
+
+        /// <summary>
+        /// کد دانشگاه
+        /// </summary>
+        [DisplayName("کد")]
+        public string Code { get; set; }
 
         /// <summary>
         /// کد داشگاه من

@@ -1,0 +1,69 @@
+﻿@page "/StudyField"
+@inherits SimplePage<StudyField>
+@inject StudyFieldService service
+<table style="width:90%">
+    <tr>
+        <td>
+            <label>نوع مقطع تحصیلی</label>
+        </td>
+        <td>
+            <ComboBox @bind-Value="SearchData.DepartmentId" TEntity="Department" TValue="int?" DisplayTextExpression="t => t.Title" OrderByExpression="t => t.Title" />
+        </td>
+        <td>
+            <label>عنوان</label>
+        </td>
+        <td>
+            <StringTextBox @bind-Value="SearchData.Title" Search />
+        </td>
+        <td>
+            <label>کد</label>
+        </td>
+        <td>
+            <StringTextBox @bind-Value="SearchData.Code" Search />
+        </td>
+    </tr>
+</table>
+<Grid @bind-Data="GridData" TEntity="StudyField" Search="SearchData" Service="service" TableHeight="500" Title="رشته تحصیلی" WindowStyle="width:500px">
+    <Columns>
+        <GridColumn TEntity="StudyField" Field="t => t.Department.Faculty.Title" Title="دانشکده" />
+        <GridColumn TEntity="StudyField" Field="t => t.Department.Title" Title="گروه آموزشی" />
+        <GridColumn TEntity="StudyField" Field="t => t.Title" />
+        <GridColumn TEntity="StudyField" Field="t => t.Code" />
+        <GridCommandColumns TEntity="StudyField" />
+    </Columns>
+    <EditFormTemplate>
+        <table style="width:90%">
+            <tr>
+                <td>
+                    <label>گروه آمورشی</label>
+                </td>
+                <td>
+                    <ComboBox @bind-Value="GridData.DepartmentId" TEntity="Department" TValue="int?" DisplayTextExpression="t => t.Title" OrderByExpression="t => t.Title" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>عنوان</label>
+                </td>
+                <td>
+                    <StringTextBox @bind-Value="GridData.Title" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>کد</label>
+                </td>
+                <td>
+                    <StringTextBox @bind-Value="GridData.Code" />
+                </td>
+            </tr>
+            <tr>
+                <FormCommandButton />
+            </tr>
+        </table>
+    </EditFormTemplate>
+</Grid>
+
+@code {
+
+}

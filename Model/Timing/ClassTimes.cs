@@ -1,10 +1,10 @@
 ﻿using System;
+using Caspian.Common;
 using System.ComponentModel;
 using Model.CourseGroupInfo;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Caspian.Common;
 
 namespace Model.Timing
 {
@@ -14,7 +14,7 @@ namespace Model.Timing
     [Table("ClassTimes", Schema = "tim")]
     public class ClassTime
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Key]
         public int Id { get; set; }
 
         /// <summary>

@@ -1,11 +1,11 @@
 ﻿using System;
+using System.Linq;
+using System.Reflection;
 using System.Collections;
+using System.Linq.Expressions;
+using System.Linq.Dynamic.Core;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Linq.Dynamic.Core;
-using System.Linq.Expressions;
-using System.Reflection;
 
 namespace Caspian.Common.Extension
 {
@@ -59,6 +59,13 @@ namespace Caspian.Common.Extension
         {
             return source.Provider.CreateQuery(
                 Expression.Call(typeof(Queryable), "OrderBy", new Type[] { source.ElementType, lambda.Body.Type },
+                source.Expression, Expression.Quote(lambda)));
+        }
+
+        public static IQueryable OrderByDescending(this IQueryable source, LambdaExpression lambda)
+        {
+            return source.Provider.CreateQuery(
+                Expression.Call(typeof(Queryable), "OrderByDescending", new Type[] { source.ElementType, lambda.Body.Type },
                 source.Expression, Expression.Quote(lambda)));
         }
 
@@ -151,8 +158,8 @@ namespace Caspian.Common.Extension
             foreach (var field in type.GetProperties())
             {
                 var notMappedAttr = field.GetCustomAttribute<NotMappedAttribute>();
-                
-                if (notMappedAttr == null && (!field.PropertyType.IsGenericType || field.PropertyType.IsValueType))
+                type = field.PropertyType;
+                if (notMappedAttr == null && type != typeof(bool) && type != typeof(bool?) && (!type.IsGenericType || type.IsValueType))
                 {
                     var value = field.GetValue(search);
                     string str = field.Name;
@@ -162,14 +169,14 @@ namespace Caspian.Common.Extension
                     if (value != null)
                     {
                         var isEqualToDefault = true;
-                        if (field.PropertyType.IsValueType)
+                        if (type.IsValueType)
                         {
-                            object defaltValue = Activator.CreateInstance(field.PropertyType);
+                            object defaltValue = Activator.CreateInstance(type);
                             isEqualToDefault = value.Equals(defaltValue);
                         }
-                        if (!field.PropertyType.CustomAttributes.Any(t => t.AttributeType == typeof(ComplexTypeAttribute)))
+                        if (!type.CustomAttributes.Any(t => t.AttributeType == typeof(ComplexTypeAttribute)))
                         {
-                            if (!isEqualToDefault || field.PropertyType.IsNullableType() || field.PropertyType == typeof(string) || field.PropertyType == typeof(bool))
+                            if (!isEqualToDefault || type.IsNullableType() || type == typeof(string))
                                 fieldsName.Add(str);
                             else
                                 if (!field.PropertyType.IsValueType)

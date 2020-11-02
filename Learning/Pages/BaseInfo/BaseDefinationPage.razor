@@ -1,0 +1,74 @@
+﻿@page "/BaseDefination"
+@using Caspian.Common.Attributes
+@inherits SimplePage<BaseDefination>
+@inject BaseDefinationService service
+<div style="">
+    <div style="width:calc(100% - 200px);float:right;" class="col-ld-10 col-md-10">
+        <div style="width:95%;margin:0 auto;">
+            <div class="t-formtitle" style="background-color:#315f5f;padding:12px;border-radius:8px;">
+                <span style="color:white;font:bold;font-size:14px;">
+                    @(Title)
+                </span>
+            </div>
+            <table style="width:90%">
+                <tr>
+                    <td><label>عنوان</label></td>
+                    <td>
+                        <StringTextBox @bind-Value="SearchData.Title" Search />
+                    </td>
+                </tr>
+            </table>
+            <Grid @ref="Grid" @bind-Data="GridData" TEntity="BaseDefination" Search="SearchData" Service="service" TableHeight="500"
+                  OnDataBinding="query => query.Where(t => t.BaseDefinationType == baseDefinationType)" Title="@Title" WindowStyle="width:500px"
+                  OnOpen="() => { GridData.BaseDefinationType = baseDefinationType; }">
+                <Columns>
+                    <GridColumn TEntity="BaseDefination" Field="t => t.Title" />
+                    <GridCommandColumns TEntity="BaseDefination" />
+                </Columns>
+                <EditFormTemplate>
+                    <table style="width:90%">
+                        <tr>
+                            <td>
+                                <label>عنوان</label>
+                            </td>
+                            <td>
+                                <StringTextBox @bind-Value="GridData.Title" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <FormCommandButton />
+                        </tr>
+                    </table>
+                </EditFormTemplate>
+            </Grid>
+
+        </div>
+    </div>
+    <div style="width:200px;overflow:auto" class="col-ld-2 col-md-2 panelbar">
+        @{
+            foreach (var item in dic)
+            {
+                <div style="height:30px">
+                    <button @onclick="() => { baseDefinationType = item.Key;Grid.EnableLoading();Title = item.Value; }" style="color:white;cursor:pointer">@(item.Value)</button>
+                </div>
+            }
+        }
+    </div>
+</div>
+
+@code {
+    BaseDefinationType baseDefinationType = BaseDefinationType.FileType;
+    string Title = "نوع پرونده";
+    IDictionary<BaseDefinationType, string> dic;
+    protected override Task OnInitializedAsync()
+    {
+        dic = new Dictionary<BaseDefinationType, string>();
+        var fields = typeof(BaseDefinationType).GetFields().Where(t => !t.IsSpecialName);
+        foreach (var field in fields)
+        {
+            var attr = field.GetCustomAttribute<EnumFieldAttribute>();
+            dic.Add((BaseDefinationType)field.GetValue(null), attr.DisplayName);
+        }
+        return base.OnInitializedAsync();
+    }
+}

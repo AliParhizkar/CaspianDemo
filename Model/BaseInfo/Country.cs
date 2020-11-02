@@ -13,13 +13,13 @@ namespace Model.BaseInfo
     [Table("Countries", Schema = "dbo")]
     public class Country
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Key]
         public int Id { get; set; }
 
         /// <summary>
         /// عنوان کشور
         /// </summary>
-        [DisplayName("عنوان"), Required, Unique("کشوری با این عنوان در سیتسم ثبت شده است")]
+        [DisplayName("عنوان")]
         public string Title { get; set; }
 
         /// <summary>

@@ -1,0 +1,38 @@
+﻿@page "/Region"
+@inherits SimplePage<Region>
+@inject RegionService service
+<table style="width:90%">
+    <tr>
+        <td>
+            <label>دین</label>
+        </td>
+        <td>
+            <StringTextBox @bind-Value="SearchData.Title" Search />
+        </td>
+    </tr>
+</table>
+<Grid @bind-Data="GridData" TEntity="Region" Search="SearchData" Service="service" TableHeight="500" Title="دین" WindowStyle="width:500px">
+    <Columns>
+        <GridColumn TEntity="Region" Field="t => t.Title" />
+        <GridCommandColumns TEntity="Region" />
+    </Columns>
+    <EditFormTemplate>
+        <table style="width:90%">
+            <tr>
+                <td>
+                    <label>عنوان</label>
+                </td>
+                <td>
+                    <StringTextBox @bind-Value="GridData.Title" />
+                </td>
+            </tr>
+            <tr>
+                <FormCommandButton />
+            </tr>
+        </table>
+    </EditFormTemplate>
+</Grid>
+
+@code {
+
+}

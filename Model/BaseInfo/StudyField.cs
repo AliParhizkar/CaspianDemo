@@ -18,25 +18,25 @@ namespace Model.BaseInfo
         /// <summary>
         /// کد رشته
         /// </summary>
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Key]
         public int Id { get; set; }
 
         /// <summary>
         /// عنوان رشته
         /// </summary>
-        [DisplayName("عنوان"), Required, Unique("رشته ای با این عنوان ثبت شده است")]
+        [DisplayName("عنوان")]
         public string Title { get; set; }
 
         /// <summary>
         /// کد آموزشی
         /// </summary>
-        [DisplayName("کد آموزشی"), Unique("رشته ای با این کد ثبت شده است")]
+        [DisplayName("کد آموزشی")]
         public string Code { get; set; }
 
         /// <summary>
         /// کد گروه تحصیلی
         /// </summary>
-        [DisplayName("گروه تحصیلی"), Required]
+        [DisplayName("گروه تحصیلی")]
         public int? DepartmentId { get; set; }
 
         /// <summary>

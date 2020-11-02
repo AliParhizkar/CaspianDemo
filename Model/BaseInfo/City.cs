@@ -16,7 +16,7 @@ namespace Model.BaseInfo
     [Table("Cities", Schema = "dbo")]
     public class City
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Key]
         public int Id { get; set; }
 
         /// <summary>

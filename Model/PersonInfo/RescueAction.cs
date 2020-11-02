@@ -12,7 +12,7 @@ namespace Model.PersonInfo
     [Table("RescueActions", Schema = "dbo")]
     public class RescueAction
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Key]
         public int Id { get; set; }
 
         /// <summary>

@@ -1,0 +1,79 @@
+﻿@page "/Payments"
+@inherits SimplePage<Payments>
+@inject PaymentsService service
+
+<table style="width:90%">
+    <tr>
+        <td>
+            <label>عنوان</label>
+        </td>
+        <td>
+            <StringTextBox @bind-Value="SearchData.Title" Search />
+        </td>
+    </tr>
+</table>
+<Grid @bind-Data="GridData" TEntity="Payments" Search="SearchData" Service="service" TableHeight="500" Title="پرداخت" 
+      WindowStyle="width:500px">
+    <Columns>
+        <GridColumn TEntity="Payments" Field="t => t.Accepting.Title" Title="پدیرش" />
+        <GridColumn TEntity="Payments" Field="t => t.PaymentIssue.Title" Title="موضوع پرداخت" />
+        <GridColumn TEntity="Payments" Field="t => t.PaymentItem.Title" Title="آیتم پرداخت" />
+        <GridColumn TEntity="Payments" Field="t => t.Title"/>
+        <GridColumn TEntity="Payments" Field="t => t.PaymentValue.Seprate3Digit()" />
+        <GridColumn TEntity="Payments" Field="t => t.PaymentIdentifire" />
+    </Columns>
+    <EditFormTemplate>
+        <table style="width:90%;margin:0 auto">
+            <tr>
+                <td><label> پذیرش</label></td>
+                <td>
+                    <ComboBox @bind-Value="GridData.AcceptingId" TValue="int" TEntity="Accepting" 
+                              DisplayTextExpression="t => t.Title" OrderByExpression="t => t.Title" />
+                </td>
+            </tr>
+            <tr>
+                <td><label>عنوان</label></td>
+                <td>
+                    <StringTextBox @bind-Value="GridData.Title" />
+                </td>
+            </tr>
+            <tr>
+                <td><label>موضوع پرداخت</label></td>
+                <td>
+                    <ComboBox @bind-Value="GridData.PaymentIssueId" TValue="int?" 
+                              ConditionExpression="t => t.BaseDefinationType == BaseDefinationType.PaymentIssue"
+                              TEntity="BaseDefination" DisplayTextExpression="t => t.Title" OrderByExpression="t => t.Title" />
+                </td>
+            </tr>
+            <tr>
+                <td><label>آیتم پرداخت</label></td>
+                <td>
+                    <ComboBox @bind-Value="GridData.PaymentItemId" TValue="int?"
+                              ConditionExpression="t => t.BaseDefinationType == BaseDefinationType.ItemPayment"
+                              TEntity="BaseDefination" DisplayTextExpression="t => t.Title" OrderByExpression="t => t.Title" />
+                </td>
+            </tr>
+            <tr>
+                <td><label>مبلغ پرداخت</label></td>
+                <td>
+                    <NumericTextBox @bind-Value="GridData.PaymentValue" />
+                </td>
+            </tr>
+            <tr>
+                <td><label>شناسه پرداخت</label></td>
+                <td>
+                    <StringTextBox @bind-Value="GridData.PaymentIdentifire" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <FormCommandButton />
+                </td>
+            </tr>
+        </table>
+    </EditFormTemplate>
+</Grid>
+
+@code {
+
+}

@@ -14,13 +14,13 @@ namespace Model.BaseInfo
     [Table("Trends", Schema = "dbo")]
     public class Trend
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Key]
         public int Id { get; set; }
 
         /// <summary>
         /// عنوان گرایش
         /// </summary>
-        [DisplayName("عنوان"), Required, Unique("گرایشی با این عنوان در سیستم ثبت شده است .")]
+        [DisplayName("عنوان")]
         public string Title { get; set; }
 
         /// <summary>

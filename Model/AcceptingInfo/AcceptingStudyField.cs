@@ -10,7 +10,7 @@ namespace Model.AcceptingInfo
     /// </summary>
     public class AcceptingStudyField
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Key]
         public int Id { get; set; }
 
         /// <summary>

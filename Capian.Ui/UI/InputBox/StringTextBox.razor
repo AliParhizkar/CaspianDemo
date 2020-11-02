@@ -37,7 +37,7 @@
             if (Cols.HasValue)
                 Attributes.Add("cols", Cols);
             if (Rows.HasValue)
-                Attributes.Add("rows", Rows);
+                Attributes["rows"] = Rows;
         }
         else
         {
@@ -98,8 +98,6 @@
     {
         var json = this.ConvertToJson();
         await jsRuntime.InvokeVoidAsync("$.telerik.bindControl", input, json, UiControlType.TextBox);
-        if (Data == null)
-            ErrorMessage = null;
         if (firstRender)
         {
             var data = new JsValueSetter(this);

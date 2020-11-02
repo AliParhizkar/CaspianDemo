@@ -12,7 +12,7 @@ namespace Model.PersonInfo
     [Table("Identification", Schema = "dbo")]
     public class Identification
     {
-        [Key, ForeignKey(nameof(Person)), DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Key, ForeignKey(nameof(Person))]
         public int PersonId { get; set; }
 
         /// <summary>

@@ -13,17 +13,16 @@ namespace Service
     {
         CityService cityService;
         AreaService areaService;
-        public CustomerService(IServiceProvider provider)
-            : base(provider)
+        public CustomerService()
         {
+            RuleFor(t => t.PersonType).Custom(t => t.PersonType == null, "نوع شخص باید مشخص باشد.");
             RuleFor(t => t.FName).Custom(t => t.PersonType == PersonType.Real && t.FName == null, "نام باید مشخص باشد");
             RuleFor(t => t.LName).Custom(t => t.PersonType == PersonType.Real && t.LName == null, "نام خانوادگی باید مشخص باشد");
             RuleFor(t => t.Age).Custom(t => t.PersonType == PersonType.Real && t.Age == null, "سن باید مشخص باشد")
                 .Custom(t => t.PersonType == PersonType.Real && (t.Age < 18 || t.Age > 50), "فقط افراد بین 18-50 سال مجاز به ثبت نام هستند");
             RuleFor(t => t.Gender).Custom(t => t.PersonType == PersonType.Real && t.Gender == null, "جنسیت باید مشخص باشد");
             RuleFor(t => t.MobileNumber).Custom(t => t.MobileNumber == null, "شماره همراه باید مشخص باشد")
-                .Custom(t => t.MobileNumber != null && (t.MobileNumber.Length != 11 || !t.MobileNumber.StartsWith("09")), "همراه باید 11 رقم باشد و با 09 شروع شود")
-                .Custom(t => GetAll(null).Any(u => u.MobileNumber == t.MobileNumber), "مشتری با این شماره همراه ذخیره شده است.");
+                .Custom(t => t.MobileNumber != null && (t.MobileNumber.Length != 11 || !t.MobileNumber.StartsWith("09")), "همراه باید 11 رقم باشد و با 09 شروع شود");
             ///حقوقی
             RuleFor(t => t.CompanyName).Custom(t => t.PersonType == PersonType.Legal && t.CompanyName == null, "عنوان شرکت باید مشخص باشد");
             RuleFor(t => t.TellNumber).Custom(t => t.PersonType == PersonType.Legal && t.TellNumber == null, "شماره تلفن شرکت باید مشخص باشد")
@@ -50,8 +49,8 @@ namespace Service
     {
         CityService cityService;
 
-        public AreaService(System.IServiceProvider provider)
-            : base(provider)
+        public AreaService()
+
         {
             RuleFor(t => t.CityId).Custom(t => t.CityId == 0, "شهر باید مشخص باشد.");
             RuleFor(t => t.Title).Custom(t => !t.Title.HasValue(), "عنوان منطقه باید مشخص باشد.");

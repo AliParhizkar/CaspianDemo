@@ -10,5 +10,7 @@ namespace Caspian.UI
     public interface IListValueInitializer
     {
         Task IncPageNumber();
+
+        void Close();
     }
 }

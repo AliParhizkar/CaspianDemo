@@ -13,26 +13,26 @@ namespace Model.AcceptingInfo
     [Table("AcceptingFaculties", Schema = "acc")]
     public class AcceptingFaculty
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Key]
         public int Id { get; set; }
 
         /// <summary>
         /// کد
         /// </summary>
-        [DisplayName("کد"), Unique("دانشکده ای با این کد در سیستم ثبت شده است")]
+        [DisplayName("کد")]
         public string Code { get; set; }
 
         /// <summary>
         /// عنوان
         /// </summary>
-        [DisplayName("عنوان"), Unique("دانشکده ای با این عنوان در سیستم ثبت شده است"), Required]
+        [DisplayName("عنوان")]
         public string Title { get; set; }
 
         /// <summary>
         /// کد دانشگاه مورد پذیرش
         /// </summary>
         [DisplayName("دانشگاه مورد پذیرش")]
-        public int? AcceptingUniversityId { get; set; }
+        public int AcceptingUniversityId { get; set; }
 
         /// <summary>
         ///  مشخصات دانشگاه مورد پذیرش
@@ -44,7 +44,7 @@ namespace Model.AcceptingInfo
         /// کد دانشکده من
         /// </summary>
         [DisplayName("دانشکده من")]
-        public int? FacultyId { get; set; }
+        public int FacultyId { get; set; }
 
         /// <summary>
         /// مشخصات دانشکده ی من

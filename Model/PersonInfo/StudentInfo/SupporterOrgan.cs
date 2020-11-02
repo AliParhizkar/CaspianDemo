@@ -13,7 +13,7 @@ namespace Model.PersonInfo.StudentInfo
     [Table("SupporterOrgans", Schema = "dbo")]
     public class SupporterOrgan
     {
-        [Key, ForeignKey(nameof(Student)), DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Key, ForeignKey(nameof(Student))]
         public int SupporterOrganId { get; set; }
 
         /// <summary>

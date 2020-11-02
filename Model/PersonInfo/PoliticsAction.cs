@@ -12,7 +12,7 @@ namespace Model.PersonInfo
     [Table("PoliticsActions", Schema = "dbo")]
     public class PoliticsAction
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Key]
         public int Id { get; set; }
 
         /// <summary>

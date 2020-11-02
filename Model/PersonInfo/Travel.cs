@@ -12,7 +12,7 @@ namespace Model.PersonInfo
     [Table("Travels", Schema = "dbo")]
     public class Travel
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Key]
         public int Id { get; set; }
 
         /// <summary>

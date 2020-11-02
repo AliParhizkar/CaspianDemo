@@ -10,9 +10,7 @@ namespace Service
 {
     public class BaseDefinationService : SimpleService<BaseDefination>, ISimpleService<BaseDefination>
     {
-
-        public BaseDefinationService(IServiceProvider provider)
-            : base(provider)
+        public BaseDefinationService()
         {
             RuleFor(t => t.BaseDefinationType).IsInEnum();
             RuleFor(t => t.Title).Custom(t => !t.Title.HasValue(), "عنوان باید مشخص باشد")

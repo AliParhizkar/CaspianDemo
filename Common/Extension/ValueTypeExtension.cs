@@ -136,6 +136,11 @@ namespace Caspian.Common
             return number;
         }
 
+        public static string ToCheckBox(this bool value)
+        {
+            return  "<span>" + value + "</span>";
+        }
+
         public static string FaText(this Enum field)
         {
             EnumFieldAttribute da;

@@ -1,10 +1,10 @@
 ﻿using System;
 using Model.Enums;
 using Model.BaseInfo;
+using Caspian.Common;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Caspian.Common;
 
 namespace Model.PersonInfo.ProfessorInfo
 {
@@ -14,7 +14,7 @@ namespace Model.PersonInfo.ProfessorInfo
     [Table("ProfessorsEmployment", Schema = "dbo")]
     public class ProfessorEmployment
     {
-        [Key, ForeignKey(nameof(Professor)), DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Key, ForeignKey(nameof(Professor))]
         public int ProfessorId { get; set; }
 
         /// <summary>

@@ -1,5 +1,5 @@
 ﻿(function ($) {
-   
+
     var $t = $.telerik;
     function enableLable(element) {
         var id = $(element).attr('id');
@@ -9,7 +9,7 @@
             $('label[for=' + id + ']').css('color', '');
     }
     $t.combobox = function (element, options) {
-        if (options) 
+        if (options)
             options.enabled = !options.disabled;
         $.extend(this, options);
         var isTextBox = element.nodeName.toLowerCase() == 'input' && element.type.toLowerCase() == 'text';
@@ -26,11 +26,11 @@
                 var builder = options.builder;
                 builder.buffer = [];
                 return $(builder
-                        .cat('<input class="t-input" autocomplete="off" type="text" ')
-                        .catIf('value="', options.text, '" ', options.text)
-                        .catIf('name="', options.name, '-input" ', options.name)
-                        .cat('/>')
-                        .string());
+                    .cat('<input class="t-input" autocomplete="off" type="text" ')
+                    .catIf('value="', options.text, '" ', options.text)
+                    .catIf('name="', options.name, '-input" ', options.name)
+                    .cat('/>')
+                    .string());
             }
 
             htmlBuilder.render();
@@ -56,7 +56,7 @@
                 $element.removeClass('t-state-hover').removeClass('t-state-default').addClass('t-state-focused');
                 $(element).trigger('focus');
             }
-            
+
         });
         $input.focusout(function () {
             var $element = $(this).parent();
@@ -67,14 +67,14 @@
         });
         this.element = element;
         var that = this;
-        
+
         var $element = this.$element = $(element).closest("form")
-                                            .bind("reset", function () {
-                                                setTimeout(function () {
-                                                    that.value(element.value);
-                                                });
-                                            })
-                                            .end();
+            .bind("reset", function () {
+                setTimeout(function () {
+                    that.value(element.value);
+                });
+            })
+            .end();
 
         this.loader = new $t.list.loader(this);
         this.trigger = new $t.list.trigger(this);
@@ -82,13 +82,13 @@
         var $selectIcon = this.$wrapper.find('.t-select');
 
         var $text = this.$text = this.$wrapper.find('> .t-dropdown-wrap > .t-input')
-                                     .attr('autocomplete', 'off')
-                                     .bind("paste", $.proxy(function (e) {
-                                         setTimeout($.proxy(function () {
-                                             this.$element.val(e.target.value);
-                                             resetTimer(this);
-                                         }, this), 0);
-                                     }, this));
+            .attr('autocomplete', 'off')
+            .bind("paste", $.proxy(function (e) {
+                setTimeout($.proxy(function () {
+                    this.$element.val(e.target.value);
+                    resetTimer(this);
+                }, this), 0);
+            }, this));
 
         var updateCssOnPropertyChange = function (e) {
             var attr = "class",
@@ -138,7 +138,7 @@
                 }
             }
         }
-        
+
         this.dropDown = new $t.dropDown({
             attr: this.dropDownAttr,
             effects: this.effects,
@@ -162,7 +162,7 @@
             }
         }
 
-        this.disable = function() {
+        this.disable = function () {
             $wrapper.addClass('t-state-disabled')
             $text.attr('disabled', 'disabled');
             $element.attr('disabled', 'disabled');
@@ -178,7 +178,7 @@
             $.extend(true, this, options);
             this.data = options.data;
             this.dataBind(this.data, true);
-            
+
             this.enabled = !options.disabled;
             if (this.enabled)
                 this.enable();
@@ -188,6 +188,9 @@
                 this.open();
             else
                 this.close();
+            if (options.errorMessage) {
+                var element = $(this.element).closest('.t-combobox').find('.t-dropdown-wrap').removeClass('t-state-default').addClass('t-state-error')
+            }
             if (options.hasFocus)
                 this.focus();
         };
@@ -203,8 +206,8 @@
                 var item = selectedIndex != -1 && selectedIndex < $items.length
                     ? $items[selectedIndex]
                     : selectedItemsLength > 0
-                    ? $selectedItems[selectedItemsLength - 1]
-                    : null;
+                        ? $selectedItems[selectedItemsLength - 1]
+                        : null;
                 if (item)
                     component.select(item);
                 else {
@@ -264,7 +267,7 @@
         }
 
         this.value = function (value) {
-            
+
             if (arguments.length == 0) {
                 var self_ = this;
                 value = '';
@@ -280,13 +283,13 @@
                 Error('')
             }
         }
-        
+
         $t.list.common.call(this);
         $t.list.filters.call(this);
         $t.list.initialize.call(this);
 
         $(document.documentElement).bind('mousedown', $.proxy(function (e) {
-            
+
             var $dropDown = this.dropDown.$element;
             var isDropDown = $dropDown && $dropDown.parent().length > 0;
 
@@ -373,8 +376,8 @@
                         $selectedItem = $items.filter('.t-state-selected:first');
 
                     var $item = $selectedItem.length == 0 || $items.length == 1 ? $items.first()
-                                 : (key == 38) ? $selectedItem.prev() // up
-                                 : (key == 40) ? $selectedItem.next() // down
+                        : (key == 38) ? $selectedItem.prev() // up
+                            : (key == 40) ? $selectedItem.next() // down
                                 : [];
                     if ($item.length) {
                         var item = $item[0];
@@ -398,7 +401,7 @@
                 }
                 return;
             }
-            
+
             if (key == 8 || key == 46 || (e.ctrlKey && key == 88)) {
                 var $text = this.$text;
 
@@ -436,7 +439,7 @@
                 }
                 return;
             }
-            
+
             if (key == 27 || key == 9) {
                 clearTimeout(this.timeout);
                 var data = findItemByText(this.data, this.$text.val());
@@ -460,9 +463,10 @@
 
             // always set value. Select(item) will override it if needed.
             setTimeout($.proxy(function () {
-                this.$element.val(this.$text.val()); }, this), 0);
+                this.$element.val(this.$text.val());
+            }, this), 0);
         }
-        
+
         if (that.cascadeTo) {
             that.$element.bind("valuechange", function () {
                 var combobox = $("#" + that.cascadeTo).getComboBox();
@@ -493,7 +497,7 @@
                         combobox.$element.trigger("valuechange");
                         return;
                     }
-                    $.telerik.post(combobox.ajax['selectUrl'], data, function(result){
+                    $.telerik.post(combobox.ajax['selectUrl'], data, function (result) {
                         combobox.dataBind(result);
                         combobox.selectedIndex = -1;
                     });
@@ -502,7 +506,7 @@
                     throw new Error("خطا: control with id " + that.cascadeTo + ' not exist');
             });
         }
-        
+
     }
 
     function findItemByText(data, inputText) {

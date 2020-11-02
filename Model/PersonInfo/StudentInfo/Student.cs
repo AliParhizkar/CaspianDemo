@@ -1,5 +1,6 @@
 ﻿using System;
 using Model.Enums;
+using Caspian.Common;
 using Model.BaseInfo;
 using Model.SelectUnitInfo;
 using Model.ExceptCaseInfo;
@@ -8,7 +9,6 @@ using System.Collections.Generic;
 using Model.PersonInfo.ProfessorInfo;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Caspian.Common;
 
 namespace Model.PersonInfo.StudentInfo
 {
@@ -20,7 +20,7 @@ namespace Model.PersonInfo.StudentInfo
         /// <summary>
         /// سال ورود
         /// </summary>
-        [DisplayName("سال ورود"), Required]
+        [DisplayName("سال ورود")]
         public int? EntranceYear { get; set; }
 
         /// <summary>

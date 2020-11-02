@@ -1,4 +1,8 @@
 ﻿/* base stylesheet */
+.t-combobox .t-state-focused .t-select {
+    background-image: linear-gradient(#e6e6e6,#e1e1e1)
+}
+
 .t-container{
     width:90%;
     margin:5px auto;
@@ -6,10 +10,19 @@
     .t-container td {
         padding: 3px 0;
     }
-.t-combobox .t-animation-container{
-    display:none;
-    position:relative;
-    overflow:hidden;
+    .t-checkbox.t-disabled{
+        cursor: not-allowed;
+    }
+.t-combobox .t-state-disabled input{
+    border-color: rgba(0,0,0,0.12);
+}
+.t-combobox .t-animation-container {
+    position: relative;
+    height: 300px;
+    overflow: hidden;
+    padding-right: 2px;
+    width: 100%;
+    display: none;
 }
 .t-alert {
     margin: 3px 10px 0 0;
@@ -46,41 +59,44 @@
     display: inline-block;
 }
 .errorMessage {
-    text-align: center !important;
-    margin: 0.5em;
+    text-align: justify !important;
     background-color: #fff4c9;
     color: #635145;
     z-index: 99999999;
     border-radius: 5px;
     box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.3);
-    padding: 4px 5px 4px 6px;
-    position: absolute;
+    position: relative;
     font-weight: bold;
-    font-family: Tahoma;
-    margin-right: 10px;
-    padding: 6px;
-    border-radius: 15px;
+    padding: 2px 5px;
+    font-size: 13px;
+    top:5px;
+    left:-5px;
+    width:calc(100% - 20px);
 }
-
-    .errorMessage div {
-        border-color: transparent;
-        border-bottom-color: #ffe79e;
-        left: 50%;
-        top: -14px;
-        border-style: solid;
-        border-width: 7px;
-        height: 0px;
-        position: absolute;
-        width: 0px;
-    }
+.t-stringtextbox{
+    height:34px;
+    overflow:visible;
+}
+.errorMessage div {
+    border-color: transparent;
+    border-bottom-color: #ffe79e;
+    left: 50%;
+    top: -14px;
+    border-style: solid;
+    border-width: 7px;
+    height: 0px;
+    position: absolute;
+    width: 0px;
+}
 .t-reset {
     margin: 0;
-    padding: 0;
     border: 0;
     outline: 0;
     text-decoration: none;
     font-size: 100%;
     list-style: none;
+    padding: 2px 0 2px 0;
+    min-height:80px;
 }
 .t-Enumes .t-inner >span{
     margin-right:12px;
@@ -129,12 +145,9 @@ a.t-grid-add :visited {
 .t-grid-add:hover {
     color: #026002;
 } 
-.t-widget {
-        overflow: hidden;
-    }
-
 .t-dropdown {
     border-width: 0;
+    height:32px;
 }
 
     .t-dropdown .t-dropdown-wrap {
@@ -277,6 +290,9 @@ html body .t-button-bare {
 .t-animation-container .t-popup {
     border-radius: 8px;
     overflow: hidden;
+    position: absolute;
+    width: calc(100% - 5px);
+    box-sizing: border-box;
 }
 
 .t-state-disabled,
@@ -338,16 +354,11 @@ div.t-window {
 
 .t-window-titlebar {
     white-space: nowrap;
-    border-bottom-width: 1px;
-    border-bottom-style: solid;
+    border-bottom: 1px solid;
+    border-bottom-color: rgba(0, 0, 0, .12);
     font-weight: bold;
-    -moz-border-radius-topleft: 5px;
-    -moz-border-radius-topright: 5px;
-    -webkit-border-top-left-radius: 5px;
-    -webkit-border-top-right-radius: 5px;
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
     height: 36px;
+    background-color: #f7f7f7;
 }
 
 .t-HelpWindow .t-window-action{
@@ -372,10 +383,6 @@ div.t-window {
         vertical-align: middle;
     }
 
-div.t-window-content {
-    overflow: auto;
-    position: static;
-}
 
 .t-window-titlebar .t-window-actions {
     position: absolute;
@@ -914,6 +921,8 @@ div.t-grid-footer {
     border-color: rgba(0,0,0,0.2);
     color: #656565;
     background-color: #f6f6f6;
+    height: 30px;
+    overflow: visible;
 }
 .t-grid-pager .t-numeric a:hover {
     background-color: rgba(255,99,88,0.08);
@@ -929,7 +938,10 @@ div.t-grid-footer {
     z-index: 10;
 }
 .t-grid .t-grid-toolbar .t-grid-add .t-icon {
+    background-image: url('/Content/2011.1.315/Outlook/sprite.png');
+    display: inline-block;
     background-position: -2px -69px;
+    zoom:.8;
 }
 
 .t-grid .t-grid-toolbar .t-grid-excel .t-icon {
@@ -1504,10 +1516,10 @@ html body .t-grid tbody .t-button-icon {
     box-sizing:border-box;
     background-color:inherit;
     border-radius:0 8px 8px 0;
-}   
+}
 .t-dropdown .t-state-error {
-    border: 1px solid #f30932 !important;
-    background-color: #ffc0cb !important;
+    border-color: rgba(255, 0, 0, 0.19) !important;
+    background-color: #ffe9ec !important;
 }
 
 .t-picker-wrap .t-icon,
@@ -1548,7 +1560,11 @@ html body .t-grid tbody .t-button-icon {
     width: 28px;
     background-image: linear-gradient(#f6f6f6,#f1f1f1);
 }
-
+.t-state-error .t-select {
+    background-image: linear-gradient(#ffd9d9,#fff0f0) !important;
+    border: 1px solid rgba(255, 0, 0, 0.3) !important;
+    border-right: none !important;
+}
 .t-picker-wrap .t-select {
     border-style: solid;
     border-width: 1px;
@@ -1566,7 +1582,9 @@ html body .t-grid tbody .t-button-icon {
     .t-popup .t-item {
         cursor: default;
         color: black;
-        font-size: 14px;
+        font-size: 15px;
+        line-height: 30px;
+        padding-right: 4px;
     }
         .t-popup .t-item:not(.t-state-selected):hover {
             background-color: #ededed;
@@ -1576,25 +1594,27 @@ html body .t-grid tbody .t-button-icon {
             display: inline-block;
             *display: inline;
             zoom: 1;
-            width: 203px;
+            width: 204px;
             position: relative;
             overflow: hidden;
         }
 
-    .t-calendar .t-link {
-        text-decoration: none;
-    }
+            .t-calendar .t-link {
+                text-decoration: none;
+                color: #0e0e0e;
+            }
 
     .t-calendar .t-action-link {
         text-decoration: underline;
     }
 
-    .t-calendar .t-header {
-        padding: .2em 0;
-        text-align: center;
-        position: relative;
-        zoom: 1;
-    }
+            .t-calendar .t-header {
+                padding: .1em 0;
+                text-align: center;
+                background-color: chocolate;
+                font-size:15px;
+                font-weight:bold;
+            }
 
     .t-calendar .t-nav-prev,
     .t-calendar .t-nav-next {
@@ -1613,11 +1633,11 @@ html body .t-grid tbody .t-button-icon {
     .t-calendar .t-content {
         text-align: right;
         display: table;
-        width: 100%;
+        width: 200px;
         height: 189px;
         table-layout: fixed;
         border-style: none;
-        margin: 0;
+        margin: 2px;
         padding: 0;
     }
 
@@ -1625,52 +1645,54 @@ html body .t-grid tbody .t-button-icon {
         /*height: 100%;*/
     }
     .t-calendar .t-state-selected {
-        background-color:aquamarine;
+        background-color:pink;
+        border-radius:4px;
     }
 
 
     .t-calendar .t-nav-fast {
-        display: inline-block;
-        *display: inline;
-        zoom: 1;
-        width: 75%;
     }
 
         .t-calendar .t-nav-fast .t-icon {
             vertical-align: top;
         }
 
-    .t-calendar th {
-        border-bottom-style: solid;
-        border-bottom-width: 1px;
-        font-weight: normal;
-        cursor: default;
-    }
+            .t-calendar th {
+                border-bottom: 1px solid #b1b1b1;
+                cursor: default;
+            }
 
     .t-calendar td {
         cursor: pointer;
         padding: 1px;
-        line-height: 16px;
+        line-height: 27px;
+        font-weight:bold;
     }
+        .t-calendar td:not(.t-state-selected):hover {
+            background-color: lightgray
+        }
 
-    .t-calendar .t-state-focus {
-        border-width: 1px;
-        border-style: dotted;
-        padding: 0;
-    }
+        .t-calendar .t-state-focus {
+            border-width: 1px;
+            border-style: dotted;
+            padding: 0;
+        }
 
     .t-calendar .t-content .t-link {
         display: block;
         overflow: hidden;
         position: relative;
+        font-weight:bold;
     }
+            .t-calendar .t-header .t-link{
+                color:white;
+            }
 
-    .t-calendar th,
-    .t-calendar .t-content .t-link {
-        padding: .25em .45em .3em .1em;
-        line-height: 16px;
-        color:red;
-    }
+            .t-calendar th,
+            .t-calendar .t-content .t-link {
+                padding: .25em .45em .3em .1em;
+                line-height: 16px;
+            }
 
     .t-calendar .t-meta-view .t-link {
         padding: .25em 0 .3em;
@@ -1683,7 +1705,10 @@ html body .t-grid tbody .t-button-icon {
 .t-datetimepicker,
 .t-datepicker {
     border: 0;
-    white-space: nowrap;
+}
+
+.errorMessage span {
+    display:inline-block!important;
 }
 
 .t-datetimepicker {
@@ -1694,8 +1719,7 @@ div.t-timepicker,
 div.t-datetimepicker,
 div.t-datepicker {
     font-size:0;
-    background-color: transparent; /* don't allow t-widget to add background-color */
-    width: 100%;
+    height:32px;
 }
 
 .t-datetimepicker .t-picker-wrap {
@@ -1718,14 +1742,6 @@ div.t-datepicker {
     cursor: default;
 }
 
-.t-timepicker,
-.t-datepicker,
-.t-datetimepicker {
-    display: inline-block;
-    *display: inline;
-    zoom: 1;
-    vertical-align: top;
-}
 
 .t-picker-wrap .t-input {
     margin: 0;
@@ -1733,7 +1749,9 @@ div.t-datepicker {
 
 .t-time-popup,
 .t-datepicker-calendar {
-    box-shadow: 1px 1px 1px #aaa;
+    box-shadow: 0 2px 10px dimgrey;
+    background-color: #e7eaea;
+    border-radius:9px 9px 0 0;
 }
 
 .t-iframe-overlay {
@@ -1893,19 +1911,25 @@ div.t-numerictextbox {
     zoom: 1;
     vertical-align: middle;
     white-space: nowrap;
+    overflow:visible;
+    height:34px;
+}
+.t-checkbox.t-disabled .t-icon i {
+    color: #cccccc;
 }
 .t-checkbox .t-icon {
     display:inline-block;
     border: 1px solid rgba(0,0,0,0.25);
     border-radius: 3px;
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
     box-sizing: border-box;
-    font-size: 16px;
     text-align:center;
 }
     .t-checkbox .t-icon i {
         color: #ff6358;
+        vertical-align: top;
+        line-height: 16px;
     }
     .t-checkbox .t-icon .fa-square {
         font-size: 11px !important;
@@ -3515,19 +3539,27 @@ t-ForeignKeySelector .t-inner {
 }
 
 textarea[class="t-input"] {
-    border-radius: 15px;
-    border: 1px solid #c5c5c5;
-    background-color: #e5e2e2;
+    border-radius: 8px;
+    border-style:solid;
+    border-width:1px;
+    border-color:rgba(0, 0, 0, 0.12);
     padding: 3px 7px;
     resize: none;
 }
+    textarea[class="t-input"]:hover {
+        border-color: rgba(0, 0, 0, 0.24);
+    }
 
-.t-picturebox {
-    display: block;
-    border-radius: 5px;
-    margin:2px;
-    box-shadow: 0 0 2px 1px #bdbdbd;
-}
+    textarea[class="t-input"]:focus {
+        box-shadow: 0 0 3px 0 grey;
+    }
+
+    .t-picturebox {
+        display: block;
+        border-radius: 5px;
+        margin: 2px;
+        box-shadow: 0 0 2px 1px #bdbdbd;
+    }
 
 .t-tabstrip .t-arrow-left {
     position: absolute;
@@ -3778,4 +3810,12 @@ fieldset.t-widget label{
 }
 .t-grid-content tr:nth-child(2n) {
     background-color: #f5f5f5;
+}
+.t-combobox .t-state-disabled span {
+    background-image: none;
+    background-color: #eaeaea;
+    border-color: rgba(0,0,0,0.12) !important;
+}
+.t-combobox .t-state-disabled{
+    cursor:not-allowed;
 }

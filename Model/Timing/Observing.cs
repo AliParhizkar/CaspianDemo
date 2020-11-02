@@ -1,9 +1,8 @@
 ﻿using Model.Enums;
-using Model.BaseInfo;
+using Model.EmployInfo;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Model.EmployInfo;
 
 namespace Model.Timing
 {
@@ -13,7 +12,7 @@ namespace Model.Timing
     [Table("Observings")]
     public class Observing
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Key]
         public int Id { get; set; }
 
         /// <summary>

@@ -35,6 +35,7 @@ var flag = false;
                 case 3:
                     if (!$(control).data('tDatePicker'))
                         $(control).tDatePicker(options);
+                    $(control).data('tDatePicker').updateState(options);
                     break;
                 case 4:
                     break;
@@ -128,6 +129,8 @@ var flag = false;
                     break;
                 case 8:
                     $(control).bind('changeValue', function (e, value) {
+                        if (!value)
+                            value = null;
                         dotnetHelper.invokeMethodAsync('SetStringValue', value);
                     });
                     break;
@@ -185,29 +188,86 @@ var flag = false;
             //});
 
         },
-        serversideCombobox: function (input, hasFocus, status) {
-
+        serversideCombobox: function (input, hasFocus, status, errorMessage) {
+            let $control = $(input).closest('.t-combobox').find('.t-popup');
+            let $continer = $(input).closest('.t-combobox').find('.t-animation-container');
+            if (errorMessage) {
+                input.errorMessage = errorMessage;
+                $(input).parent().removeClass('t-state-default').addClass('t-state-error')
+            } else {
+                input.errorMessage = null;
+                $(input).parent().removeClass('t-state-error').addClass('t-state-default')
+            }
             if (hasFocus)
                 $(input).focus();
-            var $control = $(input).closest('.t-combobox').find('.t-animation-container');
-            if (status == 2) {
-                $control.css('display', 'block');
-                $control.css('height', 0);
-                $control.animate({ height: 300 }, 200);
+            if (status == 2 && $continer.css('display') == 'block') {
+                var bottom = $continer.find('.t-state-selected').position().top + $continer.find('.t-state-selected').height() +
+                    $control.scrollTop();
+                if (bottom >= 300) {
+                    $control.scrollTop(bottom - 300);
+                }
             }
-            else {
-                $control.animate({ height: 5 }, 200, function () {
-                    $control.css('display', 'none');
-                });
+            if (input.oldStatus != status) {
+                if (status == 2 && $continer.css('display') != 'block') {
+                    $continer.css('display', 'block');
+                    var height = $control.height() + 5;
+                    if (height > 300)
+                        height = 300;
+                    $control.css('top', -height);
+                    $control.animate({ top: 0 }, 300);
+                }
+
+                if (status == 1 && $continer.css('display') == 'block') {
+                    var height = $control.height() + 5;
+                    if (height > 300)
+                        height = 300;
+                    $control.animate({ top: -height }, 300, function () {
+                        $continer.css('display', 'none');
+                    });
+                }
+                input.oldStatus = status;
             }
         },
 
-        bindPageable(dotnetHelper, input) {
-            var div = $(input).closest('.t-combobox').find('.t-group');
-            div.bind('scroll', function (e) {
-                var height = $(this).scrollTop() + $(this).innerHeight();
-                if (height > $(this).find('.t-reset').height() + 1) {
-                    dotnetHelper.invokeMethodAsync('IncPageNumber');
+        bindComboBox(dotnetHelper, input, pageable) {
+            if (pageable) {
+                let div = $(input).closest('.t-combobox').find('.t-group');
+                div.bind('scroll', function (e) {
+                    var height = $(this).scrollTop() + $(this).innerHeight();
+                    if (height > $(this).find('.t-reset').height() + 1) {
+                        dotnetHelper.invokeMethodAsync('IncPageNumber');
+                    }
+                });
+            }
+            $(input).keypress(function (e) {
+                let $continer = $(input).closest('.t-combobox').find('.t-animation-container');
+                if (e.keyCode == 13 && $continer.css('display') == 'block')
+                    return false;
+            });
+            var $control = $(input).closest('.t-combobox').find('.t-dropdown-wrap');
+            $(input).closest('.t-combobox').mouseenter(function () {
+                if (!$control.hasClass('t-state-disabled'))
+                    $control.removeClass('t-state-default').addClass('t-state-hover');
+            });
+            $(input).closest('.t-combobox').mouseleave(function () {
+                if (!$control.hasClass('t-state-disabled'))
+                    $control.removeClass('t-state-hover').addClass('t-state-default');
+            });
+            $(input).focusin(function () {
+                if (input.errorMessage)
+                    $.telerik.showErrorMessage($(input).closest('.t-widget')[0], input.errorMessage);
+                $control.removeClass('t-state-hover').removeClass('t-state-default').addClass('t-state-focused');
+            });
+            $(input).focusout(function () {
+                $.telerik.hideErrorMessage($(input).closest('.t-widget')[0]);
+                $control.removeClass('t-state-focused').addClass('t-state-default');
+            });
+            $(window).bind('click', function (e) {
+                let div = $(input).closest('.t-combobox');
+                if ($(div).find('.t-animation-container').css('display') != 'none') {
+                    if ($(e.target).closest('.t-combobox')[0] != div) {
+                        dotnetHelper.invokeMethodAsync('Close');
+                    }
                 }
             });
         },
@@ -2018,7 +2078,7 @@ var flag = false;
         function create() {
             var odv = $('<div class="t-widget t-message" id="outMessage"></div>');
             $("body").append(odv);
-            $("#outMessage").html('<div class="t-window-titlebar t-header">&nbsp;<div class="t-window-actions t-header"><span class="t-close"></span><span class="t-title"></span></div></div><div style="padding:5px 5px 5px 5px;text-align:justify"></div>');
+            $("#outMessage").html('<div class="t-window-titlebar">&nbsp;<div class="t-window-action"><span class="t-close"><i class="fa fa-close"></i></span><span class="t-title"></span></div></div><div style="padding:5px 5px 5px 5px;text-align:justify"></div>');
             $("#outMessage .t-close").click(function () {
                 hide();
             });
@@ -2050,7 +2110,6 @@ var flag = false;
             $("#outMessage").remove();
             create();
             height = 30;
-            console.log($("#outMessage")[0])
             $("#outMessage .t-title").text(this.title);
             $("#outMessage").children().eq(1).html(this.message);
             $("#outMessage").css('opacity', 0.1);
@@ -2062,7 +2121,7 @@ var flag = false;
             moverItem();
             if (timer != null)
                 clearTimeout(timer);
-            //timer = setTimeout('hide()', 4000);
+            timer = setTimeout('hide()', 4000);
         };
         return this;
     }

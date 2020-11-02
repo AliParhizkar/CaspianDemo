@@ -11,7 +11,7 @@ namespace Model.SelectUnitInfo
     [Table("SubCourceGrades", Schema = "sun")]
     public class SubCourceGrade
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Key]
         public int Id { get; set; }
 
         [Required]

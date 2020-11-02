@@ -1,0 +1,40 @@
+﻿@page "/Faculty"
+@inherits SimplePage<Faculty>
+@inject FacultyService service
+<table style="width:90%">
+    <tr>
+        <td>
+            <label>استان</label>
+        </td>
+        <td>
+            <StringTextBox @bind-Value="SearchData.Title" Search />
+        </td>
+    </tr>
+</table>
+<Grid @bind-Data="GridData" TEntity="Faculty" Search="SearchData" Service="service" TableHeight="500" Title="دانشکده" 
+      OnOpen="() => { GridData.UniversityId = 1; }"
+      WindowStyle="width:500px">
+    <Columns>
+        <GridColumn TEntity="Faculty" Field="t => t.Title" />
+        <GridCommandColumns TEntity="Faculty" />
+    </Columns>
+    <EditFormTemplate>
+        <table style="width:90%">
+            <tr>
+                <td>
+                    <label>عنوان</label>
+                </td>
+                <td>
+                    <StringTextBox @bind-Value="GridData.Title" />
+                </td>
+            </tr>
+            <tr>
+                <FormCommandButton />
+            </tr>
+        </table>
+    </EditFormTemplate>
+</Grid>
+
+@code {
+
+}

@@ -11,7 +11,7 @@ namespace Model.PersonInfo
     [Table("EliteRelations", Schema = "dbo")]
     public class EliteRelation
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Key]
         public int Id { get; set; }
 
         /// <summary>

@@ -1,0 +1,66 @@
+﻿@page "/AcceptingDocuments"
+@inherits SimplePage<AcceptingDocuments>
+@inject AcceptingDocumentsService service
+
+<table style="width:90%">
+    <tr>
+        <td>
+            <label>عنوان</label>
+        </td>
+        <td>
+            <StringTextBox @bind-Value="SearchData.Title" Search />
+        </td>
+    </tr>
+</table>
+<Grid @bind-Data="GridData" TEntity="AcceptingDocuments" Search="SearchData" Service="service" TableHeight="400" 
+      Title="اسناد پدیرش" WindowStyle="width:500px">
+    <Columns>
+        <GridColumn TEntity="AcceptingDocuments" Field="t => t.Accepting.Title" Title="پدیرش" />
+        <GridColumn TEntity="AcceptingDocuments" Field="t => t.ScanType.Title" Title="نوع اسکن" />
+        <GridColumn TEntity="AcceptingDocuments" Field="t => t.IsRequired.ToString()" />
+        <GridColumn TEntity="AcceptingDocuments" Field="t => t.Title" Title="عنوان" />
+    </Columns>
+    <EditFormTemplate>
+        <div style="height:100px;border:1px solid red">
+
+        </div>
+        <table style="width:90%;margin:0 auto">
+            <tr>
+                <td><label>پذیرش</label></td>
+                <td>
+                    <ComboBox @bind-Value="GridData.AcceptingId" TValue="int" TEntity="Accepting"
+                              DisplayTextExpression="t => t.Title" OrderByExpression="t => t.Title" />
+                </td>
+            </tr>
+            <tr>
+                <td><label>عنوان</label></td>
+                <td>
+                    <StringTextBox @bind-Value="GridData.Title" />
+                </td>
+            </tr>
+            <tr>
+                <td><label>نوع اسکن</label></td>
+                <td>
+                    <ComboBox @bind-Value="GridData.ScanTypeId" TValue="int" TEntity="BaseDefination"
+                              ConditionExpression="t => t.BaseDefinationType == BaseDefinationType.ScanType"
+                              DisplayTextExpression="t => t.Title" OrderByExpression="t => t.Title" />
+                </td>
+            </tr>
+            <tr>
+                <td><label>اجبار داده</label></td>
+                <td>
+                    <CheckBox @bind-Value="GridData.IsRequired" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <FormCommandButton />
+                </td>
+            </tr>
+        </table>
+    </EditFormTemplate>
+</Grid>
+
+@code {
+
+}

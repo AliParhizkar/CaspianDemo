@@ -12,13 +12,13 @@ namespace Model.BaseInfo
     [Table("Regions", Schema = "dbo")]
     public class Region
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Key]
         public int Id { get; set; }
 
         /// <summary>
         /// عنوان دین
         /// </summary>
-        [DisplayName("عنوان"), Required, Unique("دینی با این عنوان در سیستم ثبت شده است")]
+        [DisplayName("عنوان")]
         public string Title { get; set; }
 
         /// <summary>

@@ -1,0 +1,53 @@
+﻿@page "/Grade"
+@inherits SimplePage<Grade>
+@inject GradeService service
+<table style="width:90%">
+    <tr>
+        <td>
+            <label>نوع مقطع تحصیلی</label>
+        </td>
+        <td>
+            <DropdownList @bind-Value="SearchData.PersonGradeType" />
+        </td>
+        <td>
+            <label>عنوان</label>
+        </td>
+        <td>
+            <StringTextBox @bind-Value="SearchData.Title" Search />
+        </td>
+    </tr>
+</table>
+<Grid @bind-Data="GridData" TEntity="Grade" Search="SearchData" Service="service" TableHeight="500" Title="مقطع تحصیلی" WindowStyle="width:500px">
+    <Columns>
+        <GridColumn TEntity="Grade" Field="t => t.PersonGradeType.FaText()" Title="نوع مقطع تحصیلی" />
+        <GridColumn TEntity="Grade" Field="t => t.Title" />
+        <GridCommandColumns TEntity="Grade" />
+    </Columns>
+    <EditFormTemplate>
+        <table style="width:90%">
+            <tr>
+                <td>
+                    <label>نوع مقطع تحصیلی</label>
+                </td>
+                <td>
+                    <DropdownList @bind-Value="GridData.PersonGradeType" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>عنوان</label>
+                </td>
+                <td>
+                    <StringTextBox @bind-Value="GridData.Title" />
+                </td>
+            </tr>
+            <tr>
+                <FormCommandButton />
+            </tr>
+        </table>
+    </EditFormTemplate>
+</Grid>
+
+@code {
+
+}

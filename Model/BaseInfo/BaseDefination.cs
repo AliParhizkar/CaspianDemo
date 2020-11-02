@@ -21,7 +21,7 @@ namespace Model.BaseInfo
         /// <summary>
         /// کد 
         /// </summary>
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Key]
         public int Id { get; set; }
 
         /// <summary>

@@ -11,7 +11,7 @@ namespace Model.CourseGroupInfo
     [Table("CourseGroupExams", Schema = "crg")]
     public class CourseGroupExam
     {
-        [Key, ForeignKey(nameof(CourseGroup)), DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Key]
         public int CourseGroupId { get; set; }
 
         /// <summary>

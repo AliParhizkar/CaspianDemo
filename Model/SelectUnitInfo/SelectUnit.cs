@@ -1,10 +1,10 @@
-﻿using Model.ExceptCaseInfo;
+﻿using Caspian.Common;
+using Model.ExceptCaseInfo;
 using System.ComponentModel;
 using System.Collections.Generic;
 using Model.PersonInfo.StudentInfo;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Caspian.Common;
 
 namespace Model.SelectUnitInfo
 {
@@ -14,7 +14,7 @@ namespace Model.SelectUnitInfo
     [Table("SelectUnit", Schema = "sun")]
     public class SelectUnit
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Key]
         public int Id { get; set; }
 
         /// <summary>

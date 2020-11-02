@@ -2,6 +2,7 @@
 using Microsoft.JSInterop;
 using Caspian.Common.Extension;
 using Caspian.Common;
+using System.Threading.Tasks;
 
 namespace Caspian.UI
 {
@@ -71,15 +72,21 @@ namespace Caspian.UI
         }
 
         [JSInvokable]
-        public async void SetDateValue(DateTime? date)
+        public async Task SetDateValue(DateTime? date)
         {
             await stringTextBox.SetValue(date);
         }
 
         [JSInvokable]
-        public  void IncPageNumber()
+        public async Task IncPageNumber()
         {
-            listValueInitializer.IncPageNumber();
+            await listValueInitializer.IncPageNumber();
+        }
+
+        [JSInvokable]
+        public void Close()
+        {
+            listValueInitializer.Close();
         }
     }
 }

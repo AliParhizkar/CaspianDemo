@@ -217,13 +217,12 @@
 
             var isRtl = this.isRtl;
             var $calendar = this.$calendar;
-
             // reposition & rewire the shared calendar
             elementPosition = position.offset;
-            elementPosition.top += position.outerHeight;
-
-            if (isRtl)
-                elementPosition.left -= (sharedCalendar.outerWidth() || sharedCalendar.parent().outerWidth()) - position.outerWidth;
+            elementPosition.top += position.outerHeight + 5;
+            elementPosition.left -= 29;
+            //if (isRtl)
+                //elementPosition.left -= (sharedCalendar.outerWidth()  || sharedCalendar.parent().outerWidth()) - position.outerWidth ;
 
             $t.fx._wrap(sharedCalendar).css($.extend({
                 position: 'absolute',
@@ -402,12 +401,13 @@
             throw "Target element is not a INPUT";
         }
         $(element).attr('dir', 'ltr');
-        $(element).mouseover(function () {
-            $(element).parent().addClass('t-state-hover');
+        $(element).closest('.t-datepicker').mouseover(function () {
+            $(element).parent().addClass('t-state-hover').removeClass('t-state-default');
         });
-        $(element).mouseleave(function () {
-            $(element).parent().removeClass('t-state-hover');
+        $(element).closest('.t-datepicker').mouseleave(function () {
+            $(element).parent().removeClass('t-state-hover').addClass('t-state-default');
         });
+        
         this.element = element;
         //if (this.selectedValue) {
         //    this.selectedValue = Date.UTC(this.selectedValue.getFullYear(), this.selectedValue.getMonth(), this.selectedValue.getDate());
@@ -420,9 +420,12 @@
                         keydown: $.proxy(this._keydown, this),
                         blur: function (e) {
                             $(e.target).parent().removeClass('t-state-focused');
+                            $t.hideErrorMessage($(element).closest('.t-datepicker')[0]);
                         },
                         focus: $.proxy(function (e) {
                             self.oldValue = self.value();
+                            if (self.errorMessage)
+                                $t.showErrorMessage($(element).closest('.t-datepicker')[0], self.errorMessage);
                             $(e.target).parent().addClass('t-state-focused');
                             $(e.target).parent().removeClass('t-state-hover');
                             if (this.openOnFocus) {
@@ -570,6 +573,19 @@
                 this.element.focus();
                 this._open();
             }
+        },
+
+        updateState: function (data) {
+            if (data.focused)
+                this.focus();
+            this.errorMessage = data.errorMessage;
+            //if (data.)
+            if (data.errorMessage) {
+                $(this.element).parent().removeClass('t-state-default').removeClass('t-state-hover')
+                    .addClass('t-state-error');
+            } else
+                $(this.element).parent().removeClass('t-state-error');
+
         },
 
         _close: function () {
@@ -748,9 +764,7 @@
         },
 
         focus: function () {
-            var item = $('#' + this.element.id);
-            if (item != undefined)
-                item.focus();
+            $(this.element).focus();
         }
 
     }

@@ -32,29 +32,26 @@
             attrs.Add("id", Id.Replace('.', '_'));
             attrs.Add("name", Id.Replace('.', '_'));
         }
-        var className = "t-widget t-checkbox ";
+        var className = "t-widget t-checkbox";
         if (Disabled)
-            className += "t-disabled";
+            className += " t-disabled";
+        if (Value == null)
+        {
+            className += " t-bufferd";
+            iconAtttrs["class"] = "fa fa-square";
+        }
         else
         {
-            if (Value == null)
+            var value = Convert.ToBoolean(Value);
+            if (value)
             {
-                className += "t-bufferd";
-                iconAtttrs["class"] = "fa fa-square";
+                iconAtttrs["class"] = "fa fa-check";
+                className += " t-selected";
             }
             else
             {
-                var value = Convert.ToBoolean(Value);
-                if (value)
-                {
-                    iconAtttrs["class"] = "fa fa-check";
-                    className += "t-selected";
-                }
-                else
-                {
-                    iconAtttrs.Remove("class");
-                    className += "t-unselected";
-                }
+                iconAtttrs.Remove("class");
+                className += " t-unselected";
             }
         }
         attrs.Add("class", className);

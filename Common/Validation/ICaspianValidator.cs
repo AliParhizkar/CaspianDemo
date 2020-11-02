@@ -4,8 +4,8 @@ using System.Linq.Expressions;
 
 namespace Caspian.Common
 {
-    public interface ICaspianValidator<TModel>
+    public interface ICaspianValidator
     {
-        public IRuleBuilder<TModel, TProperty> Add<TProperty>(Expression<Func<TModel, TProperty>> expression);
+        IServiceProvider Provider { get; set; }
     }
 }

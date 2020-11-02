@@ -63,6 +63,7 @@
                     outerWidth: $wrapper.outerWidth(),
                     zIndex: $t.getElementZIndex($wrapper[0])
                 };
+                $t.hideErrorMessage($(this.element).closest('.t-dropdown')[0]);
                 position.offset.left -= 1;
                 if (dropDown.$items) 
                     dropDown.open(position);
@@ -153,7 +154,6 @@
         },
         filtering: function () {
             this.filter = function (component) {
-                debugger
                 component.isFiltered = true;
 
                 var performAjax = true;
@@ -385,7 +385,6 @@
 
     function createItemsFilter(global, condition) {
         return function (component, data, inputText) {
-
             if (!data || data.length == 0) return;
 
             var filteredDataIndexes = $.map(data, function (item, index) {
@@ -429,7 +428,24 @@
     }
 
     $t.dropDownList = function (element, options) {
+        let _self = this;
         $.extend(this, options);
+
+        $(element).closest('.t-dropdown').focusin(function () {
+            if (_self.enabled) {
+                var $ctr = $(this).find('.t-dropdown-wrap');
+                if ($ctr.hasClass('t-state-error'))
+                    $(this).find('.t-dropdown-wrap').css('box-shadow', '0 0 5px 0 #f9183f');
+                else
+                    $(this).find('.t-dropdown-wrap').css('box-shadow', '0 0 3px 1px gray');
+                if (_self.errorMessage)
+                    $t.showErrorMessage(this, _self.errorMessage);
+            }
+        });
+        $(element).closest('.t-dropdown').focusout(function () {
+            $(this).find('.t-dropdown-wrap').css('box-shadow', 'none');
+            $t.hideErrorMessage(this);
+        });
         var isSelect = false;
         if (isSelect && !this.data) {
             this.data = $t.list.retrieveData(element);
@@ -469,7 +485,7 @@
         this.$text = this.$wrapper.find('> .t-dropdown-wrap > .t-input');
         enableLable(this.$wrapper[0])
         //allow element to be focused
-        if (!this.$wrapper.attr('tabIndex')) this.$wrapper.attr('tabIndex', 0);
+        if (!this.$wrapper.attr('tabIndex') && this.enabled) this.$wrapper.attr('tabIndex', 0);
         this.dropDown = new $t.dropDown({
             attr: this.dropDownAttr,
             effects: this.effects,
@@ -493,8 +509,16 @@
 
         this.updateState = function (options) {
             this.data = options.data;
+            this.errorMessage = options.errorMessage;
+            if (options.focused)
+                this.$wrapper.focus();
             var value = $(this.element).val();
-            this.enabled = !(options.disabled || false)
+            this.enabled = !(options.disabled || false);
+            if (this.enabled) {
+                if (!this.$wrapper.attr('tabIndex'))
+                    this.$wrapper.attr('tabIndex', 0);
+            } else
+                this.$wrapper.removeAttr('tabindex');
             var self_ = this;
             this.data.forEach(function (item, index) {
                 if (item.value == value) {
@@ -609,8 +633,8 @@
             }
 
             if (key == 9 || key == 13 || key == 27) {
-                trigger.change();
-                trigger.close();
+                //trigger.change();
+                //trigger.close();
             }
         }
 

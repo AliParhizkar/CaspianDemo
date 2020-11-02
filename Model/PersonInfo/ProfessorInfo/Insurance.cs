@@ -12,9 +12,9 @@ namespace Model.PersonInfo.ProfessorInfo
     public class Insurance
     {
         /// <summary>
-        /// کد شهرستان
+        /// کد استاد
         /// </summary>
-        [Key, ForeignKey(nameof(Professor)), DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Key, ForeignKey(nameof(Professor))]
         public int ProfessorId { get; set; }
 
         /// <summary>

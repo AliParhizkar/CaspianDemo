@@ -1,9 +1,9 @@
 ﻿using System;
+using Caspian.Common;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Caspian.Common;
 
 namespace Model.SelectUnitInfo
 {
@@ -13,7 +13,7 @@ namespace Model.SelectUnitInfo
     [Table("SelectUnitTimings", Schema = "sun")]
     public class SelectUnitTiming
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Key]
         public int Id { get; set; }
 
         [DisplayName("ترم"), Required]

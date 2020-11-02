@@ -1,8 +1,7 @@
-﻿using System.ComponentModel;
+﻿using Caspian.Common;
+using System.ComponentModel;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using Caspian.Common;
 
 namespace Model.Timing
 {
@@ -11,7 +10,7 @@ namespace Model.Timing
     /// </summary>
     public class ExamDay
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Key]
         public int Id { get; set; }
 
         /// <summary>

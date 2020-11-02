@@ -8,6 +8,8 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.DependencyInjection;
+using Caspian.Common.Service;
+using Caspian.Common;
 
 namespace Caspian.UI
 {
@@ -28,11 +30,31 @@ namespace Caspian.UI
         [Inject]
         IServiceProvider ServiceProvider { get; set; }
 
+        [Inject]
+        public MyContext Context { get; set; }
+
         public bool IsFirstInvalidControl { get; set; }
 
         private void ValidatorTypeChanged()
         {
             Validator = (IValidator)ServiceProvider.GetService(ValidatorType);
+            foreach(var info in ValidatorType.GetFields(BindingFlags.Instance | BindingFlags.NonPublic))
+            {
+                if (info.FieldType.GetInterface(nameof(IEntity)) != null)
+                {
+                    var service = info.GetValue(Validator);
+                    if (service == null)
+                    {
+                        service = ServiceProvider.GetService(info.FieldType);
+                        info.SetValue(Validator, service);
+                    }
+                    (service as IEntity).Context = Context;
+                }
+            }
+            if (Validator as IEntity != null)
+                (Validator as IEntity).Context = Context;
+            if (Validator as ICaspianValidator != null)
+                (Validator as ICaspianValidator).Provider = ServiceProvider;
             //Validator.Validate(EditContext.Model);
         }
 

@@ -1,0 +1,53 @@
+﻿@page "/Department"
+@inherits SimplePage<Department>
+@inject DepartmentService service
+<table style="width:90%">
+    <tr>
+        <td>
+            <label>دانشکده</label>
+        </td>
+        <td>
+            <ComboBox @bind-Value="SearchData.FacultyId" TEntity="Faculty" TValue="int?" DisplayTextExpression="t => t.Title" OrderByExpression="t => t.Title"/>
+        </td>
+        <td>
+            <label>عنوان</label>
+        </td>
+        <td>
+            <StringTextBox @bind-Value="SearchData.Title" Search />
+        </td>
+    </tr>
+</table>
+<Grid @bind-Data="GridData" TEntity="Department" Search="SearchData" Service="service" TableHeight="500" Title="گروه آموزشی" WindowStyle="width:500px">
+    <Columns>
+        <GridColumn TEntity="Department" Field="t => t.Faculty.Title" Title="دانشکده" />
+        <GridColumn TEntity="Department" Field="t => t.Title" />
+        <GridCommandColumns TEntity="Department" />
+    </Columns>
+    <EditFormTemplate>
+        <table style="width:90%">
+            <tr>
+                <td>
+                    <label>دانشکده</label>
+                </td>
+                <td>
+                    <ComboBox @bind-Value="GridData.FacultyId" TEntity="Faculty" TValue="int?" DisplayTextExpression="t => t.Title" OrderByExpression="t => t.Title" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>عنوان</label>
+                </td>
+                <td>
+                    <StringTextBox @bind-Value="GridData.Title" />
+                </td>
+            </tr>
+            <tr>
+                <FormCommandButton />
+            </tr>
+        </table>
+    </EditFormTemplate>
+</Grid>
+
+@code {
+
+}

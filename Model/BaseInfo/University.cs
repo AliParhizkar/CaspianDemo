@@ -13,7 +13,7 @@ namespace Model.BaseInfo
     [Table("Universities", Schema = "dbo")]
     public class University
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Key]
         public int Id { get; set; }
 
         /// <summary>

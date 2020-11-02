@@ -15,9 +15,8 @@
 
     .t-rtl .t-window-actions {
         right: auto;
-        top:2px;
-        left: 0.5em;
-        padding: 1px 0px 0px 1px;
+        top:5px;
+        left: 10px;
     }
 
 .t-rtl .t-window-title .t-image
@@ -440,7 +439,7 @@ fieldset.t-widget{
 }
 .t-multitextbox textarea
 {
-    width:100%;
+    width:calc(100% - 4px);
     margin:2px;
 }
 

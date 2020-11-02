@@ -1,0 +1,58 @@
+﻿@page "/AcceptingUniversity"
+@inherits SimplePage<AcceptingUniversity>
+@inject AcceptingUniversityService service
+<table style="width:90%">
+    <tr>
+        <td>
+            <label>عنوان</label>
+        </td>
+        <td>
+            <StringTextBox @bind-Value="SearchData.Title" Search />
+        </td>
+        <td>
+            <label>کد</label>
+        </td>
+        <td>
+            <StringTextBox @bind-Value="SearchData.Code" Search />
+        </td>
+    </tr>
+</table>
+<Grid @bind-Data="GridData" TEntity="AcceptingUniversity" Search="SearchData" Service="service" TableHeight="500" Title="دانشگاه پدیرش" 
+      OnOpen="() => { GridData.UniversityId = 1; }"
+      WindowStyle="width:500px">
+    <Columns>
+        <GridColumn TEntity="AcceptingUniversity" Field="t => t.University.Title" Title="دانشگاه من" />
+        <GridColumn TEntity="AcceptingUniversity" Field="t => t.Title" />
+        <GridColumn TEntity="AcceptingUniversity" Field="t => t.Code" />
+        <GridCommandColumns TEntity="AcceptingUniversity" />
+    </Columns>
+    <EditFormTemplate>
+        <table style="width:90%">
+            <tr>
+                <td>
+                    <label>عنوان</label>
+                </td>
+                <td>
+                    <StringTextBox @bind-Value="GridData.Title" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>کد</label>
+                </td>
+                <td>
+                    <StringTextBox @bind-Value="GridData.Code" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <FormCommandButton />
+                </td>
+            </tr>
+        </table>
+    </EditFormTemplate>
+</Grid>
+
+@code {
+
+}

@@ -14,19 +14,19 @@ namespace Model.BaseInfo
     [Table("Grades", Schema = "dbo")]
     public class Grade
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Key]
         public int Id { get; set; }
 
         /// <summary>
         /// عنوان مقطع تحصیلی
         /// </summary>
-        [DisplayName("عنوان مقطع تحصیلی"), Required, Unique("مقطع تحصیلی با این عنوان در سیستم ثبت شده است")]
+        [DisplayName("عنوان مقطع تحصیلی")]
         public string Title { get; set; }
 
         /// <summary>
         /// نوع مقاطع تحصیلی
         /// </summary>
-        [DisplayName("نوع مقطع تحصیلی"), Required]
+        [DisplayName("نوع مقطع تحصیلی")]
         public PersonGradeType? PersonGradeType { get; set; }
 
         /// <summary>

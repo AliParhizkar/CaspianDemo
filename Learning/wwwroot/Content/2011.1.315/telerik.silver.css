@@ -1,3 +1,18 @@
+@font-face {
+    font-family: iranyekan;
+    font-style: normal;
+    font-weight: bold;
+    src: url('/Content/assets/fonts/woff2/iranyekanwebbold(fanum).woff2');
+}
+
+@font-face {
+    font-family: iranyekan;
+    font-style: normal;
+    font-weight: 300;
+    src: url('/Content/assets/fonts/woff2/iranyekanwebregular(fanum).woff2');
+}
+
+
 body {
     font-family: 'iranyekan';
     font-size:12px;
@@ -12,10 +27,11 @@ body {
     font-size:17px;
 }
 .t-state-error input {
-    border-style: ridge !important;
-    border-color: #f00 !important;
-    background-color: #ffc0cb !important;
+    border-style: solid !important;
+    border-color: rgba(255, 0, 0, 0.17) !important;
+    background-color: #ffe9ec !important;
 }
+
 /* Outlook theme*/
 fieldset.t-widget legend {
     color: #d6d6d6;
@@ -56,9 +72,10 @@ html input[disabled], textarea[disabled] {
     background-image: none;
     line-height: 30px;
     text-align: center;
-    border-width:1px;
-    border-style:solid;
+    border-width: 1px;
+    border-style: solid;
     border-color: rgba(0, 0, 0, .12);
+    border-radius: 8px 8px 0 0;
 }
 .t-grid-header {
     color: #656565;
@@ -81,6 +98,7 @@ html input[disabled], textarea[disabled] {
 }
 .t-picker-wrap .t-select {
     border-color: rgba(0, 0, 0, 0.12);
+    cursor:pointer;
 }
 
 .t-panelbar .t-state-hover { background-image: none; }
@@ -151,9 +169,6 @@ html input[disabled], textarea[disabled] {
 .t-dropdown-wrap.t-state-hover .t-input {
     border-color: rgba(0,0,0,0.24);
 }
-.t-combobox .t-state-focused .t-select {
-    background-image: linear-gradient(#e6e6e6,#e1e1e1)
-}
 .t-dropdown-wrap.t-state-hover .t-select {
     background-image: linear-gradient(#e6e6e6,#e1e1e1);
 }
@@ -196,6 +211,7 @@ html input[disabled], textarea[disabled] {
         border: 1px solid #c5c5c5;
         max-height:300px;
         overflow:auto;
+        border-radius:8px;
     }
 .t-picker-wrap{
     margin:2px;
@@ -232,41 +248,12 @@ html input[disabled], textarea[disabled] {
 .t-reset .t-state-selected
 {
     background-color:#ff6358;
-    border:2px solid #de564d;
-    border-radius:4px;
 }
 .t-reset .t-item :hover{
     background-color:#ededed!important;
 } 
 
-.t-arrow-first {
-    background-position: 0 -192px;
-}
-.t-arrow-prev 
-{ 
-    background-position: -18px -191px; 
 
-}
-.t-arrow-next 
-{ 
-    background-position: -35px -191px; 
-
-}
-.t-arrow-last 
-{ 
-    background-position: -48px -192px; 
-}
-
-.t-state-disabled .t-arrow-next { background-position: -31px -208px; }
-.t-state-disabled .t-arrow-last { background-position: -48px -208px; }
-
-.t-state-hover .t-arrow-first { background-position: -3px -224px; }
-.t-state-hover .t-arrow-prev { background-position: -20px -224px; }
-.t-state-hover .t-arrow-next { background-position: -34px -224px; }
-.t-state-hover .t-arrow-last { background-position: -51px -224px; }
-
-.t-filter { background-position: 0 -240px; }
-.t-clear-filter { background-position: -16px -240px; }
 .t-window-titlebar .fa-times {
     line-height: 26px;
     width: 28px;
@@ -281,7 +268,11 @@ html input[disabled], textarea[disabled] {
 .t-icon-clock { background-position: -64px -336px; }
 
 .t-edit { background-position: 0 -332px; }
-.t-delete { background-position: -24px -333px; }
+.t-delete {
+    background-position: -24px -333px;
+    background-image: url('/Content/2011.1.315/Outlook/sprite.png');
+
+}
 .t-insert, .t-update {
     padding: 2px 5px;
     font-weight: bold;
@@ -298,30 +289,12 @@ html input[disabled], textarea[disabled] {
     display: inline-block;
     text-align: center
 }
-.t-group-delete { background-position: 0 -288px; }
 
-.t-maximize { background-position: -16px -288px; }
-.t-restore { background-position: -32px -288px; }
-.t-close { background-position: -62px -290px; }
-
-.t-insert-top { background-position: 0 -320px; }
-.t-insert-middle { background-position: -16px -320px; }
-.t-insert-bottom { background-position: -32px -320px; }
-.t-add { background-position: -48px -320px; }
-.t-denied { background-position: -64px -320px; }
-
-.t-loading,
-.t-widget .t-loading 
-{ 
-    background: transparent url('/Content/2011.1.315/Outlook/loading.gif') no-repeat 0 0;
-}
 .t-grid .t-loading
 {
-    background: transparent url('/Content/2011.1.315/Outlook/loading-image.svg') no-repeat 0 0;
     width:100%;
     position:absolute;
     left:0;
-    background-position:center center;
     z-index:500;
 }
 .t-grid .t-loading div
@@ -379,7 +352,6 @@ html input[disabled], textarea[disabled] {
     border-color: #ff6358!important;*/
 }
 .t-widget.t-message {
-    border-radius: 20px;
     width: 250PX;
     top: 5PX;
     position: fixed;
@@ -387,34 +359,40 @@ html input[disabled], textarea[disabled] {
     overflow: hidden;
     direction: rtl;
     left: 20px;
-    color: #dfe3e3;
+    color: #757575;
+    border-radius: 5px;
+    border:1px solid;
+    border-color: rgba(0, 0, 0, .12);
+    background-color: white;
+    box-shadow: 3px 3px 5px 0 slategrey;
+    font-size:14px;
 }
 #outMessage .t-title {
     position: absolute;
-    left: 207px;
-    top:5px;
+    right: 10px;
+    top: 8px;
 }
+
 .t-widget.t-message .t-close {
     display: block;
-    width: 27px;
-    height: 27px;
     position: absolute;
-    top: 5px;
-    left: 2px;
-    background-position: -65px -289px;
-    background-image: url(/areas/Satrap.FoodWeb/Content/Cash/TopIcons_Grey.png);
-    background-position: -979px -487px;
+    top: 7px;
+    left: 9px;
     cursor: pointer;
 }
-        .t-widget.t-message .t-close.-state-hover {
-            background-color: #f7c3a6;
-            border-color: #f85a00;
-        }
+    .t-widget.t-message .t-close .fa{
+        font-size:15px;
+    }
+    .t-widget.t-message .t-close.-state-hover {
+        background-color: #f7c3a6;
+        border-color: #f85a00;
+    }
 .t-grid .t-state-selected {
     background-color: rgba(255,99,88,0.25)!important;
 }
 .t-pager .t-numeric .t-state-active {
-    background-color: #626262;
+    background-color: #cecece;
+    border: 1px solid rgba(0,0,0,0.2);
     color: #ff6358;
 }
 .t-grid .t-selectable tr{
@@ -546,14 +524,18 @@ html input[disabled], textarea[disabled] {
 {
     border-color: #c5c5c5;
 }
-
-.t-calendar th
-{
-    border-color: #89aee5;
+.t-calendar td :hover {
+    background-color: #a7a9a6;
+    box-sizing:border-box;
 }
 
-.t-other-month .t-link
-{
+.t-calendar th {
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.t-calendar .t-other-month {
     color: #777;
 }
 
@@ -809,46 +791,6 @@ html input[disabled], textarea[disabled] {
     line-height:1.4em;
 }
 
-@font-face {
-    font-family: iranyekan;
-    font-style: normal;
-    font-weight: bold;
-    src: url('/Content/assets/fonts/eot/iranyekanwebbold.eot');
-    src: url('/Content/assets/fonts/eot/iranyekanwebbold.eot?#iefix') format('embedded-opentype'), /* IE6-8 */
-}
-
-@font-face {
-    font-family: iranyekan;
-    font-style: normal;
-    font-weight: 300;
-}
-
-@font-face {
-    font-family: iranyekan;
-    font-style: normal;
-    font-weight: normal;
-
-}
-
-@font-face {
-    font-family: iranyekan;
-    font-style: normal;
-    font-weight: bold;
-
-}
-
-@font-face {
-    font-family: iranyekan;
-    font-style: normal;
-    font-weight: 300;
-
-}
-
-@font-face {
-    font-family: iranyekan;
-    font-style: normal;
-    font-weight: normal;
-  }
 .m-loading {
     position: absolute;
     background: transparent url('/Content/2011.1.315/Outlook/loading-image.svg') no-repeat 0 0;

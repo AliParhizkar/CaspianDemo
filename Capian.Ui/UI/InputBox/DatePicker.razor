@@ -3,17 +3,17 @@
 @inherits BaseInput<TValue>
 <div class="t-widget t-datepicker">
     <div class="t-picker-wrap">
-        <input @ref="input" @attributes="attrs" class="t-input" autocomplete="off"  />
+        <input @ref="input" @attributes="attrs" class="t-input" autocomplete="off" />
         <span class="t-select" style="left:inherit">
             <i class="t-icon t-icon-calendar fa fa-calendar" title="تقویم شمسی"></i>
         </span>
     </div>
 </div>
-@code 
-{ 
+@code
+{
     Dictionary<string, object> attrs;
 
-    protected  override Task OnParametersSetAsync()
+    protected override Task OnParametersSetAsync()
     {
         attrs = new Dictionary<string, object>();
         if (Id.HasValue())
@@ -29,12 +29,9 @@
         var json = this.ConvertToJson();
         var data = new JsValueSetter(this);
         if (firstRender)
-        {
-            jsRuntime.InvokeVoidAsync("$.telerik.bindControl", input, json, UiControlType.DatePicker);
             jsRuntime.InvokeAsync<object>("$.telerik.bindValue", DotNetObjectReference.Create(data), input, UiControlType.DatePicker);
-        }
-        else
-            jsRuntime.InvokeAsync<object>("$.telerik.updateState", input, json, UiControlType.DatePicker);
+        jsRuntime.InvokeVoidAsync("$.telerik.bindControl", input, json, UiControlType.DatePicker);
+        Focused = false;
         return base.OnAfterRenderAsync(firstRender);
     }
 }

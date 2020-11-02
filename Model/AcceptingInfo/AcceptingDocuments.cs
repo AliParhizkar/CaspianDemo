@@ -8,10 +8,17 @@ namespace Model.AcceptingInfo
     /// <summary>
     /// مشخصات اسناد پذیرش
     /// </summary>
+    [Table("AcceptingDocuments")]
     public class AcceptingDocuments
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Key]
         public int Id { get; set; }
+
+        /// <summary>
+        /// عنوان
+        /// </summary>
+        [DisplayName("عنوان")]
+        public string Title { get; set; }
 
         /// <summary>
         /// کد نوع اسکن
@@ -35,7 +42,7 @@ namespace Model.AcceptingInfo
         /// اجبار داده
         /// </summary>
         [DisplayName("اجبار داده")]
-        public bool? IsRequired { get; set; }
+        public bool IsRequired { get; set; }
 
         /// <summary>
         /// کد پذیرش

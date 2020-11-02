@@ -12,7 +12,7 @@ namespace Model.PersonInfo
     [Table("Degrees", Schema = "dbo")]
     public class Degree
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Key]
         public int Id { get; set; }
 
         /// <summary>

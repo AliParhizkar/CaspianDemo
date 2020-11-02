@@ -1,7 +1,6 @@
 ﻿using Model.Enums;
 using Model.BaseInfo;
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Model.PersonInfo.StudentInfo

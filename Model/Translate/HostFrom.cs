@@ -10,7 +10,7 @@ namespace Model.Translate
     [Table("HostsFrom", Schema = "trs")]
     public class HostFrom
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Key]
         public int Id { get; set; }
 
         /// <summary>

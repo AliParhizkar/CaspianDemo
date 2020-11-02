@@ -250,7 +250,6 @@
                         var parent = $(self_.element).offsetParent()[0];
                         let left = (e.pageX - self_.mousePos.left - parent.offsetLeft) + self_.windowpos.left;
                         let top = (e.pageY - self_.mousePos.top - parent.offsetTop) + self_.windowpos.top;
-                        console.log(left);
                         $(self_.element).css('left', left).css('top', top);
                     }
                 });
@@ -475,6 +474,7 @@
         },
 
         close: function () {
+
             //$('html, body').css('overflow', 'auto');
             $('html, body').css('padding-right', '0px');
             $('html, body').css('padding-left', '0px');
@@ -496,7 +496,7 @@
             if (hw)
                 hw.close();
             if ($element.is(':visible')) {
-
+                
                 if (!$t.trigger(this.element, 'close')) {
                     var openedModalWindows = $('.t-window').filter(function () {
                         var window = $(this);
@@ -510,9 +510,12 @@
                         else
                             overlay.hide();
                     }
+                    var self_ = this;
                     $t.fx.rewind(this.effects, $element, null, function () {
                         $element.hide();
                         overlay.hide();
+
+                        $(self_.element).find('form').trigger('reset');
                     });
                 }
             }

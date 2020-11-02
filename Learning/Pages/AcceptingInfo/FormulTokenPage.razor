@@ -1,0 +1,109 @@
+﻿@page "/FormulToken"
+@inherits SimplePage<FormulToken>
+@inject FormulTokenService service
+<ComboBox @bind-Value="FormulaId" TEntity="StudentCodeFormula" TValue="int?" DisplayTextExpression="t => t.Title" />
+@if (FormulaId.HasValue)
+{
+    SearchData.FormulaId = FormulaId.Value;
+    <Grid @bind-Data="GridData" TEntity="FormulToken" Search="SearchData" Service="service" TableHeight="350"
+          OnOpen="() => { GridData.FormulaId = FormulaId.Value; }"
+          Title="توکن" WindowStyle="width:650px">
+        <Columns>
+            <GridColumn TEntity="FormulToken" Field="t => t.CodeGeneratorFieldType.FaText()" />
+            <GridColumn TEntity="FormulToken" Field="t => t.ConstValue" />
+            <GridColumn TEntity="FormulToken" Field="t => t.FirstTerm" />
+            <GridColumn TEntity="FormulToken" Field="t => t.SecondTerm" />
+            <GridColumn TEntity="FormulToken" Field="t => t.FromChar.ToString()" />
+            <GridColumn TEntity="FormulToken" Field="t => t.Length.ToString()" />
+            <GridColumn TEntity="FormulToken" Field="t => t.StartValue.ToString()" />
+            <GridColumn TEntity="FormulToken" Field="t => t.IncValue.ToString()" />
+            <GridColumn TEntity="FormulToken" Field="t => t.MaleValue" />
+            <GridColumn TEntity="FormulToken" Field="t => t.FemaleValue" />
+            <GridCommandColumns TEntity="FormulToken" />
+        </Columns>
+        <EditFormTemplate>
+            <table style="width:90%;margin:5px auto;">
+                <tr>
+                    <td style="width:75px">
+                        <label>نوع فیلد</label>
+                    </td>
+                    <td colspan="3">
+                        <DropdownList @bind-Value="GridData.CodeGeneratorFieldType" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>مقدار ثابت</label>
+                    </td>
+                    <td colspan="3">
+                        <StringTextBox @bind-Value="GridData.ConstValue" Disabled="GridData.CodeGeneratorFieldType != CodeGeneratorFieldType.ConstValue" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>از کارکتر</label>
+                    </td>
+                    <td>
+                        <NumericTextBox @bind-Value="GridData.FromChar" Disabled="GridData.CodeGeneratorFieldType != CodeGeneratorFieldType.NationalCode" />
+                    </td>
+                    <td style="width:75px">
+                        <label>طول</label>
+                    </td>
+                    <td>
+                        <NumericTextBox @bind-Value="GridData.Length" Disabled="GridData.CodeGeneratorFieldType != CodeGeneratorFieldType.NationalCode" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>از مقدار</label>
+                    </td>
+                    <td>
+                        <NumericTextBox @bind-Value="GridData.StartValue" Disabled="GridData.CodeGeneratorFieldType != CodeGeneratorFieldType.Counter" />
+                    </td>
+                    <td>
+                        <label>مقدار افزایشی</label>
+                    </td>
+                    <td>
+                        <NumericTextBox @bind-Value="GridData.IncValue" Disabled="GridData.CodeGeneratorFieldType != CodeGeneratorFieldType.Counter" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>مقدار ثابت-مرد</label>
+                    </td>
+                    <td>
+                        <StringTextBox @bind-Value="GridData.MaleValue" Disabled="GridData.CodeGeneratorFieldType != CodeGeneratorFieldType.Gender" />
+                    </td>
+                    <td>
+                        <label>مقدار ثابت-زن</label>
+                    </td>
+                    <td>
+                        <StringTextBox @bind-Value="GridData.FemaleValue" Disabled="GridData.CodeGeneratorFieldType != CodeGeneratorFieldType.Gender" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>مقدار ثابت-ترم اول</label>
+                    </td>
+                    <td>
+                        <StringTextBox @bind-Value="GridData.FirstTerm" Disabled="GridData.CodeGeneratorFieldType != CodeGeneratorFieldType.EntranceTerm" />
+                    </td>
+                    <td>
+                        <label>مقدار ثابت-ترم دوم</label>
+                    </td>
+                    <td>
+                        <StringTextBox @bind-Value="GridData.SecondTerm" Disabled="GridData.CodeGeneratorFieldType != CodeGeneratorFieldType.EntranceTerm" />
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2"> 
+                        <FormCommandButton />
+                    </td>
+                </tr>
+            </table>
+        </EditFormTemplate>
+    </Grid>
+}
+    @code {
+        int? FormulaId;
+    }

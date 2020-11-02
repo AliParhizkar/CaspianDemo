@@ -13,19 +13,19 @@ namespace Model.BaseInfo
     [Table("SubRegions", Schema = "dbo")]
     public class SubRegion
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Key]
         public int Id { get; set; }
 
         /// <summary>
         /// عنوان مذهب
         /// </summary>
-        [DisplayName("عنوان"), Required, Unique("مذهبی با این عنوان در سیستم ثبت شده است")]
+        [DisplayName("عنوان")]
         public string Title { get; set; }
 
         /// <summary>
         /// کد دین
         /// </summary>
-        [DisplayName("دین"), Required]
+        [DisplayName("دین")]
         public int? RegionId { get; set; }
 
         /// <summary>

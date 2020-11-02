@@ -37,6 +37,10 @@
     [Parameter, JsonProperty("digits")]
     public int NumberDigit { get; set; } = 2;
 
+    [Parameter, JsonProperty("group")]
+    public bool DigitGrouping { get; set; } = true;
+
+
     protected override Task OnAfterRenderAsync(bool firstRender)
     {
         var type = typeof(TValue);

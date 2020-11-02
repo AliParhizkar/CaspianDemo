@@ -10,7 +10,7 @@ namespace Model.CourseGroupInfo
     [Table("CourseGroupsEqual", Schema = "crg")]
     public class CourseGroupEqual
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Key]
         public int Id { get; set; }
 
         /// <summary>

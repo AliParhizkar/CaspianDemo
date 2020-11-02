@@ -17,19 +17,19 @@ namespace Model.CourseInfo
         /// <summary>
         /// حداقل نمره ی پاسی
         /// </summary>
-        [DisplayName("حداقل نمره پاسی"), Required, Range(0, 20)]
+        [DisplayName("حداقل نمره پاسی")]
         public decimal? MinPassGrade { get; set; }
 
         /// <summary>
         /// حداقل نمره ی پاسی مهمانی به
         /// </summary>
-        [DisplayName("حداقل نمره پاسی مهمان به"), Required, Range(0, 20)]
+        [DisplayName("حداقل نمره پاسی مهمان به")]
         public decimal? MinPassGradeHostTo { get; set; }
 
         /// <summary>
         /// حداقل نمره ی پاسی انتقال از
         /// </summary>
-        [DisplayName("حداقل نمره پاسی انتقال از"), Required, Range(0, 20)]
+        [DisplayName("حداقل نمره پاسی انتقال از")]
         public decimal? MinPassGradeTransfer { get; set; }
 
         /// <summary>
@@ -42,18 +42,18 @@ namespace Model.CourseInfo
         /// عدم موثر
         /// </summary>
         [DisplayName("عدم موثر")]
-        public bool? Noteffective { get; set; }
+        public bool Noteffective { get; set; }
 
         /// <summary>
         /// در کارنامه نمایش داده نشود
         /// </summary>
         [DisplayName("در کارنامه نمایش داده نشود")]
-        public bool? WorkbookHide { get; set; }
+        public bool WorkbookHide { get; set; }
 
         /// <summary>
         /// نوع نمره دهی
         /// </summary>
-        [DisplayName("نوع نمره دهی"), Required]
+        [DisplayName("نوع نمره دهی")]
         public GradeType? GradeType { get; set; }
 
         /// <summary>

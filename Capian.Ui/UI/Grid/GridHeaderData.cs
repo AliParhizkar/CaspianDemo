@@ -16,5 +16,7 @@ namespace Caspian.UI
         public MemberExpression Expression { get; set; }
 
         public OrderBy? OrderBy { get; set; }
+
+        public bool Orderbyable { get; set; }
     }
 }

@@ -5,33 +5,28 @@ using System.Reflection;
 using System.Linq.Expressions;
 using System.Linq.Dynamic.Core;
 using Caspian.Common.Extension;
+using Microsoft.EntityFrameworkCore;
 
 namespace Caspian.Common.Service
 {
     public class SimpleService<TEntity> : CaspianValidator<TEntity>, ISimpleService<TEntity> where TEntity : class
     {
-        public SimpleService(IServiceProvider provider)
-            :base(provider)
-        {
-            
-        }
-
-        public IQueryable<TEntity> GetAll(TEntity search)
+        public virtual IQueryable<TEntity> GetAll(TEntity search = null)
         {
             return Context.Set<TEntity>().Search(search);
         }
 
-        public void Update(TEntity entity)
+        public virtual void Update(TEntity entity)
         {
             Context.Set<TEntity>().Update(entity);
         }
 
-        public void Add(TEntity entity)
+        public virtual void Add(TEntity entity)
         {
-            Context.Set<TEntity>().Add(entity).DetectChanges();
+            Context.Set<TEntity>().Add(entity);
         }
 
-        public void Remove(TEntity entity)
+        public virtual void Remove(TEntity entity)
         {
             Context.Set<TEntity>().Remove(entity);
         }
@@ -50,6 +45,20 @@ namespace Caspian.Common.Service
         public TEntity Single(int id)
         {
             var old = SingleOrDefault(id);
+            return old;
+        }
+
+        public TEntity SingleNochange(int id)
+        {
+            var old = SingleOrDefault(id);
+            Context.Entry(old).State = EntityState.Unchanged;
+            return old;
+        }
+
+        public TEntity SingleOrDefaultNochange(int id)
+        {
+            var old = SingleOrDefault(id);
+            Context.Entry(old).State = EntityState.Unchanged;
             return old;
         }
 

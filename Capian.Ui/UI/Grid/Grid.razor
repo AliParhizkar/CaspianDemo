@@ -3,6 +3,7 @@
 @implements IEnableLoadData
 @implements IGridRowSelect
 @implements IGridButtonCommand<TEntity>
+@inject IServiceProvider provider
 
 <ConfirmMessage @ref="ConfirmMessage" Message="آیا با حذف موافقید؟" />
 @if (GridState.InitializedState == InitializedState.GridColumnsNotInitialized)
@@ -24,7 +25,11 @@ else
                 else
                     @ToolsBar
             }
-            <GridHeader ColumnsData="GridState.ColumnsData" />
+            <GridHeader ColumnsData="GridState.ColumnsData" 
+                        OnOrderingChanged="() => 
+                                            {
+                                                ChangePageNumber(PageNumber);
+                                            }" />
             <div class="t-grid-content" style="height:@(TableHeight)px">
                 <table class="@(SelectType == SelectType.None ? "" : "t-selectable")" cellpadding="0" cellspacing="0">
                     <tbody>
@@ -72,12 +77,9 @@ else
                                 }
                                 else
                                 {
-                                    <CascadingValue Value="item" Name="GridRowData">
-                                        @(Columns(new RowData<TEntity>()
-                                    {
-                                        Data = item,
-                                        RowIndex = rowIndex
-                                    }))
+                                    var rowData = new RowData<TEntity>() { Data = item, RowIndex = rowIndex};
+                                    <CascadingValue Value="rowData" Name="GridRowData">
+                                        @(Columns(rowData))
                                     </CascadingValue>
                                 }
                             </tr>
@@ -196,11 +198,8 @@ else
     [Parameter, JsonIgnore]
     public TEntity Search { get; set; }
 
-    [JsonIgnore, Inject]
+    [Parameter, JsonIgnore]
     public ISimpleService<TEntity> Service { get; set; }
-
-    //[Inject, JsonIgnore]
-    //public MyContext Context { get; set; }
 
     [Parameter, JsonIgnore]
     public TEntity Data { get; set; }
@@ -251,8 +250,8 @@ else
             var pageNumber = (rowNumber.Value - 1) / PageSize + 1;
             ChangePageNumber(pageNumber);
             SelectedRowIndex = (rowNumber.Value - 1) % PageSize;
-            EnableLoading();
         }
+        EnableLoading();
         Close();
     }
 
@@ -366,6 +365,7 @@ else
             if (old != null)
             {
                 var validator = (IValidator)Service;
+                (Service as ICaspianValidator).Provider = provider;
                 var result = await validator.ValidateAsync(new ValidationContext(entity, new PropertyChain(),
                 new RulesetValidatorSelector("remove")));
                 if (result.IsValid)
@@ -536,13 +536,7 @@ else
         if (GridState.List.Count > 0 && (SholdRendered || masterIdChanged))
         {
             SholdRendered = false;
-            var exprList = new List<MemberExpression>();
-            foreach (var item in GridState.List)
-                exprList.AddRange(new ExpressionSurvey().Survey(item));
-            var parameterExpr = Expression.Parameter(typeof(TEntity), "t");
-            var pKey = typeof(TEntity).GetPrimaryKey();
-            var expr = Expression.Property(parameterExpr, pKey);
-            exprList.Add(expr);
+
             Query = Service.GetAll(Search);
             oldMasterId = PageState?.MasterId;
             if (PageState != null)
@@ -601,16 +595,21 @@ else
             var index = 0;
             foreach (var col in GridState.ColumnsData)
             {
-                if (col.OrderBy.HasValue)
+                if (col.OrderBy != null && col.Orderbyable)
                 {
-                    var exp = GridState.List[index];
+                    Expression orderbyExpr = GridState.List[index];
+                    if (orderbyExpr.NodeType == ExpressionType.Call)
+                        orderbyExpr = (orderbyExpr as MethodCallExpression).Arguments[0];
+                    if (orderbyExpr.NodeType == ExpressionType.Convert)
+                        orderbyExpr = (orderbyExpr as UnaryExpression).Operand;
+                    var param = Expression.Parameter(typeof(TEntity), "t");
+                    orderbyExpr = param.ReplaceParameter(orderbyExpr as MemberExpression);
+                    var lambdaExpression = Expression.Lambda(orderbyExpr, param);
+                    if (col.OrderBy == OrderBy.Inc)
+                        query = query.OrderBy(lambdaExpression).OfType<TEntity>();
+                    else if (col.OrderBy == OrderBy.Dec)
+                        query = query.OrderByDescending(lambdaExpression).OfType<TEntity>();
                 }
-
-                //if (col.OrderBy ==  OrderBy.Inc)
-                //    query = query.OrderBy(GridState.List[index]);
-                //else
-                //    if (col.OrderBy == OrderBy.Dec)
-                //        query = query.OrderBy(GridState.List[index]);
                 index++;
             }
             if (PageNumber > 1)
@@ -618,6 +617,13 @@ else
                 var skip = (PageNumber - 1) * PageSize;
                 query = query.Skip(skip);
             }
+            var exprList = new List<MemberExpression>();
+            foreach (var item in GridState.List)
+                exprList.AddRange(new ExpressionSurvey().Survey(item));
+            var parameterExpr = Expression.Parameter(typeof(TEntity), "t");
+            var pKey = typeof(TEntity).GetPrimaryKey();
+            var expr = Expression.Property(parameterExpr, pKey);
+            exprList.Add(expr);
             Items = query.Take(PageSize).GetValues<TEntity>(exprList);
             GridState.InitializedState = InitializedState.FirstFetchData;
             this.StateHasChanged();
