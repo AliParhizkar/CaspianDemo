@@ -17,6 +17,7 @@ namespace Service
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+            // Hi Ali
             base.OnConfiguring(optionsBuilder);
         }
     }
