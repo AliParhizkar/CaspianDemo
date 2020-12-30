@@ -17,6 +17,7 @@ namespace Service
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+        // naser comment
             base.OnConfiguring(optionsBuilder);
         }
     }
